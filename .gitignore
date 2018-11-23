@@ -1,0 +1,24 @@
+# BACKEND
+# Committed directories
+source/backend/*
+source/backend/admin_artworks/*
+!source/backend/admin_artworks/
+
+# Committed files
+!source/backend/admin_artworks/models.py
+!source/backend/admin_artworks/serializers.py
+!source/backend/admin_artworks/views.py
+!source/backend/admin_artworks/urls.py
+
+
+# FRONTEND
+# Committed directories
+source/frontend/*
+source/frontend/src/*
+!source/frontend/src/
+source/frontend/src/admin_views/*
+!source/frontend/src/admin_views/
+
+# Committed files
+!source/frontend/src/App.js
+!source/frontend/src/admin_views/AddDetails.js
