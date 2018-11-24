@@ -16,10 +16,23 @@ class ArtworkTitle(models.Model):
 Artwork details
 """
 class ArtworkDetails(models.Model):
-    title = models.ForeignKey(ArtworkTitle, on_delete=models.CASCADE)
+    title_id = models.ForeignKey(ArtworkTitle, on_delete=models.CASCADE)
     height = models.FloatField()
     width = models.FloatField()
     description = models.TextField()
+    date_added = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.description
+
+
+"""
+Artwork images
+"""
+class ArtworkImages(models.Model):
+    title_id = models.ForeignKey(ArtworkTitle, on_delete=models.CASCADE)
+    images = models.ImageField(upload_to='images')
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.images
