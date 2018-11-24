@@ -14,19 +14,19 @@ class AddDetails extends Component {
     render() {
         return (
             <div>
-                <form>
+                <form onSubmit={ this.createDetails }>
                     <p>Height</p>
-                    <input onChange={ this.updateDetails } name="height"></input>
+                    <input onChange={ this.updateDetails } value={ this.state.height } name="height"></input>
                     <br />
                     <br />
                     <p>Widht</p>
-                    <input onChange={ this.updateDetails } name="width"></input>
+                    <input onChange={ this.updateDetails } value={ this.state.width } name="width"></input>
                     <br />
                     <br />
                     <p>Description</p>
-                    <textarea onChange={ this.updateDetails } name="description" cols="60" rows="15"></textarea>
+                    <textarea onChange={ this.updateDetails } value={ this.state.description } name="description" cols="60" rows="15"></textarea>
                     <br />
-                    <button>Save</button>
+                    <button type="submit">Save</button>
                 </form>
             </div>
         )
@@ -37,6 +37,22 @@ class AddDetails extends Component {
         this.setState({
             [event.target.name]: event.target.value
         }) 
+    }
+
+    
+    createDetails = (event) => {
+        axios.post('http://localhost:8000/artworks_details/', {
+            title_id: "33",
+            height: this.state.height,
+            width: this.state.width,
+            description: this.state.description,
+        });
+        this.setState({
+            height: "",
+            width: "",
+            description: "",
+        });
+        event.preventDefault();
     }
 
 
