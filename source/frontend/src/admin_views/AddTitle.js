@@ -30,12 +30,12 @@ class AddTitle extends Component {
     }
 
 
-    createTitle = (event) => {
+    createTitle = () => {
         axios.post('http://localhost:8000/artwork_titles/', { title: this.state.title });
         this.setState({
             title: "",
         });
-        event.preventDefault();
+        this.props.history.push('/admin_add_details');
     }
 
 
