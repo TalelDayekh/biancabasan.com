@@ -42,11 +42,11 @@ class AddDetails extends Component {
     
     createDetails = (event) => {
         axios.post('http://localhost:8000/artworks_details/', {
-            title_id: "33",
+            title_id: this.props.location.state.artwork_id,
             height: this.state.height,
             width: this.state.width,
             description: this.state.description,
-        });
+        }).then(response => {console.log(response)});
         this.setState({
             height: "",
             width: "",
