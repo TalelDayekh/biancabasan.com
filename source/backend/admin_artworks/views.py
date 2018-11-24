@@ -1,9 +1,9 @@
 from django.shortcuts import render
 
 from rest_framework import viewsets
-from .serializers import ArtworkTitleSerializer, ArtworkDetailsSerializer
+from .serializers import ArtworkTitleSerializer, ArtworkDetailsSerializer, ArtworkImagesSerializer
 
-from .models import ArtworkTitle, ArtworkDetails
+from .models import ArtworkTitle, ArtworkDetails, ArtworkImages
 
 
 class ArtworkTitleViewSet(viewsets.ModelViewSet):
@@ -14,3 +14,8 @@ class ArtworkTitleViewSet(viewsets.ModelViewSet):
 class ArtworkDetailsViewSet(viewsets.ModelViewSet):
     queryset = ArtworkDetails.objects.all()
     serializer_class = ArtworkDetailsSerializer
+
+
+class ArtworkImagesViewSet(viewsets.ModelViewSet):
+    queryset = ArtworkImages.objects.all()
+    serializer_class = ArtworkImagesSerializer

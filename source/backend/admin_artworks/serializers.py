@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import ArtworkTitle, ArtworkDetails
+from .models import ArtworkTitle, ArtworkDetails, ArtworkImages
 
 
 class ArtworkTitleSerializer(serializers.ModelSerializer):
@@ -12,4 +12,10 @@ class ArtworkTitleSerializer(serializers.ModelSerializer):
 class ArtworkDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArtworkDetails
-        fields = ('id', 'title', 'height', 'width', 'description')
+        fields = ('id', 'title_id', 'height', 'width', 'description')
+
+
+class ArtworkImagesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ArtworkImages
+        fields = ('id', 'title_id', 'images')
