@@ -16,7 +16,7 @@ class AddTitle extends Component {
                     <p>Title</p>
                     <input onChange={ this.updateTitle } value={ this.state.title }></input>
                     <br />
-                    <button>Save</button>
+                    <button type="submit">Save</button>
                 </form>
             </div>
         )
@@ -30,12 +30,18 @@ class AddTitle extends Component {
     }
 
 
-    createTitle = () => {
-        axios.post('http://localhost:8000/artwork_titles/', { title: this.state.title });
+    createTitle = (event) => {
+        axios.post('http://localhost:8000/artwork_titles/', { title: this.state.title })
+        .then(response => {
+            this.props.history.push({
+                pathname: '/admin_add_details/',
+                state: { artwork_id: response.data.id }
+            })
+        });
         this.setState({
             title: "",
         });
-        this.props.history.push('/admin_add_details');
+        event.preventDefault();
     }
 
 
