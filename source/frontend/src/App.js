@@ -4,6 +4,7 @@ import { BrowserRouter, Route } from 'react-router-dom';
 
 import AddTitle from './admin_views/AddTitle';
 import AddDetails from './admin_views/AddDetails';
+import AddImages from './admin_views/AddImages';
 
 
 class App extends Component {
@@ -11,8 +12,9 @@ class App extends Component {
         return (
             <BrowserRouter>
                 <div>
-                    <Route path="/admin_add_title" component={ AddTitle } />
-                    <Route path="/admin_add_details" component={ AddDetails } />
+                    <Route path="/admin_add_title/" component={ AddTitle } />
+                    <Route path="/admin_add_details/" component={ AddDetails } />
+                    <Route path="/admin_add_images/" component={ AddImages } />
                 </div>
             </BrowserRouter>
         )
