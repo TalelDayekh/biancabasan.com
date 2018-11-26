@@ -14,7 +14,7 @@ class AddTitle extends Component {
             <div>
                 <form onSubmit={ this.createTitle }>
                     <p>Title</p>
-                    <input onChange={ this.updateTitle } value={ this.state.title }></input>
+                    <input onChange={ this.updateTitle } value={ this.state.title }/>
                     <br />
                     <button type="submit">Save</button>
                 </form>
@@ -35,7 +35,7 @@ class AddTitle extends Component {
         .then(response => {
             this.props.history.push({
                 pathname: '/admin_add_details/',
-                state: { artwork_id: response.data.id }
+                state: { artwork_object_id: response.data.id }
             })
         });
         this.setState({
