@@ -1,58 +1,71 @@
-from django.shortcuts import render
+from rest_framework import status
 
-from rest_framework import viewsets, permissions
-from .serializers import ArtworkTitleSerializer, ArtworkDetailsSerializer
+from rest_framework.decorators import (
+    api_view,
+)
 
-from .models import ArtworkTitle, ArtworkDetails
+from rest_framework.response import (
+    Response,
+)
 
+from .serializers import (
+    ArtworkTitleSerializer,
+)
 
-# Artwork title
-class ArtworkTitleViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-
-    queryset = ArtworkTitle.objects.all()
-    serializer_class = ArtworkTitleSerializer
-
-    """
-    Custom queryset that filters artwork titles against current logged in user
-    but only displays artwork titles by user biancabasan when no one is logged in
-    """
-    def get_queryset(self):
-        filtered_queryset = ArtworkTitle.objects.filter(
-            owner__username = 'biancabasan'
-            )
-        
-        if self.request.user.is_authenticated:
-            filtered_queryset = self.queryset.filter(
-                owner = self.request.user
-                )
-        
-        return filtered_queryset
-
-    # Associate artworks with users
-    def perform_create(self, serializer):
-        serializer.save(owner = self.request.user)
+from .models import (
+    ArtworkTitle,
+)
 
 
-# Artwork details
-class ArtworkDetailsViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-
-    queryset = ArtworkDetails.objects.all()
-    serializer_class = ArtworkDetailsSerializer
+# Artwork titles
+@api_view(['GET', 'POST'])
+def create_title(request):
 
     """
-    Custom queryset that filters artwork details against current logged in user
-    but only displays artwork details by user biancabasan when no one is logged in
+    Create new artwork title
     """
-    def get_queryset(self):
-        filtered_queryset = ArtworkDetails.objects.filter(
-            title_id__owner__username = 'biancabasan'
+
+    if request.method == 'GET':
+        artwork_titles_list = ArtworkTitle.objects.all()
+        titles_list_serializer = ArtworkTitleSerializer(
+            artwork_titles_list,
+            many = True
         )
 
-        if self.request.user.is_authenticated:
-            filtered_queryset = self.queryset.filter(
-                title_id__owner = self.request.user
-            )
+        return Response(titles_list_serializer.data)
 
-        return filtered_queryset
+    elif request.method == 'POST':
+        title_serializer = ArtworkTitleSerializer(data = request.data)
+        current_user = request.user
+
+        if title_serializer.is_valid():
+            title_serializer.save(owner = current_user)
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def edit_titles(request, id):
+
+    """
+    Update or delete artwork titles
+    """
+
+    # Raise exception if title does not exist
+    try:
+        artwork_title = ArtworkTitle.objects.get(id = id)
+    except ArtworkTitle.DoesNotExist:
+        return Response(status = status.HTTP_400_BAD_REQUEST)
+    
+    if request.method == 'GET':
+        title_serializer = ArtworkTitleSerializer(artwork_title)
+        return Response(title_serializer.data)
+
+    elif request.method == 'PUT':
+        title_serializer = ArtworkTitleSerializer(
+            artwork_title,
+            data = request.data
+            )
+        if title_serializer.is_valid():
+            title_serializer.save()
+    
+    elif request.method == 'DELETE':
+        artwork_title.delete()
