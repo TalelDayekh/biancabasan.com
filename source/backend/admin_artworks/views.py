@@ -10,10 +10,12 @@ from rest_framework.response import (
 
 from .serializers import (
     ArtworkTitleSerializer,
+    ArtworkDetailsSerializer,
 )
 
 from .models import (
     ArtworkTitle,
+    ArtworkDetails,
 )
 
 
@@ -31,7 +33,6 @@ def create_title(request):
             artwork_titles_list,
             many = True
         )
-
         return Response(titles_list_serializer.data)
 
     elif request.method == 'POST':
@@ -64,8 +65,43 @@ def edit_titles(request, id):
             artwork_title,
             data = request.data
             )
+
         if title_serializer.is_valid():
             title_serializer.save()
     
     elif request.method == 'DELETE':
         artwork_title.delete()
+
+
+# Artwork details
+@api_view(['GET', 'POST'])
+def create_details(request, id):
+
+    """
+    Create new artwork details
+    """
+
+    if request.method == 'GET':
+        # Only show details for the relevant artwork title
+        artwork_details = ArtworkDetails.objects.filter(title_id = id)
+        details_serializer = ArtworkDetailsSerializer(
+            artwork_details,
+            many = True
+        )
+        return Response(details_serializer.data)
+    
+    elif request.method == 'POST':
+        # Save details for a specific artwork or
+        # raise exception if details already exist
+        try:
+            ArtworkDetails.objects.get(title_id = id)
+        except ArtworkDetails.DoesNotExist:
+            details_serializer = ArtworkDetailsSerializer(data = request.data)
+
+            if details_serializer.is_valid():
+                details_serializer.save(title_id = id)
+        else:
+            return Response(
+                "Unable to create new details, details already exist",
+                status = status.HTTP_409_CONFLICT
+                )
