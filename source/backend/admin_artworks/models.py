@@ -17,19 +17,20 @@ class ArtworkTitle(models.Model):
         )
     
     def __str__(self):
-        return (
-            str('Title: ') 
-            + self.title + str(' ID: ') 
-            + str(self.id) + str(' Owner: ') 
+        return ('Title: '
+            + self.title
+            + ' ID: '
+            + str(self.id)
+            + ' Owner: '
             + str(self.owner)
-            )
+        )
 
 
 """
 Artwork details
 """
 class ArtworkDetails(models.Model):
-    title_id = models.ForeignKey(
+    title = models.ForeignKey(
         ArtworkTitle,
         on_delete = models.CASCADE,
     )
@@ -40,24 +41,30 @@ class ArtworkDetails(models.Model):
 
     def __str__(self):
         return (
-            str('Description: ') 
-            + self.description + str(' ID: ') 
-            + str(self.title_id.id) 
-            + str(' Owner: ') 
-            + str(self.title_id.owner)
-            )
+            'Description: '
+            + self.description
+            + ' ID: '
+            + str(self.title.id)
+            + ' Owner: '
+            + str(self.title.owner)
+        )
 
 
+"""
+Artwork images
+"""
+class ArtworkImages(models.Model):
+    title = models.ForeignKey(
+        ArtworkTitle,
+        on_delete = models.CASCADE,
+    )
+    images = models.ImageField(upload_to = 'images')
+    date_added = models.DateTimeField(auto_now_add = True)
 
-
-
-# """
-# Artwork images
-# """
-# class ArtworkImages(models.Model):
-#     title_id = models.ForeignKey(ArtworkTitle, on_delete=models.CASCADE)
-#     images = models.ImageField(upload_to='images')
-#     date_added = models.DateTimeField(auto_now_add=True)
-
-#     def __str__(self):
-#         return str(self.images)
+    def __str__(self):
+        return (
+            'Image: '
+            + str(self.image)
+            + 'ID: '
+            + str(self.title.id)
+        )
