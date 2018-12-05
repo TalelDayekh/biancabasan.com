@@ -13,19 +13,19 @@ from ..models import (
 
 
 """
-List all artwork titles
+List all artwork titles with full details and images
 """
 @api_view(['GET'])
-def titles_list(request):
+def artworks_list(request):
 
     if request.method == 'GET':
-        titles_query = ArtworkTitles.objects.all()
-        titles_serialized = ArtworkTitlesSerializer(
-            titles_query,
+        list_query = ArtworkTitles.objects.all()
+        list_serialized = ArtworkTitlesSerializer(
+            list_query,
             many = True
         )
 
         return Response(
-            titles_serialized.data,
+            list_serialized.data,
             status = status.HTTP_200_OK
             )
