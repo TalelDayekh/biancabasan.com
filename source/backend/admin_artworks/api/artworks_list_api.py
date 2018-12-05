@@ -11,7 +11,7 @@ from ..models import (
 
 
 """
-List all artwork titles with full details and images
+List artwork titles with full details and all images
 """
 @api_view(['GET'])
 def artworks_list(request):
