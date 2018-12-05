@@ -4,11 +4,9 @@ from rest_framework.decorators import api_view
 
 from .serializers import (
     ArtworkTitlesSerializer,
-    ArtworkDetailsSerializer,
 )
 from ..models import (
     ArtworkTitles,
-    ArtworkDetails,
 )
 
 
