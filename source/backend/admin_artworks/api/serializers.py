@@ -28,11 +28,10 @@ class ArtworkDetailsSerializer(serializers.ModelSerializer):
 class ArtworkImagesSerializer(serializers.RelatedField):
 
     def to_representation(self, value):
-        # Add id and image as key-value pair in dictionary
-        image_dict = {}
-        image_dict['id'] = '%s' % (value.image)
 
-        return image_dict
+        image = '%s' % (value.image)
+        
+        return image
 
 
 # Artwork titles
