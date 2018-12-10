@@ -96,8 +96,12 @@ def artwork_add_images(request):
             image_file = Image.open(image_serialized.validated_data['image'])
 
             # Modify image
-            modified_image = image_file.resize((200, 200))
-            modified_image = modified_image.rotate(45)
+            image_width, image_height = image_file.size
+            image_new_width = 1024
+            image_new_height = (image_height/image_width) * image_new_width
+            modified_image = image_file.resize(
+                (image_new_width, int(round(image_new_height)))
+                )
 
             # Save modified image to in memory buffer and
             # change InMemoryUploadedFile to modified image
