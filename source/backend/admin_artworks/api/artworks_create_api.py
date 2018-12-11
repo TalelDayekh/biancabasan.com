@@ -11,8 +11,7 @@ from PIL import Image
 from .serializers import (
     ArtworkTitlesSerializer,
     ArtworkDetailsSerializer,
-    ArtworkImagesSerializer,
-    AddImagesSerializer, # !! REMOVE !!
+    ArtworkImagesCreateSerializer,
 )
 from ..models import (
     ArtworkTitles,
@@ -82,43 +81,51 @@ Add artwork images
 def artwork_add_images(request):
 
     if request.method == 'POST':
-        image_serialized = AddImagesSerializer(data = request.data)
+        # Validate image file size
+        if request.data['image'].size > 2000000:
+            return Response (
+                'Image file to large',
+                status = status.HTTP_406_NOT_ACCEPTABLE
+            )
 
-        if image_serialized.is_valid():
+        else:
+            image_serialized = ArtworkImagesCreateSerializer(data = request.data)
 
-            """
-            Image manipulation
-            """
-            image = image_serialized.validated_data['image']
-            image_title = str(image)
+            if image_serialized.is_valid():
 
-            # Load image from file
-            image_file = Image.open(image_serialized.validated_data['image'])
+                """
+                Image manipulation
+                """
+                image = image_serialized.validated_data['image']
+                image_title = str(image)
 
-            # Modify image
-            image_width, image_height = image_file.size
-            image_new_width = 1024
-            image_new_height = (image_height/image_width) * image_new_width
-            modified_image = image_file.resize(
-                (image_new_width, int(round(image_new_height)))
+                # Load image from file
+                image_file = Image.open(image_serialized.validated_data['image'])
+
+                # Modify image
+                image_width, image_height = image_file.size
+                image_new_width = 1024
+                image_new_height = (image_height/image_width) * image_new_width
+                modified_image = image_file.resize(
+                    (image_new_width, int(round(image_new_height)))
+                    )
+
+                # Save modified image to in memory buffer and
+                # change InMemoryUploadedFile to modified image
+                buffer = BytesIO()
+                modified_image.save(buffer, format = 'JPEG', quality = 10)
+                image_serialized.validated_data['image'] = InMemoryUploadedFile(
+                    buffer,
+                    None,
+                    image_title,
+                    None,
+                    None,
+                    None
                 )
 
-            # Save modified image to in memory buffer and
-            # change InMemoryUploadedFile to modified image
-            buffer = BytesIO()
-            modified_image.save(buffer, format = 'JPEG', quality = 10)
-            image_serialized.validated_data['image'] = InMemoryUploadedFile(
-                buffer,
-                None,
-                image_title,
-                None,
-                None,
-                None
-            )
+                image_serialized.save()
 
-            image_serialized.save()
-
-            return Response (
-                image_serialized.data,
-                status = status.HTTP_201_CREATED
-            )
+                return Response (
+                    image_serialized.data,
+                    status = status.HTTP_201_CREATED
+                )
