@@ -10,6 +10,27 @@ from ..models import (
 )
 
 
+# Artwork images
+class ArtworkImagesListSerializer(serializers.RelatedField):
+
+    def to_representation(self, value):
+
+        image = '%s' % (value.image)
+
+        return image
+
+
+class ArtworkImagesCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ArtworkImages
+        fields = (
+            'id',
+            'title',
+            'image',
+        )
+
+
 # Artwork details
 class ArtworkDetailsSerializer(serializers.ModelSerializer):
 
@@ -17,29 +38,19 @@ class ArtworkDetailsSerializer(serializers.ModelSerializer):
         model = ArtworkDetails
         fields = (
             'id',
-            'title_id',
+            'title',
             'height',
             'width',
             'description',
         )
 
 
-# Artwork images
-class ArtworkImagesSerializer(serializers.RelatedField):
-
-    def to_representation(self, value):
-
-        image = '%s' % (value.image)
-        
-        return image
-
-
 # Artwork titles
 class ArtworkTitlesSerializer(serializers.ModelSerializer):
 
-    # Nesting serializers as fields
-    details = ArtworkDetailsSerializer(many = True, read_only = True)
-    images_list = ArtworkImagesSerializer(many = True, read_only = True)
+    # Nest serializers as fields
+    details = ArtworkDetailsSerializer()
+    images_list = ArtworkImagesListSerializer(many = True, read_only = True)
 
     class Meta:
         model = ArtworkTitles
@@ -47,6 +58,7 @@ class ArtworkTitlesSerializer(serializers.ModelSerializer):
             'id',
             'owner',
             'title',
+            # Nested fields
             'details',
             'images_list',
         )
