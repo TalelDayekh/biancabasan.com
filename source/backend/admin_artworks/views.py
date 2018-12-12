@@ -1,166 +1,50 @@
 from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
-from rest_framework.decorators import (
-    api_view,
-)
-
-from rest_framework.response import (
-    Response,
-)
-
-from .serializers import (
-    ArtworkTitleSerializer,
-    ArtworkDetailsSerializer,
-)
-
-from .models import (
-    ArtworkTitle,
-    ArtworkDetails,
+from .api import(
+    artworks_list_api,
+    artworks_create_api,
+    artworks_edit_api
 )
 
 
-# Artwork titles
-@api_view(['GET', 'POST'])
-def create_title(request):
+# Artworks list
+def artworks_list(request):
 
-    """
-    Create new artwork title
-    """
-
-    if request.method == 'GET':
-        artwork_titles_list = ArtworkTitle.objects.all()
-        titles_list_serializer = ArtworkTitleSerializer(
-            artwork_titles_list,
-            many = True
-        )
-        return Response(titles_list_serializer.data)
-
-    elif request.method == 'POST':
-        title_serializer = ArtworkTitleSerializer(data = request.data)
-        current_user = request.user
-
-        if title_serializer.is_valid():
-            title_serializer.save(owner = current_user)
-            return Response(
-                title_serializer.data,
-                status = status.HTTP_201_CREATED
-                )
-        return Response(
-            title_serializer.errors, 
-            status = status.HTTP_400_BAD_REQUEST
-            )
+    all_artworks = artworks_list_api.artworks_list(request)
+    return all_artworks
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def edit_titles(request, id):
+# Artworks create
+# Create title
+def artwork_create_title(request):
 
-    """
-    Update or delete artwork titles
-    """
+    create_title = artworks_create_api.artwork_create_title(request)
+    return create_title
 
-    # Raise exception if title does not exist
-    try:
-        artwork_title = ArtworkTitle.objects.get(id = id)
-    except ArtworkTitle.DoesNotExist:
-        return Response(
-            'Unable to retrieve title with an ID of ' + str(id),
-            status = status.HTTP_400_BAD_REQUEST
-            )
-    
-    if request.method == 'GET':
-        title_serializer = ArtworkTitleSerializer(artwork_title)
-        return Response(title_serializer.data)
+# Create details
+def artwork_create_details(request, id):
 
-    elif request.method == 'PUT':
-        title_serializer = ArtworkTitleSerializer(
-            artwork_title,
-            data = request.data
-            )
+    create_details = artworks_create_api.artwork_create_details(request, id)
+    return create_details
 
-        if title_serializer.is_valid():
-            title_serializer.save()
-            return Response(
-                title_serializer.data,
-                status = status.HTTP_200_OK
-            )
-    
-    elif request.method == 'DELETE':
-        artwork_title.delete()
-        return Response(status = status.HTTP_204_NO_CONTENT)
+# Add images
+def artwork_add_images(request):
+
+    add_image = artworks_create_api.artwork_add_images(request)
+    return add_image
 
 
-# Artwork details
-@api_view(['GET', 'POST'])
-def create_details(request, id):
+# Artworks edit
+# Edit title
+def artwork_edit_title(request, id):
 
-    """
-    Create new artwork details
-    """
+    edit_title = artworks_edit_api.artwork_edit_title(request, id)
+    return edit_title
 
-    if request.method == 'GET':
-        # Only show details for the relevant artwork title
-        artwork_details = ArtworkDetails.objects.filter(title_id = id)
-        details_serializer = ArtworkDetailsSerializer(
-            artwork_details,
-            many = True
-        )
-        return Response(details_serializer.data)
-    
-    elif request.method == 'POST':
-        # Save details for a specific artwork or
-        # raise exception if details already exist
-        try:
-            ArtworkDetails.objects.get(title_id = id)
-        except ArtworkDetails.DoesNotExist:
-            details_serializer = ArtworkDetailsSerializer(data = request.data)
+# Edit details
+def artwork_edit_details(request, id):
 
-            if details_serializer.is_valid():
-                details_serializer.save(title_id = id)
-        else:
-            # Retrieve and display artwork title in exception message
-            artwork_title = ArtworkTitle.objects.get(id = id)
-
-            return Response(
-                ('Unable to create new details for '
-                + artwork_title.title
-                + ', details already exist'),
-                status = status.HTTP_409_CONFLICT
-            )
-
-
-@api_view(['GET', 'PUT', 'DELETE'])
-def edit_details(request, id):
-
-    """
-    Update or delete artwork details
-    """
-
-    # Raise exception id details do not exist
-    try:
-        artwork_details = ArtworkDetails.objects.get(title_id = id)
-    except ArtworkDetails.DoesNotExist:
-        return Response(
-            'Unable to retrieve details for ID ' + str(id),
-            status = status.HTTP_400_BAD_REQUEST
-            )
-
-    if request.method == 'GET':
-        details_serializer = ArtworkDetailsSerializer(artwork_details)
-        return Response(details_serializer.data)
-    
-    elif request.method == 'PUT':
-        details_serializer = ArtworkDetailsSerializer(
-            artwork_details,
-            data = request.data
-        )
-
-        if details_serializer.is_valid():
-            details_serializer.save()
-            return Response(
-                details_serializer.data,
-                status = status.HTTP_200_OK
-            )
-
-    elif request.method == 'DELETE':
-        artwork_details.delete()
-        return Response(status = status.HTTP_204_NO_CONTENT)
+    edit_details = artworks_edit_api.artwork_edit_details(request, id)
+    return edit_details
