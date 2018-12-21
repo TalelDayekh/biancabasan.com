@@ -33,8 +33,12 @@ class ArtworkTitles(models.Model):
 Artwork details
 """
 class ArtworkDetails(models.Model):
+    year_from = models.IntegerField(blank = True, null = True)
+    year_to = models.IntegerField()
+    material = models.CharField(max_length = 500)
     height = models.FloatField()
     width = models.FloatField()
+    depth = models.FloatField(blank = True, null = True)
     description = models.TextField()
     date_added = models.DateTimeField(auto_now_add = True)
 

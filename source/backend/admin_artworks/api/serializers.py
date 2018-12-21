@@ -39,8 +39,12 @@ class ArtworkDetailsSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'title',
+            'year_from',
+            'year_to',
+            'material',
             'height',
             'width',
+            'depth',
             'description',
         )
 
