@@ -11,11 +11,11 @@ from PIL import Image
 from .serializers import (
     ArtworkTitlesSerializer,
     ArtworkDetailsSerializer,
-    ArtworkImagesCreateSerializer,
+    ArtworkImagesCreateSerializer
 )
 from ..models import (
     ArtworkTitles,
-    ArtworkDetails,
+    ArtworkDetails
 )
 
 
@@ -26,19 +26,22 @@ Create artwork titles
 def artwork_create_title(request):
 
     if request.method == 'POST':
-        title_serialized = ArtworkTitlesSerializer(data = request.data)
+        title_serialized = ArtworkTitlesSerializer(
+            data = request.data,
+            partial = True
+        )
 
         if title_serialized.is_valid():
             title_serialized.save()
 
             return Response(
                 title_serialized.data,
-                status = status.HTTP_201_CREATED,
-                )
+                status = status.HTTP_201_CREATED
+            )
         
         return Response(
             title_serialized.errors,
-            status = status.HTTP_400_BAD_REQUEST,
+            status = status.HTTP_400_BAD_REQUEST
         )
 
 
@@ -46,30 +49,23 @@ def artwork_create_title(request):
 Create artwork details
 """
 @api_view(['POST'])
-def artwork_create_details(request, id):
+def artwork_create_details(request):
 
     if request.method == 'POST':
-        # Add details to a specific artwork or raise
-        # exception if details already exist
-        try:
-            ArtworkDetails.objects.get(title_id = id)
+        details_serialized = ArtworkDetailsSerializer(data = request.data)
 
-        except ArtworkDetails.DoesNotExist:
-            details_serialized = ArtworkDetailsSerializer(data = request.data)
-
-            if details_serialized.is_valid():
-                details_serialized.save(title_id = id)
-    
-        else:
-            # Retrieve and display artwork title in exception message
-            artwork_title = ArtworkTitles.objects.get(id = id)
+        if details_serialized.is_valid():
+            details_serialized.save()
 
             return Response(
-                ('Unable to create new details for '
-                + artwork_title.title
-                + ', details already exist'),
-                status = status.HTTP_409_CONFLICT
+                details_serialized.data,
+                status = status.HTTP_201_CREATED
             )
+
+        return Response(
+            details_serialized.errors,
+            status = status.HTTP_400_BAD_REQUEST
+        )
 
 
 """
@@ -92,7 +88,6 @@ def artwork_add_images(request):
             image_serialized = ArtworkImagesCreateSerializer(data = request.data)
 
             if image_serialized.is_valid():
-
                 """
                 Image manipulation
                 """
@@ -103,6 +98,7 @@ def artwork_add_images(request):
                 image_file = Image.open(image_serialized.validated_data['image'])
 
                 # Modify image
+                # Resize proportionally
                 image_width, image_height = image_file.size
                 image_new_width = 1024
                 image_new_height = (image_height/image_width) * image_new_width
@@ -124,7 +120,7 @@ def artwork_add_images(request):
                 )
 
                 image_serialized.save()
-
+                
                 return Response (
                     image_serialized.data,
                     status = status.HTTP_201_CREATED

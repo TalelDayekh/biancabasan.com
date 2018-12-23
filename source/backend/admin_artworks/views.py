@@ -1,8 +1,4 @@
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-
-from .api import(
+from .api import (
     artworks_list_api,
     artworks_create_api,
     artworks_edit_api
@@ -24,9 +20,9 @@ def artwork_create_title(request):
     return create_title
 
 # Create details
-def artwork_create_details(request, id):
+def artwork_create_details(request):
 
-    create_details = artworks_create_api.artwork_create_details(request, id)
+    create_details = artworks_create_api.artwork_create_details(request)
     return create_details
 
 # Add images
