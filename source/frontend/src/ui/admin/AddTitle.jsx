@@ -14,22 +14,22 @@ import { SaveButton, BackButton } from '../elements/Buttons';
 
 
 const headingStyle = {
-    marginTop: '230px',
+    marginTop: '160px'
 }
 
-const titleInputStyle = {
-    marginTop: '55px',
+const inputContainer = {
+    display: 'flex',
+    marginTop: '55px'
 }
 
 const saveButtonStyle = {
     float: 'left',
-    marginTop: '22px',
+    marginTop: '22px'
 }
 
 const backButtonStyle = {
     float: 'left',
-    marginTop: '22px',
-    marginLeft: '10px',
+    margin: '22px 0px 0px 10px'
 }
 
 
@@ -38,53 +38,61 @@ class AddTitle extends Component {
     state = {
         toAddDetails: false,
         title: "",
-        artworkObjectId: "",
+        artworkObjectId: ""
     }
+
+
+    // Variable for input field placeholder
+    title = "Title*"
 
 
     render = () => {
 
-        // If true, redirect to AddDetails component
-        // and pass the state with id for the newly
-        // created artwork object
+        // Redirect to AddDetails component and pass state
+        // with id for the newly created artwork object
         if (this.state.toAddDetails === true) {
-            return <Redirect to={{
+            return <Redirect to = {{
                 pathname: "/admin/add_details",
                 state: { artworkObjectId: this.state.artworkObjectId }
             }} />
         }
 
+
         return(
             <AdminContentWrapper>
                 {/* Heading */}
-                <div>
-                    <AdminHeading style={ headingStyle }>
-                        Did you make a new piece? Cool! What's it called?
-                    </AdminHeading>
-                </div>
+                <AdminHeading style = { headingStyle }>
+                    Did you make a new piece? Cool! What's it called?
+                </AdminHeading>
 
-                <form onSubmit={ this.createTitle }>
+                <form onSubmit = { this.createTitle }>
                     {/* Input field */}
-                    <LongInputField
-                        name="Title"
-                        placeholder="Title" 
-                        style={ titleInputStyle }
-                        onFocus={(event) => { event.target.placeholder = "" }}
-                        onBlur={(event) => { event.target.placeholder = event.target.name }}
-                        onChange={ this.updateTitleState }
-                        value={ this.state.title }
-                    />
+                    {/* Title */}
+                    <div style = { inputContainer }>
+                        <LongInputField
+                            size = "1"
+                            placeholder = { this.title }
+                            onFocus = { this.clearPlaceholder }
+                            onBlur = { (event) => event.target.placeholder = this.title }
+                            value = { this.state.title }
+                            onChange = { this.updateTitleState }
+                        />
+                    </div>
 
                     {/* Buttons */}
-                    <SaveButton style={ saveButtonStyle } type="submit">Save</SaveButton>
-                    <Link to="/admin/">
-                        <BackButton style={ backButtonStyle }>Back</BackButton>
+                    <SaveButton style = { saveButtonStyle } type = "submit">Save</SaveButton>
+                    <Link to = "/admin/">
+                        <BackButton style = { backButtonStyle }>Back</BackButton>
                     </Link>
                 </form>
             </AdminContentWrapper>
         )
     }
 
+
+    clearPlaceholder = (event) => {
+        event.target.placeholder = ""
+    }
 
     updateTitleState = (event) => {
         this.setState({
