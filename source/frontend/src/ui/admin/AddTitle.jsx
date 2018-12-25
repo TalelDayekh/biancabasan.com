@@ -90,15 +90,17 @@ class AddTitle extends Component {
     }
 
     createTitle = (event) => {
-        axios.post('http://localhost:8000/admin_artworks/add_title/', {
-            owner: "1", // !! REMOVE HARD CODED OWNER !!
-            title: this.state.title
-        }).then(response => {
-            this.setState({
-                artworkObjectId: response.data.id,
-                toAddDetails: true
-            })
-        });
+        if (this.state.incorrectInput === false) {
+            axios.post('http://localhost:8000/admin_artworks/add_title/', {
+                owner: "1", // !! REMOVE HARD CODED OWNER !!
+                title: this.state.title
+            }).then(response => {
+                this.setState({
+                    artworkObjectId: response.data.id,
+                    toAddDetails: true
+                })
+            });
+        };
         event.preventDefault();
     }
 
