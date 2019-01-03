@@ -52,7 +52,10 @@ Create artwork details
 def artwork_create_details(request):
 
     if request.method == 'POST':
-        details_serialized = ArtworkDetailsSerializer(data = request.data)
+        details_serialized = ArtworkDetailsSerializer(
+            data = request.data,
+            partial = True
+        )
 
         if details_serialized.is_valid():
             details_serialized.save()
