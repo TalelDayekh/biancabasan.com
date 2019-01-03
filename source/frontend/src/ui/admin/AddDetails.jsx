@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 import './Admin.css';
 import {
     AdminContentWrapper,
@@ -15,6 +16,7 @@ import {
 class AddDetails extends Component {
 
     state = {
+        artworkObjectId: this.props.location.state.artworkObjectId,
         yearFrom: "",
         yearTo: "",
         material: "",
@@ -23,7 +25,9 @@ class AddDetails extends Component {
         depth: "",
         description: "",
         // Input errors
-        incorrectInput: new Set()
+        incorrectInput: new Set(),
+        // Redirect
+        toAddImages: false
     }
 
     // Variables for input field placeholders
@@ -37,6 +41,16 @@ class AddDetails extends Component {
 
 
     render = () => {
+        // Redirect to AddImages component
+        // and pass artwork object id
+        if (this.state.toAddImages === true) {
+            return <Redirect to = {{
+                pathname: "/admin/add_images/",
+                state: { artworkObjectId: this.state.artworkObjectId }
+            }} />
+        }
+
+
         return(
             <AdminContentWrapper>
                 {/* Heading */}
@@ -44,10 +58,10 @@ class AddDetails extends Component {
                     Add some specs and describe your work a bit
                 </AdminHeading>
 
-                <form>
+                <form onSubmit = { this.createDetails }>
                     {/* Input fields */}
                     {/* Years */}
-                    <div className = "years-flex-container">
+                    <div className = "top-input-flex-container">
                         <ShortInputField
                             id = "yearFrom"
                             name = "years"
@@ -147,7 +161,7 @@ class AddDetails extends Component {
                     </div>
 
                     {/* Buttons */}
-                    <SaveButton>Save</SaveButton>
+                    <SaveButton type="submit">Save</SaveButton>
                     <BackButton>Back</BackButton>
                 </form>
             </AdminContentWrapper>
@@ -198,6 +212,26 @@ class AddDetails extends Component {
                 event.target.placeholder = "PLACEHOLDER TEXT"
             }
         }
+    }
+
+    createDetails = (event) => {
+        if (this.state.incorrectInput.size === 0) {
+            axios.post('http://localhost:8000/admin_artworks/add_details/', {
+                title: this.state.artworkObjectId,
+                year_from: this.state.yearFrom,
+                year_to: this.state.yearTo,
+                material: this.state.material,
+                height: this.state.height,
+                width: this.state.width,
+                depth: this.state.depth,
+                description: this.state.description
+            }).then(() => {
+                this.setState({
+                    toAddImages: true
+                })
+            });
+        };
+        event.preventDefault();
     }
 
 }
