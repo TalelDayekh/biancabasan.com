@@ -61,7 +61,7 @@ class AddTitle extends Component {
                     </div>
 
                     {/* Buttons */}
-                    <SaveButton type = "submit">Save</SaveButton>
+                    <SaveButton type="submit">Save</SaveButton>
                     <BackButton>Back</BackButton>
                 </form>
             </AdminContentWrapper>
