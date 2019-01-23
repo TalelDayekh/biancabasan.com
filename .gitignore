@@ -1,13 +1,17 @@
 # Ignore all
 /*
 
+
 # Except theses committed directories and files
+
 # Design directory and files
 !/design/
 
 
+# Source code
 !/source/
 /source/*
+
 # Backend directories and files
 !/source/backend/
 /source/backend/*
