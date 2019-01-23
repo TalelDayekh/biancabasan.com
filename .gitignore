@@ -1,24 +1,33 @@
-# BACKEND
-# Committed directories
-source/backend/*
-source/backend/admin_artworks/*
-!source/backend/admin_artworks/
+# Ignore all
+/*
 
-# Committed files
-!source/backend/admin_artworks/models.py
-!source/backend/admin_artworks/serializers.py
-!source/backend/admin_artworks/views.py
-!source/backend/admin_artworks/urls.py
+# Except theses committed directories and files
+# Design directory and files
+!/design/
 
 
-# FRONTEND
-# Committed directories
-source/frontend/*
-source/frontend/src/*
-!source/frontend/src/
-source/frontend/src/admin_views/*
-!source/frontend/src/admin_views/
+!/source/
+/source/*
+# Backend directories and files
+!/source/backend/
+/source/backend/*
 
-# Committed files
-!source/frontend/src/App.js
-!source/frontend/src/admin_views/AddDetails.js
+!/source/backend/admin_artworks/
+/source/backend/admin_artworks/*
+
+!/source/backend/admin_artworks/api/
+
+
+# Frontend directories and files
+!/source/frontend/
+/source/frontend/*
+
+!/source/frontend/src/
+/source/frontend/src/*
+
+!/source/frontend/src/App.js
+!/source/frontend/src/App.css
+!/source/frontend/src/store.jsx
+!/source/frontend/src/actions/
+!/source/frontend/src/reducers/
+!/source/frontend/src/ui/
