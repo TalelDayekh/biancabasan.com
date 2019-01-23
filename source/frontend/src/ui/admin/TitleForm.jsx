@@ -15,6 +15,9 @@ import {
 
 class TitleForm extends Component {
 
+    // Variable for input field placeholder
+    title="Title*"
+
     render = () => {
         return(
             <React.Fragment>
@@ -23,10 +26,10 @@ class TitleForm extends Component {
                         <LongInputField
                             id="SET_TITLE"
                             size="1"
-                            placeholder=""
+                            placeholder={ this.title }
                             // onFocus = ""
                             // onBlur = ""
-                            defaultValue=""
+                            defaultValue={ this.props.retrieveArtwork.title }
                             onChange={ (e) => { this.props.setArtwork(e) } }
                             raiseError=""
                         />
@@ -48,6 +51,12 @@ class TitleForm extends Component {
 }
 
 
+const mapStateToProps = (state) => {
+    return {
+        retrieveArtwork: state.Artwork
+    }
+}
+
 const mapDispatchToProps = (dispatch) => {
     return {
         setArtwork: (e) => {
@@ -57,4 +66,4 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 
-export default connect(null, mapDispatchToProps)(TitleForm);
+export default connect(mapStateToProps, mapDispatchToProps)(TitleForm);

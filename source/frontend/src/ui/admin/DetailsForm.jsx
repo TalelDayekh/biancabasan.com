@@ -17,6 +17,15 @@ import {
 
 class DetailsForm extends Component {
 
+    // Variables for input field placeholders
+    yearFrom="Created between YYYY*"
+    yearTo="and YYYY*"
+    material="Materials*"
+    height="Height*"
+    width="Width*"
+    depth="Depth"
+    description="Description*"
+
     render = () => {
         return(
             <React.Fragment>
@@ -25,20 +34,20 @@ class DetailsForm extends Component {
                         <ShortInputField
                             id="SET_YEAR_FROM"
                             size="1"
-                            placeholer=""
+                            placeholder={ this.yearFrom }
                             // onFocus = {}
                             // onBlur = {}
-                            defaultValue=""
+                            defaultValue={ this.props.retrieveArtwork.yearFrom }
                             onChange={ (e) => { this.props.setArtwork(e) } }
                         />
                         <div className="spacer-div-middle"/>
                         <ShortInputField
                             id="SET_YEAR_TO"
                             size="1"
-                            placeholer=""
+                            placeholder={ this.yearTo }
                             // onFocus = {}
                             // onBlur = {}
-                            defaultValue=""
+                            defaultValue={ this.props.retrieveArtwork.yearTo }
                             onChange={ (e) => { this.props.setArtwork(e) } }
                             raiseError=""
                         />
@@ -47,10 +56,10 @@ class DetailsForm extends Component {
                         <LongInputField
                             id="SET_MATERIAL"
                             size="1"
-                            placeholder=""
+                            placeholder={ this.material }
                             // onFocus = {}
                             // onBlur = {}
-                            defaultValue=""
+                            defaultValue={ this.props.retrieveArtwork.material }
                             onChange={ (e) => { this.props.setArtwork(e) } }
                             raiseError=""
                         />
@@ -59,10 +68,10 @@ class DetailsForm extends Component {
                         <ShortInputField
                             id="SET_HEIGHT"
                             size="1"
-                            placeholder=""
+                            placeholder={ this.height }
                             // onFocus = {}
                             // onBlur = {}
-                            defaultValue=""
+                            defaultValue={ this.props.retrieveArtwork.height }
                             onChange={ (e) => { this.props.setArtwork(e) } }
                             raiseError=""
                         />
@@ -72,10 +81,10 @@ class DetailsForm extends Component {
                         <ShortInputField
                             id="SET_WIDTH"
                             size="1"
-                            placeholder=""
+                            placeholder={ this.width }
                             // onFocus = {}
                             // onBlur = {}
-                            defaultValue=""
+                            defaultValue={ this.props.retrieveArtwork.width }
                             onChange={ (e) => { this.props.setArtwork(e) } }
                             raiseError=""
                         />
@@ -85,10 +94,10 @@ class DetailsForm extends Component {
                         <ShortInputField
                             id="SET_DEPTH"
                             size="1"
-                            placeholder=""
+                            placeholder={ this.depth }
                             // onFocus = {}
                             // onBlur = {}
-                            defaultValue=""
+                            defaultValue={ this.props.retrieveArtwork.depth }
                             onChange={ (e) => { this.props.setArtwork(e) } }
                         />
                         <div className="spacer-div-right"/>
@@ -97,7 +106,7 @@ class DetailsForm extends Component {
                         <TextField
                             id="SET_DESCRIPTION"
                             size="1"
-                            placeholder=""
+                            placeholder={ this.description }
                             // onFocus = {}
                             // onBlur = {}
                             defaultValue={ this.props.retrieveArtwork.description }
