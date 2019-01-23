@@ -1,61 +1,52 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+// React Router
+import { Redirect } from 'react-router-dom';
+// Local imports
 import DetailsForm from './DetailsForm.jsx';
 import {
-    AdminContentWrapper,
-    AdminHeading
-} from '../elements/';
+    AdminContentWrapper
+} from '../layouts/';
 
 
 class AdminDetails extends Component {
 
     state = {
-        // Retrieved data
-        retrievedDetails: {},
-        // Toggle edit mode
-        editDetailsMode: false
+        // Redirect
+        toAdminTitle: false,
+        toAdminImages: false
     }
 
-
-    componentDidMount = () => {
-        axios.get('http://localhost:8000/admin_artworks/artworks_list/').then(res => {
-            // If artwork object exist and details
-            // for that very same object exist go
-            // ahead and save details to state
-            let retrievedArtworkObject = null
-            let retrievedArtworkObjectDetails = null
-            let detailsObject = null
-
-            if (retrievedArtworkObject = res.data.find((artworkObject) => artworkObject.id === 38)) {
-                retrievedArtworkObjectDetails = retrievedArtworkObject.details
-
-                if (retrievedArtworkObjectDetails.title === 38) {
-                    detailsObject = Object.assign({}, retrievedArtworkObjectDetails);
-                    delete detailsObject.id;
-                    delete detailsObject.title;
-                    this.setState({
-                        retrievedDetails: detailsObject,
-                        editDetailsMode: true
-                    })
-                }
-            }
-        })
-    }
 
     render = () => {
+        if (this.state.toAdminImages === true) {
+            return <Redirect to="/admin/admin_images/"/>
+        }
+
+        if (this.state.toAdminTitle === true) {
+            return <Redirect to="/admin/admin_title/"/>
+        }
+
         return(
             <AdminContentWrapper>
-                {/* Heading */}
-                <AdminHeading>
-                    Add some specs and describe your work a bit
-                </AdminHeading>
-
-                {/* Details form */}
                 <DetailsForm
-                    retrievedDetails = { this.state.retrievedDetails }
+                    redirect={ this.redirect }
                 />
             </AdminContentWrapper>
         )
+    }
+
+
+    redirect = (e) => {
+        if (e.target.id === "next") {
+            this.setState({
+                toAdminImages: true
+            })
+        };
+        if (e.target.id === "back") {
+            this.setState({
+                toAdminTitle: true
+            })
+        }
     }
 }
 

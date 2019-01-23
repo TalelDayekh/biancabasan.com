@@ -1,0 +1,18 @@
+/* Admin */
+.top-input-flex-container {
+    display: flex;
+    margin-top: 55px;
+}
+
+.input-flex-container {
+    display: flex;
+    margin-top: 28px;
+}
+
+.spacer-div-middle {
+    flex: 0 0 3.904%;
+}
+
+.spacer-div-right {
+    flex: 0 0 51.95%;
+}
