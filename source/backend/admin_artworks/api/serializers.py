@@ -1,43 +1,43 @@
-"""
-admin_artworks serializers
-"""
 from rest_framework import serializers
-
-from ..models import (
-    ArtworkTitles,
-    ArtworkDetails,
-    ArtworkImages,
+from ..models import(
+    ArtworkInfo,
+    ArtworkImages
 )
 
 
+"""
+admin_artworks serializers
+"""
 # Artwork images
+# Serialize a list with image titles
+# to nest in artwork info serializer
 class ArtworkImagesListSerializer(serializers.RelatedField):
-
     def to_representation(self, value):
-
-        image = '%s' % (value.image)
-
+        image = "{}".format(value.image)
         return image
 
-
 class ArtworkImagesCreateSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = ArtworkImages
         fields = (
             'id',
-            'title',
-            'image',
+            'artwork_info',
+            'image'
         )
 
 
-# Artwork details
-class ArtworkDetailsSerializer(serializers.ModelSerializer):
+# Artwork
+# Serialize all info together with
+# all images for an artwork object
+class ArtworkSerializer(serializers.ModelSerializer):
+    # Nest images serializer as field
+    images_list = ArtworkImagesListSerializer(many=True, read_only=True)
 
     class Meta:
-        model = ArtworkDetails
+        model = ArtworkInfo
         fields = (
             'id',
+            'owner',
             'title',
             'year_from',
             'year_to',
@@ -46,23 +46,6 @@ class ArtworkDetailsSerializer(serializers.ModelSerializer):
             'width',
             'depth',
             'description',
-        )
-
-
-# Artwork titles
-class ArtworkTitlesSerializer(serializers.ModelSerializer):
-
-    # Nest serializers as fields
-    details = ArtworkDetailsSerializer()
-    images_list = ArtworkImagesListSerializer(many = True, read_only = True)
-
-    class Meta:
-        model = ArtworkTitles
-        fields = (
-            'id',
-            'owner',
-            'title',
-            # Nested fields
-            'details',
-            'images_list',
+            # Nested field
+            'images_list'
         )
