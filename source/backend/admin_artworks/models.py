@@ -3,89 +3,60 @@ from django.conf import settings
 
 
 """
-Artwork title
+Artwork info
 """
-class ArtworkTitles(models.Model):
-    title = models.CharField(max_length = 200)
-    date_added = models.DateTimeField(auto_now_add = True)
-
-    # ForeignKey relation
-    owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete = models.CASCADE,
-    )
-
-    class Meta:
-        verbose_name_plural = 'titles'
-
-    def __str__(self):
-        return (
-            'ID: '
-            + str(self.id)
-            + ' Title: '
-            + self.title
-            + ' Owner: '
-            + str(self.owner)
-        )
-
-
-"""
-Artwork details
-"""
-class ArtworkDetails(models.Model):
-    year_from = models.IntegerField(blank = True, null = True)
+class ArtworkInfo(models.Model):
+    title = models.CharField(max_length=200)
+    year_from = models.IntegerField(blank=True, null=True)
     year_to = models.IntegerField()
-    material = models.CharField(max_length = 500)
+    material = models.CharField(max_length=500)
     height = models.FloatField()
     width = models.FloatField()
-    depth = models.FloatField(blank = True, null = True)
+    depth = models.FloatField(blank=True, null=True)
     description = models.TextField()
-    date_added = models.DateTimeField(auto_now_add = True)
+    date_added = models.DateTimeField(auto_now_add=True)
 
-    # OneToOne relation
-    title = models.OneToOneField(
-        ArtworkTitles,
-        related_name = 'details',
-        on_delete = models.CASCADE,
+    # ForeignKey relation to user
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
     )
 
     class Meta:
-        verbose_name_plural = 'details'
+        verbose_name_plural = 'Artwork Info'
 
     def __str__(self):
-        return (
+        return(
             'ID: '
             + str(self.id)
-            + ' Title-ID: '
-            + str(self.title.id)
-            + ' Description: '
-            + self.description
+            + ' ARTWORK TITLE '
+            + self.title
         )
 
 
 """
-Artwork Images
+Artwork images
 """
 class ArtworkImages(models.Model):
-    image = models.ImageField(upload_to = 'images')
-    date_added = models.DateTimeField(auto_now_add = True)
+    image = models.ImageField(upload_to='images')
+    date_added = models.DateTimeField(auto_now_add=True)
 
-    # ForeignKey relation
-    title = models.ForeignKey(
-        ArtworkTitles,
-        related_name = 'images_list',
-        on_delete = models.CASCADE,
+    # ForeignKey relation to artwork info
+    artwork_info = models.ForeignKey(
+        ArtworkInfo,
+        related_name="images_list",
+        on_delete=models.CASCADE
     )
 
     class Meta:
-        verbose_name_plural = 'images'
+        verbose_name_plural = 'Images'
     
     def __str__(self):
-        return (
-            'ID: '
+        return(
+            'FOREIGN KEY ID: '
+            + str(self.artwork_info.id)
+            + ' ID: '
             + str(self.id)
-            + ' Title-ID: '
-            + str(self.title.id)
-            + ' Image: '
+            + ' IMAGE: '
             + str(self.image)
         )
