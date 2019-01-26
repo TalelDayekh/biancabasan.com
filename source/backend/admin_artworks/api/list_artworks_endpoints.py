@@ -20,7 +20,6 @@ def artworks_list(request):
             querylist,
             many=True
         )
-
         return Response(
             serialized_querylist.data,
             status=status.HTTP_200_OK
