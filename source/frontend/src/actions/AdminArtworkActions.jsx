@@ -1,6 +1,6 @@
-export function setArtwork(id, title) {
+export function setArtwork(input_id, input_data) {
     return {
-        type: id,
-        payload: title
+        type: input_id,
+        payload: input_data
     };
 }
