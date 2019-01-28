@@ -8,7 +8,7 @@ const defaultState = {
     width: "",
     depth: "",
     description: "",
-    imageList: null
+    imageList: []
 }
 
 const Artwork = (state = defaultState, action) => {
@@ -61,8 +61,26 @@ const Artwork = (state = defaultState, action) => {
         case 'UPLOAD_IMAGES':
             return state = {
                 ...state,
-                imageList: action.payload
+                imageList: [...state.imageList, ...action.payload]
+            };
+
+        // !! FIND NEATER SOLUTION !!
+        case 'RESET_ARTWORK_STATE':
+            return state = {
+                ...state,
+                artworkObjectId: "",
+                title: "",
+                yearFrom: "",
+                yearTo: "",
+                material: "",
+                height: "",
+                width: "",
+                depth: "",
+                description: "",
+                imageList: []
             }
+
+
         default:
             return state;
     }
