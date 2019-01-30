@@ -21,10 +21,10 @@ class AdminDetails extends Component {
     }
     render = () => {
         if (this.props.redirect.toAdminImages === true) {
-            return <Redirect to="/admin/admin_images/"/>
+            return <Redirect push to="/admin/admin_images/"/>
         }
         if (this.props.redirect.toAdminTitle === true) {
-            return <Redirect to="/admin/admin_title/"/>
+            return <Redirect push to="/admin/admin_title/"/>
         }
 
         return(
