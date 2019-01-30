@@ -19,7 +19,6 @@ class AdminImages extends Component {
     componentDidMount = () => {
         this.props.resetRedirect();
     }
-
     render = () => {
         if (this.props.redirect.toAdminMain === true) {
             return <Redirect to="/admin/"/>
@@ -53,7 +52,6 @@ const mapStateToProps = (state) => {
         redirect: state.Redirect
     }
 }
-
 const mapDispatchToProps = (dispatch) => {
     return {
         resetRedirect: () => { dispatch(resetRedirect()) },

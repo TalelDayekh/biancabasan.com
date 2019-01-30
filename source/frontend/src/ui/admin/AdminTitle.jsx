@@ -19,7 +19,6 @@ class AdminTitle extends Component {
     componentDidMount = () => {
         this.props.resetRedirect()
     }
-
     render = () => {
         if (this.props.redirect.toAdminDetails === true) {
             return <Redirect to="/admin/admin_details/"/>
@@ -54,7 +53,6 @@ const mapStateToProps = (state) => {
         redirect: state.Redirect
     }
 }
-
 const mapDispatchToProps = (dispatch) => {
     return {
         resetRedirect: () => { dispatch(resetRedirect()) },
