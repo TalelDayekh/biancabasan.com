@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
+// Redux
+import { connect } from 'react-redux';
 // React Router
 import { Redirect } from 'react-router-dom';
 // Local imports
+import {
+    toggleRedirect,
+    resetRedirect
+} from '../../actions/'
 import DetailsForm from './DetailsForm.jsx';
 import {
     AdminContentWrapper
@@ -10,19 +16,15 @@ import {
 
 class AdminDetails extends Component {
 
-    state = {
-        // Redirect
-        toAdminTitle: false,
-        toAdminImages: false
+    componentDidMount = () => {
+        this.props.resetRedirect();
     }
 
-
     render = () => {
-        if (this.state.toAdminImages === true) {
+        if (this.props.redirect.toAdminImages === true) {
             return <Redirect to="/admin/admin_images/"/>
         }
-
-        if (this.state.toAdminTitle === true) {
+        if (this.props.redirect.toAdminTitle === true) {
             return <Redirect to="/admin/admin_title/"/>
         }
 
@@ -37,18 +39,30 @@ class AdminDetails extends Component {
 
 
     redirect = (e) => {
-        if (e.target.id === "next") {
-            this.setState({
-                toAdminImages: true
-            })
+        if (e.target.id === 'next') {
+            this.props.toggleRedirect('ADMIN_IMAGES')
         };
-        if (e.target.id === "back") {
-            this.setState({
-                toAdminTitle: true
-            })
+        if (e.target.id === 'back') {
+            this.props.toggleRedirect('ADMIN_TITLE')
         }
     }
 }
 
 
-export default AdminDetails;
+const mapStateToProps = (state) => {
+    return {
+        redirect: state.Redirect
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        resetRedirect: () => { dispatch(resetRedirect()) },
+        toggleRedirect: (redirect_id) => {
+            dispatch(toggleRedirect(redirect_id))
+        }
+    }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(AdminDetails);
