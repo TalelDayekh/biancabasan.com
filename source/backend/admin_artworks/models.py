@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import User
 
 
 """
@@ -18,7 +19,8 @@ class ArtworkInfo(models.Model):
 
     # ForeignKey relation to user
     owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        User,
+        related_name="artworks",
         on_delete=models.CASCADE
     )
 
@@ -29,8 +31,10 @@ class ArtworkInfo(models.Model):
         return(
             'ID: '
             + str(self.id)
-            + ' ARTWORK TITLE '
+            + ' ARTWORK TITLE: '
             + self.title
+            + ' USER: '
+            + str(self.owner)
         )
 
 

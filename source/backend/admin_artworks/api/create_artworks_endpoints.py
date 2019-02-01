@@ -23,7 +23,7 @@ def create_artwork_info(request):
         )
 
         if serialized_artwork_info.is_valid():
-            serialized_artwork_info.save()
+            serialized_artwork_info.save(owner=request.user)
             return Response(
                 serialized_artwork_info.data,
                 status=status.HTTP_201_CREATED
@@ -51,7 +51,7 @@ def add_artwork_images(request):
                 'Image file is to large',
                 status=status.HTTP_406_NOT_ACCEPTABLE
             )
-
+        
         else:
             serialized_artwork_image = ArtworkImagesCreateSerializer(
                 data=request.data
@@ -61,13 +61,13 @@ def add_artwork_images(request):
                 Image manipulation
                 """
                 image = serialized_artwork_image.validated_data['image']
-                
+
                 # Retrieve image file and image title
                 image_title = str(image)
                 image_file = Image.open(image)
 
                 # Modify image
-                # Resize image and keep proportions
+                # Resize image and maintain proportions
                 image_width, image_height = image_file.size
                 image_new_width = 1024
                 image_new_height = (image_height/image_width) * image_new_width
@@ -77,7 +77,11 @@ def add_artwork_images(request):
                 # Save modified image to in memory buffer and change the
                 # previously InMemoryUploadedFile to the newly modified image
                 buffer = BytesIO()
-                modified_image.save(buffer, format='JPEG', quality=10)
+                modified_image.save(
+                    buffer,
+                    format='JPEG',
+                    quality=10
+                    )
                 serialized_artwork_image.validated_data['image'] = InMemoryUploadedFile(
                     buffer,
                     None,
@@ -89,5 +93,5 @@ def add_artwork_images(request):
                 serialized_artwork_image.save()
                 return Response(
                     serialized_artwork_image.data,
-                    status=status.HTTP_200_CREATED
+                    status=status.HTTP_201_CREATED
                 )

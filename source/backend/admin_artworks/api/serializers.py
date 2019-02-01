@@ -32,6 +32,8 @@ class ArtworkImagesCreateSerializer(serializers.ModelSerializer):
 class ArtworkSerializer(serializers.ModelSerializer):
     # Nest images serializer as field
     images_list = ArtworkImagesListSerializer(many=True, read_only=True)
+    # Display owner with username instead of id
+    owner = serializers.ReadOnlyField(source='owner.username')
 
     class Meta:
         model = ArtworkInfo
