@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
-// Redux
-import { connect } from 'react-redux';
 // Local imports
 import '../../App.css';
-import {
-    setArtwork,
-    createArtwork
-} from '../../actions/';
 import {
     ImageDropZone,
     NextButton
@@ -22,7 +16,7 @@ class ImagesForm extends Component {
                     <ImageDropZone
                         id="UPLOAD_IMAGES"
                         onDragOver={ this.fileDropHover }
-                        onDrop={ (e) => { this.props.setArtwork(e)} }
+                        onDrop={ (e) => { this.props.uploadArtworkImages(e) } }
                     />
                 </div>
                 <NextButton onClick={ this.props.createArtwork }>Save</NextButton>
@@ -37,22 +31,4 @@ class ImagesForm extends Component {
 }
 
 
-const mapStateToProps = (state) => {
-    return {
-        retrieveArtwork: state.Artwork
-    }
-}
-
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        setArtwork: (e) => {
-            dispatch(setArtwork(e.target.id, e.dataTransfer.files));
-            e.preventDefault()
-        },
-        createArtwork: () => { dispatch(createArtwork()) }
-    }
-}
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(ImagesForm);
+export default ImagesForm;

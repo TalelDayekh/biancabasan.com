@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
-// Redux
-import { connect } from 'react-redux';
 // Local imports
 import '../../App.css';
-import {
-    setArtwork
-} from '../../actions/';
 import {
     ShortInputField,
     LongInputField,
@@ -131,19 +126,4 @@ class DetailsForm extends Component {
 }
 
 
-const mapStateToProps = (state) => {
-    return {
-        retrieveArtwork: state.Artwork
-    }
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        setArtwork: (e) => {
-            dispatch(setArtwork(e.target.id, e.target.value))
-        }
-    }
-}
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(DetailsForm);
+export default DetailsForm;

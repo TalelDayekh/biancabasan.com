@@ -1,13 +1,7 @@
 import React, { Component } from 'react';
-// Redux
-import { connect } from 'react-redux';
 // React Router
 import { Redirect } from 'react-router-dom';
 // Local imports
-import {
-    toggleRedirect,
-    resetRedirect
-} from '../../actions/';
 import ImagesForm from './ImagesForm.jsx';
 import {
     AdminContentWrapper
@@ -30,6 +24,7 @@ class AdminImages extends Component {
         return(
             <AdminContentWrapper>
                 <ImagesForm
+                    { ...this.props }
                 />
             </AdminContentWrapper>
         )
@@ -47,19 +42,4 @@ class AdminImages extends Component {
 }
 
 
-const mapStateToProps = (state) => {
-    return {
-        redirect: state.Redirect
-    }
-}
-const mapDispatchToProps = (dispatch) => {
-    return {
-        resetRedirect: () => { dispatch(resetRedirect()) },
-        toggleRedirect: (redirect_id) => {
-            dispatch(toggleRedirect(redirect_id))
-        }
-    }
-}
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminImages);
+export default AdminImages;

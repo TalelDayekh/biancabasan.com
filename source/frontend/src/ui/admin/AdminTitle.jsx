@@ -1,13 +1,7 @@
 import React, { Component } from 'react';
-// Redux
-import { connect } from 'react-redux';
 // React Router
 import { Redirect } from 'react-router-dom';
 // Local imports
-import {
-    toggleRedirect,
-    resetRedirect
-} from '../../actions/';
 import TitleForm from './TitleForm.jsx';
 import {
     AdminContentWrapper
@@ -30,6 +24,7 @@ class AdminTitle extends Component {
         return(
             <AdminContentWrapper>
                 <TitleForm
+                    { ...this.props }
                     redirect={ this.redirect }
                 />
             </AdminContentWrapper>
@@ -48,19 +43,4 @@ class AdminTitle extends Component {
 }
 
 
-const mapStateToProps = (state) => {
-    return {
-        redirect: state.Redirect
-    }
-}
-const mapDispatchToProps = (dispatch) => {
-    return {
-        resetRedirect: () => { dispatch(resetRedirect()) },
-        toggleRedirect: (redirect_id) => {
-            dispatch(toggleRedirect(redirect_id))
-        }
-    }
-}
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminTitle);
+export default AdminTitle;

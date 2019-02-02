@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
-// Redux
-import { connect } from 'react-redux';
 // Local imports
 import '../../App.css';
-import {
-    setArtwork
-} from '../../actions/';
 import {
     LongInputField,
     NextButton,
@@ -28,7 +23,7 @@ class TitleForm extends Component {
                             size="1"
                             placeholder={ this.title }
                             // onFocus = ""
-                            // onBlur = ""
+                            onBlur={ this.inputValidation }
                             defaultValue={ this.props.retrieveArtwork.title }
                             onChange={ (e) => { this.props.setArtwork(e) } }
                             raiseError=""
@@ -36,7 +31,7 @@ class TitleForm extends Component {
                     </div>
                     <NextButton type="submit">Next</NextButton>
                 </form>
-                <BackButton>Back</BackButton>
+                <BackButton id="back" onClick={ this.redirect }>Back</BackButton>
             </React.Fragment>
         )
     }
@@ -48,22 +43,13 @@ class TitleForm extends Component {
     }
 
     // Form validation
-}
-
-
-const mapStateToProps = (state) => {
-    return {
-        retrieveArtwork: state.Artwork
-    }
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        setArtwork: (e) => {
-            dispatch(setArtwork(e.target.id, e.target.value))
+    inputValidation = () => {
+        let re = /^\d{4}$/
+        if (this.props.retrieveArtwork.title.match(re)) {
+            console.log('Working')
         }
     }
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(TitleForm);
+export default TitleForm;
