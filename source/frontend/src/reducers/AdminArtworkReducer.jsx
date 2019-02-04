@@ -11,6 +11,7 @@ const defaultState = {
     imageList: []
 }
 
+
 const Artwork = (state = defaultState, action) => {
     switch (action.type) {
         case 'ADD_ID':
@@ -63,9 +64,7 @@ const Artwork = (state = defaultState, action) => {
                 ...state,
                 imageList: [...state.imageList, ...action.payload]
             };
-
-        // !! FIND NEATER SOLUTION !!
-        case 'RESET_ARTWORK_STATE':
+        case 'RESET_ARTWORK_SATE':
             return state = {
                 ...state,
                 artworkObjectId: "",
@@ -78,9 +77,7 @@ const Artwork = (state = defaultState, action) => {
                 depth: "",
                 description: "",
                 imageList: []
-            }
-
-
+            };
         default:
             return state;
     }
