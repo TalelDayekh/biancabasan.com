@@ -7,7 +7,6 @@ export function createArtwork() {
     return (dispatch, getState) => {
         state = getState().Artwork;
         axios.post('http://localhost:8000/add_artwork_info/', {
-            owner: 1, // !! REMOVE HARD CODED OWNER !!
             title: state.title,
             year_from: state.yearFrom,
             year_to: state.yearTo,
@@ -36,6 +35,10 @@ export function createArtwork() {
             })();
             dispatch({
                 type: 'RESET_ARTWORK_STATE'
+            });
+            dispatch({
+                type: 'ADMIN_MAIN',
+                payload: true
             })
         })
     }
