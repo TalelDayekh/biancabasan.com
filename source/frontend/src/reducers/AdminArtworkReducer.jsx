@@ -1,4 +1,5 @@
 const defaultState = {
+    formValidationError: false,
     artworkObjectId: "",
     title: "",
     yearFrom: "",
@@ -14,6 +15,11 @@ const defaultState = {
 
 const Artwork = (state = defaultState, action) => {
     switch (action.type) {
+        case 'ERROR':
+            return state = {
+                ...state,
+                formValidationError: action.payload
+            };
         case 'ADD_ID':
             return state = {
                 ...state,
