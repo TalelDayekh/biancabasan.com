@@ -1,4 +1,13 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+
+const InputError = css`
+    /* Input field */
+    border: 2px solid #d32f2f;
+
+    /* Input text */
+    color: #d32f2f;
+`
 
 
 export const LongInputField = styled.input`
@@ -10,6 +19,9 @@ export const LongInputField = styled.input`
     border: 2px solid #fff59d;
     border-radius: 40px;
     box-sizing: border-box;
+
+    /* Error */
+    ${props => props.raiseError ? InputError : null}
 `
 
 export const ShortInputField = styled.input`
@@ -21,6 +33,9 @@ export const ShortInputField = styled.input`
     border: 2px solid #fff59d;
     border-radius: 40px;
     box-sizing: border-box;
+
+    /* Error */
+    ${props => props.raiseError ? InputError : null}
 `
 
 export const TextField = styled.textarea`
@@ -32,8 +47,11 @@ export const TextField = styled.textarea`
     border: 2px solid #fff59d;
     border-radius: 15px;
     box-sizing: border-box;
-`
 
+    /* Error */
+    ${props => props.raiseError ? InputError : null}
+`
+// !! Redesign
 export const ImageDropZone = styled.div`
     /* Input field */
     width: 500px;
