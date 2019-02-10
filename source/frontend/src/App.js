@@ -8,6 +8,8 @@ import {
     Route
 } from 'react-router-dom';
 // Local imports
+import PrivateRoute from './ui/elements/PrivateRoute.jsx';
+import AdminLogin from './ui/admin/AdminLogin.jsx';
 import Admin from './ui/admin/Admin.jsx';
 
 
@@ -17,7 +19,10 @@ class App extends Component {
         return(
             <Provider store = { store }>
                 <BrowserRouter>
-                    <Route path = "/admin/" component = { Admin } />
+                    <React.Fragment>
+                        <Route path="/login/" component={ AdminLogin }/>
+                        <PrivateRoute path="/admin/" component={ Admin }/>
+                    </React.Fragment>
                 </BrowserRouter>
             </Provider>
         )
