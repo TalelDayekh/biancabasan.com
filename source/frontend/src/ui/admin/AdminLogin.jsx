@@ -15,31 +15,42 @@ class AdminLogin extends Component {
         this.pswInput = React.createRef();
     }
 
-    
+
     render = () => {
         return(
             <React.Fragment>
-                <h2>LOGIN</h2>
-                <form onSubmit={(e) => { 
-                    this.props.loginUser(
-                        e,
-                        this.unameInput.current.value,
-                        this.pswInput.current.value
-                        ) 
-                    }}>
-                    <label>Username</label>
-                    <br/>
-                    <input ref={ this.unameInput } type="text"/>
-                    <br/>
-                    <br/>
-                    <label>Password</label>
-                    <br/>
-                    <input ref={ this.pswInput } type="password"/>
-                    <br/>
-                    <button type="submit">Login</button>
-                </form>
+                {
+                    this.props.auth.isLoading ?
+                    <h2>Loading...</h2> // !! CHANGE TO SPINNER
+                    :
+                    <form onSubmit={(e) => { 
+                        this.props.loginUser(
+                            e,
+                            this.unameInput.current.value,
+                            this.pswInput.current.value
+                            ) 
+                        }}>
+                        <label>Username</label>
+                        <br/>
+                        <input ref={ this.unameInput } type="text"/>
+                        <br/>
+                        <br/>
+                        <label>Password</label>
+                        <br/>
+                        <input ref={ this.pswInput } type="password"/>
+                        <br/>
+                        <button type="submit">Login</button>
+                    </form>
+                }
             </React.Fragment>
         )
+    }
+}
+
+
+const mapStateToProps = (state) => {
+    return {
+        auth: state.Auth
     }
 }
 
@@ -51,4 +62,4 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 
-export default connect(null, mapDispatchToProps)(AdminLogin);
+export default connect(mapStateToProps, mapDispatchToProps)(AdminLogin);
