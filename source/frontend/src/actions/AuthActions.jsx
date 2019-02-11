@@ -1,25 +1,13 @@
-// Axios
-import axios from 'axios';
+// Local imports
+import {
+    loginAPI
+} from '../actions/';
 
 
 export function userLogin(username, password) {
     return (dispatch) => {
         dispatch(authStart());
-        axios.post('http://localhost:8000/auth/login/', {
-            username: username,
-            password: password
-        }).then(res => {
-            const token = res.data.key;
-            sessionStorage.setItem('token', token);
-            console.log(token); // !! REMOVE CONSOLE LOG
-            dispatch(authSuccess(token));
-        })
-    }
-}
-
-export function userLogout() {
-    return {
-        type: ''
+        dispatch(loginAPI(username, password))
     }
 }
 
@@ -29,10 +17,9 @@ export function authStart() {
     }
 }
 
-export function authSuccess(token) {
+export function authSuccess() {
     return {
-        type: 'AUTH_SUCCESS',
-        payload: token
+        type: 'AUTH_SUCCESS'
     }
 }
 
