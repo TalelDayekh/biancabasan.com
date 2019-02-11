@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 // Redux
 import { connect } from 'react-redux';
+// React Router
+import {
+    Redirect
+} from 'react-router-dom';
 // Local imports
 import {
     userLogin
@@ -17,6 +21,10 @@ class AdminLogin extends Component {
 
 
     render = () => {
+        if (this.props.auth.token !== null) {
+            return <Redirect push to="/admin/"/>
+        }
+
         return(
             <React.Fragment>
                 {
