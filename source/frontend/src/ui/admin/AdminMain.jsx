@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+// React Router
+import {
+    Link
+} from 'react-router-dom';
 
 
 class AdminMain extends Component {
@@ -19,8 +23,14 @@ class AdminMain extends Component {
                             return <li key={ yearsIndex }>{ years }
                             <ul>
                                 {this.props.retrieveArtworks.artworksList[years].map((artworksKey, artworksIndex) => {
-                                    const title = artworksKey.title
-                                    return <li key={ artworksIndex }>{ title }</li>
+                                    const artworkTitle = artworksKey.title
+                                    const artworkId = artworksKey.id
+                                    return <li key={ artworksIndex }>
+                                        <Link 
+                                            to="/admin/admin_title/"
+                                            onClick={ () => { this.editMode(artworkId) } }
+                                        >{ artworkTitle }</Link>
+                                    </li>
                                 })}
                             </ul>
                             </li>
@@ -29,6 +39,11 @@ class AdminMain extends Component {
                 }
             </div>
         )
+    }
+
+
+    editMode = (artworkId) => {
+        this.props.toggleEditMode(true, artworkId);
     }
 }
 
