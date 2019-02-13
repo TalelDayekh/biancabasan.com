@@ -24,9 +24,9 @@ class TitleForm extends Component {
                             placeholder={ this.title }
                             // onFocus = ""
                             onBlur={ this.inputValidation }
-                            defaultValue={ this.props.retrieveArtwork.title }
+                            defaultValue={ this.props.retrieveArtworks.title }
                             onChange={ (e) => { this.props.setArtwork(e) } }
-                            raiseError={ this.props.retrieveArtwork.formValidationError ? true : undefined }
+                            raiseError={ this.props.retrieveArtworks.formValidationError ? true : undefined }
                         />
                     </div>
                     <NextButton type="submit">Next</NextButton>
@@ -45,7 +45,7 @@ class TitleForm extends Component {
     // Form validation
     inputValidation = () => {
         let RegEx = /^\d{4}$/
-        if (!(this.props.retrieveArtwork.title.match(RegEx))) {
+        if (!(this.props.retrieveArtworks.title.match(RegEx))) {
             this.props.inputError(true)
         }
     }

@@ -1,4 +1,8 @@
 const defaultState = {
+    // Retrieve artworks
+    artworksList: {},
+    requestLoaded: false,
+    // Create and update artworks
     formValidationError: false,
     artworkObjectId: "",
     title: "",
@@ -15,6 +19,16 @@ const defaultState = {
 
 const Artwork = (state = defaultState, action) => {
     switch (action.type) {
+        case 'REQUEST_LOADED':
+            return state = {
+                ...state,
+                requestLoaded: true
+            }
+        case 'LIST_ARTWORKS':
+            return state = {
+                ...state,
+                artworksList: action.payload
+            }
         case 'ERROR':
             return state = {
                 ...state,
