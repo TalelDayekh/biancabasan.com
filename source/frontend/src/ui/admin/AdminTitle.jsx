@@ -25,14 +25,14 @@ class AdminTitle extends Component {
             <AdminContentWrapper>
                 <TitleForm
                     { ...this.props }
-                    redirect={ this.redirect }
+                    switchView={ this.switchView }
                 />
             </AdminContentWrapper>
         )
     }
 
 
-    redirect = (e) => {
+    switchView = (e) => {
         if (e.target.id === 'next') {
             this.props.toggleRedirect('ADMIN_DETAILS')
         };

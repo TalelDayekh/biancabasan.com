@@ -11,6 +11,7 @@ import {
     toggleRedirect,
     toggleEditMode,
     setArtwork,
+    editArtwork,
     inputError,
     loadArtworks,
     createArtwork
@@ -61,6 +62,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(setArtwork(e.target.id, e.dataTransfer.files));
             e.preventDefault();
         },
+        editArtwork: (artworkToEdit) => { dispatch(editArtwork(artworkToEdit)) },
         inputError: (error) => { dispatch(inputError(error)) },
         // GET requests
         loadArtworks: () => { dispatch(loadArtworks()) },
