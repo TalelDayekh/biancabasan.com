@@ -1,7 +1,8 @@
 const defaultState = {
     // Retrieve artworks
-    artworksList: {},
     requestLoaded: false,
+    artworksList: {},
+    editArtwork: {},
     // Create and update artworks
     formValidationError: false,
     artworkObjectId: "",
@@ -19,22 +20,29 @@ const defaultState = {
 
 const Artwork = (state = defaultState, action) => {
     switch (action.type) {
+        // Retrieve artworks
         case 'REQUEST_LOADED':
             return state = {
                 ...state,
                 requestLoaded: true
-            }
+            };
         case 'LIST_ARTWORKS':
             return state = {
                 ...state,
                 artworksList: action.payload
-            }
+            };
+        case 'EDIT_ARTWORK':
+            return state = {
+                ...state,
+                editArtwork: action.payload
+            };
+        // Create and update artworks
         case 'ERROR':
             return state = {
                 ...state,
                 formValidationError: action.payload
             };
-        case 'ADD_ID':
+        case 'SET_ID':
             return state = {
                 ...state,
                 artworkObjectId: action.payload
@@ -84,7 +92,8 @@ const Artwork = (state = defaultState, action) => {
                 ...state,
                 imageList: [...state.imageList, ...action.payload]
             };
-        case 'RESET_ARTWORK_SATE':
+        // Reset artwork state
+        case 'RESET_ARTWORK_STATE':
             return state = {
                 ...state,
                 artworkObjectId: "",
