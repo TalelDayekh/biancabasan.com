@@ -24,7 +24,7 @@ class DetailsForm extends Component {
     render = () => {
         return(
             <React.Fragment>
-                <form id="next" onSubmit={ this.redirect }>
+                <form id="next" onSubmit={ this.switchView }>
                     <div className="top-input-flex-container">
                         <ShortInputField
                             id="SET_YEAR_FROM"
@@ -32,7 +32,10 @@ class DetailsForm extends Component {
                             placeholder={ this.yearFrom }
                             // onFocus = {}
                             // onBlur = {}
-                            defaultValue={ this.props.retrieveArtwork.yearFrom }
+                            defaultValue={ this.props.redirect.editMode ?
+                                this.props.retrieveArtworks.editArtwork.year_from
+                                :
+                                this.props.retrieveArtworks.yearFrom }
                             onChange={ (e) => { this.props.setArtwork(e) } }
                         />
                         <div className="spacer-div-middle"/>
@@ -42,7 +45,10 @@ class DetailsForm extends Component {
                             placeholder={ this.yearTo }
                             // onFocus = {}
                             // onBlur = {}
-                            defaultValue={ this.props.retrieveArtwork.yearTo }
+                            defaultValue={ this.props.redirect.editMode ?
+                                this.props.retrieveArtworks.editArtwork.year_to
+                                :
+                                this.props.retrieveArtworks.yearTo }
                             onChange={ (e) => { this.props.setArtwork(e) } }
                             raiseError=""
                         />
@@ -54,7 +60,10 @@ class DetailsForm extends Component {
                             placeholder={ this.material }
                             // onFocus = {}
                             // onBlur = {}
-                            defaultValue={ this.props.retrieveArtwork.material }
+                            defaultValue={ this.props.redirect.editMode ?
+                                this.props.retrieveArtworks.editArtwork.material
+                                :
+                                this.props.retrieveArtworks.material }
                             onChange={ (e) => { this.props.setArtwork(e) } }
                             raiseError=""
                         />
@@ -66,7 +75,10 @@ class DetailsForm extends Component {
                             placeholder={ this.height }
                             // onFocus = {}
                             // onBlur = {}
-                            defaultValue={ this.props.retrieveArtwork.height }
+                            defaultValue={ this.props.redirect.editMode ?
+                                this.props.retrieveArtworks.editArtwork.height
+                                :
+                                this.props.retrieveArtworks.height }
                             onChange={ (e) => { this.props.setArtwork(e) } }
                             raiseError=""
                         />
@@ -79,7 +91,10 @@ class DetailsForm extends Component {
                             placeholder={ this.width }
                             // onFocus = {}
                             // onBlur = {}
-                            defaultValue={ this.props.retrieveArtwork.width }
+                            defaultValue={ this.props.redirect.editMode ?
+                                this.props.retrieveArtworks.editArtwork.width
+                                :
+                                this.props.retrieveArtworks.width }
                             onChange={ (e) => { this.props.setArtwork(e) } }
                             raiseError=""
                         />
@@ -92,7 +107,10 @@ class DetailsForm extends Component {
                             placeholder={ this.depth }
                             // onFocus = {}
                             // onBlur = {}
-                            defaultValue={ this.props.retrieveArtwork.depth }
+                            defaultValue={ this.props.redirect.editMode ?
+                                this.props.retrieveArtworks.editArtwork.depth
+                                :
+                                this.props.retrieveArtworks.depth }
                             onChange={ (e) => { this.props.setArtwork(e) } }
                         />
                         <div className="spacer-div-right"/>
@@ -104,21 +122,24 @@ class DetailsForm extends Component {
                             placeholder={ this.description }
                             // onFocus = {}
                             // onBlur = {}
-                            defaultValue={ this.props.retrieveArtwork.description }
+                            defaultValue={ this.props.redirect.editMode ?
+                                this.props.retrieveArtworks.editArtwork.description
+                                :
+                                this.props.retrieveArtworks.description }
                             onChange={ (e) => { this.props.setArtwork(e) } }
                             raiseError=""
                         />
                     </div>
                     <NextButton type="submit">Next</NextButton>
                 </form>
-                <BackButton id="back" onClick={ this.redirect }>Back</BackButton>
+                <BackButton id="back" onClick={ this.switchView }>Back</BackButton>
             </React.Fragment>   
         )
     }
 
 
-    redirect = (e) => {
-        this.props.redirect(e);
+    switchView = (e) => {
+        this.props.switchView(e);
         e.preventDefault();
     }
 
