@@ -40,66 +40,48 @@ export function artworksListAPI() {
     }
 }
 
-
-
-
-
-// // // Axios
-// // import axios from 'axios';
-
-// // Set axios to accept token in header from sessionStorage
-// export function createArtwork() {
-//     return (dispatch, getState) => {
-//         // Add authorization token to headers
-//         let auth_state = getState().Auth;
-//         const token = sessionStorage.getItem('token')
-//         // const config = {
-//         //     headers: {
-//         //         'Content-Type': 'application/json'
-//         //     }
-//         // }
-//         // if (token) {
-//         //     config.headers['Authorization'] = `token ${token}`;
-//         // }
-//         axios.defaults.headers.common['Authorization'] = `token ${token}`;
-//         // Create new artwork info and images
-//         let artwork_state = getState().Artwork;
-//         axios.post('http://127.0.0.1:8000/add_artwork_info/', {
-//             title: artwork_state.title,
-//             year_from: artwork_state.yearFrom,
-//             year_to: artwork_state.yearTo,
-//             material: artwork_state.material,
-//             height: artwork_state.height,
-//             width: artwork_state.width,
-//             depth: artwork_state.depth,
-//             description: artwork_state.description
-//         }).then(res => {
-//             // dispatch({
-//             //     type: 'ADD_ID',
-//             //     payload: res.data.id
-//             // });
-
-//             // (async function createImages() {
-//             //     artwork_state = getState().Artwork;
-//             //     const imageUploadForm = new FormData();
-//             //     for (let i = 0; i < artwork_state.imageList.length; i++) {
-//             //         const imageFile = artwork_state.imageList[i];
-//             //         imageUploadForm.set('artwork_info', artwork_state.artworkObjectId);
-//             //         imageUploadForm.append('image', imageFile);
-//             //         await axios.post('http://127.0.0.1:8000/add_artwork_images/', imageUploadForm, {
-//             //             headers: { 'content-type': 'multipart/form-data' }
-//             //         });
-//             //     }
-//             // })();
-//             dispatch({
-//                 type: 'RESET_ARTWORK_STATE'
-//             });
-//             dispatch({
-//                 type: 'ADMIN_MAIN',
-//                 payload: true
-//             })
-//         }).catch(error => {
-//             console.log(error)
-//         })
-//     }
-// }
+export function createArtworkAPI() {
+    return (dispatch, getState) => {
+        // Add authorization token to headers
+        axios.defaults.headers.common['Authorization'] = `token ${sessionStorage.getItem('token')}`;
+        let artworkInfo = getState().Artwork;
+        // Create title and details
+        axios.post('http://localhost:8000/add_artwork_info/', {
+            title: artworkInfo.title,
+            year_from: artworkInfo.yearFrom,
+            year_to: artworkInfo.yearTo,
+            material: artworkInfo.material,
+            height: artworkInfo.height,
+            width: artworkInfo.width,
+            depth: artworkInfo.depth,
+            description: artworkInfo.description
+        }).then(res => {
+            dispatch({
+                type: 'SET_ID',
+                payload: res.data.id
+            });
+            // Create images
+            (async function createImagesAPI() {
+                let artworkInfo = getState().Artwork
+                let imageUploadForm = new FormData();
+                for (let i = 0; i < artworkInfo.imageList.length; i++) {
+                    let imageFile = artworkInfo.imageList[i];
+                    imageUploadForm.set('artwork_info', artworkInfo.artworkObjectId);
+                    imageUploadForm.append('image', imageFile);
+                    await axios.post('http://localhost:8000/add_artwork_images/', imageUploadForm, {
+                        headers: { 'content-type': 'multipart/form-data' }
+                    });
+                }
+            })();
+            dispatch({
+                type: 'RESET_ARTWORK_STATE'
+            });
+            dispatch({
+                type: 'ADMIN_MAIN',
+                payload: true
+            });
+        }).catch(error => {
+            console.log('ERROR!') // !! ADD ERROR TO ARTWORKS REDUCERS
+        });
+    }
+}
