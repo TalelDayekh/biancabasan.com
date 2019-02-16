@@ -16,13 +16,13 @@ Update artwork info and delete artwork object
 def update_delete_artwork_info(request):
     artwork_id = request.data['id']
     artwork_obj = ArtworkInfo.objects.get(id=artwork_id)
+    serialized_artwork_info = ArtworkSerializer(
+        artwork_obj,
+        data=request.data,
+        partial=True
+    )
 
     if request.method == 'PUT':
-        serialized_artwork_info = ArtworkSerializer(
-            artwork_obj,
-            data=request.data,
-            partial=True
-        )
         if serialized_artwork_info.is_valid():
             serialized_artwork_info.save(owner=request.user)
             return Response(
@@ -31,7 +31,10 @@ def update_delete_artwork_info(request):
             )
 
     elif request.method == 'DELETE':
-        artwork_obj.delete()
-        return Response(
-            status=status.HTTP_204_NO_CONTENT
-        )
+        if serialized_artwork_info.is_valid():
+            # Artworks can only be deleted by its owner
+            if str(serialized_artwork_info.data['owner']) == str(request.user):
+                artwork_obj.delete()
+                return Response(
+                    status=status.HTTP_204_NO_CONTENT
+                )
