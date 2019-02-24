@@ -27,10 +27,11 @@ class Content extends Component {
 
     render = () => {
         return(
-            <ContentWrapper>
-                <div>
-                </div>
-            </ContentWrapper>
+            /////
+            <React.Fragment>
+                <ContentWrapper>
+                </ContentWrapper>
+            </React.Fragment>
         )
     }
 
@@ -53,8 +54,9 @@ class Content extends Component {
     // the page and add new artworks to pagination. If all
     // artworks for a year has been added, call a function
     // to start over the process with a new year.
-    artworksPagination = () => {
-        if (year || (year && (window.innerHeight + window.scrollY >= document.body.offsetHeight))) {
+    artworksPagination = () => {        
+        if ((year && (artworksCurrentIteration === 0)) || 
+            (year && (window.innerHeight + window.scrollY >= document.body.offsetHeight))) {
             artworksTotalIterations = this.props.artworks.allArtworks[year].length -1
 
             if (artworksCurrentIteration <= artworksTotalIterations) {
