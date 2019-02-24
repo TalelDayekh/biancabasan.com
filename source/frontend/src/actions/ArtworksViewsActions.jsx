@@ -44,7 +44,10 @@ export function addYearToPagination(year) {
         let oldYearsPaginationArray = getState().ArtworksViews.yearsPagination
         let newYearsPaginationArray = [ ...oldYearsPaginationArray ]
 
-        newYearsPaginationArray.push(year)
+        // Prevents from adding null values
+        if (year) {
+            newYearsPaginationArray.push(year)
+        }
 
         dispatch({
             type: 'YEAR_TO_PAGINATION',
@@ -65,6 +68,7 @@ export function addArtworkToPagination(year, artworksCurrentIteration) {
 
         let oldArtworksPaginationObject = getState().ArtworksViews.artworksPagination
         let newArtworksPaginationObject = { ...oldArtworksPaginationObject }
+
         // If the year already exists in the artworksPagination object then push
         // the artwork for the current iteration to the array for that year. If
         // the year doesn't exist add it to the artworksPagination object as key
