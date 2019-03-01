@@ -20,7 +20,7 @@ class AdminLogin extends Component {
 
     render = () => {
         if (this.props.auth.token !== null) {
-            return <Redirect push to='/admin/'/>
+            return <Redirect push to='/admin/main/'/>
         }
 
         return(
