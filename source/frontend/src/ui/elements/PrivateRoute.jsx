@@ -1,29 +1,20 @@
-import React from 'react';
-// Redux
-import { connect } from 'react-redux';
+import React from 'react'
 // React Router
 import {
     Route,
     Redirect
-} from 'react-router-dom';
+} from 'react-router-dom'
 
 
-const PrivateRoute = ({ component: Component, auth, ...rest}) => (
-    <Route { ...rest } render={(props) => {
-        if (auth.token !== null) {
-            return <Component { ...props }/>
+const PrivateRoute = ({ component: Component, globalReduxProps, ...rest}) => (
+    <Route { ...rest } render={ (props) => {
+        if (globalReduxProps.auth.token !== null) {
+            return <Component { ...props } { ...globalReduxProps }/>
         } else {
-            return <Redirect push to="/login/"/>
+            return <Redirect push to='/login/'/>
         }
     }}/>
 )
 
 
-const mapStateToProps = (state) => {
-    return {
-        auth: state.Auth
-    }
-}
-
-
-export default connect(mapStateToProps)(PrivateRoute);
+export default PrivateRoute
