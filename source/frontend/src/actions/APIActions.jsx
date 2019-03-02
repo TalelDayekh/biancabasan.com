@@ -43,7 +43,7 @@ export function readArtworksAPI() {
 // key is stored in sessionStorage as a token for that user. 
 export function userLoginAPI(username, password) {
     return (dispatch) => {
-        axios.post('http://localhost:8000/auth/login', {
+        axios.post('http://localhost:8000/auth/login/', {
             username: username,
             password: password
         })
