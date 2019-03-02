@@ -37,8 +37,8 @@ export function listYears(allYears) {
     }
 }
 
-// Takes in a year from the allYears array
-// and adds it to the pagination array.
+// Take in a year from the allYears array
+// and add it to the pagination array.
 export function addYearToPagination(year) {
     return (dispatch, getState) => {
         let oldYearsPaginationArray = getState().ArtworksViews.yearsPagination
