@@ -1,7 +1,7 @@
 const defaultState = {
     allArtworks: {},
     allYears: [],
-    artworksLoaded: false,
+    artworksLoading: true,
     loadingError: false,
     yearsPagination: [],
     artworksPagination: {}
@@ -24,7 +24,7 @@ const ArtworksViews = (state = defaultState, action) => {
         case 'LOAD_SUCCESS':
             return state = {
                 ...state,
-                artworksLoaded: true,
+                artworksLoading: false,
                 loadingError: false
             }
         case 'LOAD_FAIL':
