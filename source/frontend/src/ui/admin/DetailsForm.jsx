@@ -1,150 +1,69 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 // Local imports
-import '../../App.css';
+// Elements
 import {
     ShortInputField,
     LongInputField,
-    TextField,
-    NextButton,
-    BackButton
-} from '../elements/';
+    TextField
+} from '../elements/'
 
 
 class DetailsForm extends Component {
 
     // Variables for input field placeholders
-    yearFrom="Created between YYYY*"
-    yearTo="and YYYY*"
-    material="Materials*"
-    height="Height*"
-    width="Width*"
-    depth="Depth"
-    description="Description*"
+    yearFrom='Created between YYYY'
+    yearTo='and YYYY*'
 
     render = () => {
         return(
             <React.Fragment>
-                <form id="next" onSubmit={ this.switchView }>
-                    <div className="top-input-flex-container">
+                <form>
+                    <div>
                         <ShortInputField
-                            id="SET_YEAR_FROM"
-                            size="1"
+                            id='SET_YEAR_FROM'
+                            name='years'
+                            size='1'
                             placeholder={ this.yearFrom }
-                            // onFocus = {}
-                            // onBlur = {}
-                            defaultValue={ this.props.redirect.editMode ?
-                                this.props.retrieveArtworks.editArtwork.year_from
-                                :
-                                this.props.retrieveArtworks.yearFrom }
-                            onChange={ (e) => { this.props.setArtwork(e) } }
+                            onFocus={ this.clearPlaceholder }
+                            onBlur={ this.inputValidation }
+
+                            onChange={ (e) => {this.props.setArtwork(e)} }
+                            raiseError={ this.props.admin.formValidationError ? true : undefined }
                         />
-                        <div className="spacer-div-middle"/>
                         <ShortInputField
-                            id="SET_YEAR_TO"
-                            size="1"
+                            id='SET_YEAR_TO'
+                            name='years'
+                            size='1'
                             placeholder={ this.yearTo }
-                            // onFocus = {}
-                            // onBlur = {}
-                            defaultValue={ this.props.redirect.editMode ?
-                                this.props.retrieveArtworks.editArtwork.year_to
-                                :
-                                this.props.retrieveArtworks.yearTo }
-                            onChange={ (e) => { this.props.setArtwork(e) } }
-                            raiseError=""
+                            onFocus={ this.clearPlaceholder }
+                            onBlur={ this.inputValidation }
+
+                            onChange={ (e) => {this.props.setArtwork(e)} }
+                            raiseError={ this.props.admin.formValidationError ? true : undefined }
                         />
                     </div>
-                    <div className="input-flex-container">
-                        <LongInputField
-                            id="SET_MATERIAL"
-                            size="1"
-                            placeholder={ this.material }
-                            // onFocus = {}
-                            // onBlur = {}
-                            defaultValue={ this.props.redirect.editMode ?
-                                this.props.retrieveArtworks.editArtwork.material
-                                :
-                                this.props.retrieveArtworks.material }
-                            onChange={ (e) => { this.props.setArtwork(e) } }
-                            raiseError=""
-                        />
-                    </div>
-                    <div className="input-flex-container">
-                        <ShortInputField
-                            id="SET_HEIGHT"
-                            size="1"
-                            placeholder={ this.height }
-                            // onFocus = {}
-                            // onBlur = {}
-                            defaultValue={ this.props.redirect.editMode ?
-                                this.props.retrieveArtworks.editArtwork.height
-                                :
-                                this.props.retrieveArtworks.height }
-                            onChange={ (e) => { this.props.setArtwork(e) } }
-                            raiseError=""
-                        />
-                        <div className="spacer-div-right"/>
-                    </div>
-                    <div className="input-flex-container">
-                        <ShortInputField
-                            id="SET_WIDTH"
-                            size="1"
-                            placeholder={ this.width }
-                            // onFocus = {}
-                            // onBlur = {}
-                            defaultValue={ this.props.redirect.editMode ?
-                                this.props.retrieveArtworks.editArtwork.width
-                                :
-                                this.props.retrieveArtworks.width }
-                            onChange={ (e) => { this.props.setArtwork(e) } }
-                            raiseError=""
-                        />
-                        <div className="spacer-div-right"/>
-                    </div>
-                    <div className="input-flex-container">
-                        <ShortInputField
-                            id="SET_DEPTH"
-                            size="1"
-                            placeholder={ this.depth }
-                            // onFocus = {}
-                            // onBlur = {}
-                            defaultValue={ this.props.redirect.editMode ?
-                                this.props.retrieveArtworks.editArtwork.depth
-                                :
-                                this.props.retrieveArtworks.depth }
-                            onChange={ (e) => { this.props.setArtwork(e) } }
-                        />
-                        <div className="spacer-div-right"/>
-                    </div>
-                    <div className="input-flex-container">
-                        <TextField
-                            id="SET_DESCRIPTION"
-                            size="1"
-                            placeholder={ this.description }
-                            // onFocus = {}
-                            // onBlur = {}
-                            defaultValue={ this.props.redirect.editMode ?
-                                this.props.retrieveArtworks.editArtwork.description
-                                :
-                                this.props.retrieveArtworks.description }
-                            onChange={ (e) => { this.props.setArtwork(e) } }
-                            raiseError=""
-                        />
-                    </div>
-                    <NextButton type="submit">Next</NextButton>
                 </form>
-                <BackButton id="back" onClick={ this.switchView }>Back</BackButton>
-            </React.Fragment>   
+            </React.Fragment>
         )
     }
 
 
-    switchView = (e) => {
-        this.props.switchView(e);
-        e.preventDefault();
+    clearPlaceholder = (e) => {
+        e.target.placeholder=''
+        // this.props.setFormError(false)
     }
 
-    // Form validation
+    //
+    inputValidation = (e) => {
+        if (e.target.name === 'years') {
+            const RegEx = /^\d{4}$/
+            if (!(this.props.admin.yearFrom.match(RegEx))) {
+                // this.props.setFormError(true)
+            }
+        }
+    }
+
 }
 
 
-export default DetailsForm;
+export default DetailsForm

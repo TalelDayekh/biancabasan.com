@@ -1,70 +1,52 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 // Local imports
-import '../../App.css';
+// Elements
 import {
-    LongInputField,
-    NextButton,
-    BackButton
-} from '../elements/';
+    LongInputField
+} from '../elements/'
 
 
 class TitleForm extends Component {
 
     // Variable for input field placeholder
-    title="Title*"
+    title='title*'
 
-    componentDidMount = () => {
-        if (this.props.redirect.editMode === true) {
-            Object.values(this.props.retrieveArtworks.artworksList).forEach((artworkObject) => {
-                let artworkToEdit = artworkObject.find(
-                    getArtwork => getArtwork.id === this.props.retrieveArtworks.artworkObjectId
-                    );
-                if (artworkToEdit) {
-                    this.props.editArtwork(artworkToEdit)
-                };
-            });
-        };
-    }
     render = () => {
         return(
             <React.Fragment>
-                <form id="next" onSubmit={ this.switchView }>
-                    <div className = "top-input-flex-container">
+                <form>
+                    <div>
                         <LongInputField
-                            id="SET_TITLE"
-                            size="1"
+                            id='SET_TITLE'
+                            size='1'
                             placeholder={ this.title }
-                            // onFocus = ""
+                            onFocus={ this.clearPlaceholder }
                             onBlur={ this.inputValidation }
-                            defaultValue={ this.props.redirect.editMode ?
-                                this.props.retrieveArtworks.editArtwork.title
-                                :
-                                this.props.retrieveArtworks.title }
-                            onChange={ (e) => { this.props.setArtwork(e) } }
-                            raiseError={ this.props.retrieveArtworks.formValidationError ? true : undefined }
+
+                            onChange={ (e) => {this.props.setArtwork(e)} }
+                            raiseError={ this.props.admin.formError ? true : undefined }
                         />
                     </div>
-                    <NextButton type="submit">Next</NextButton>
                 </form>
-                <BackButton id="back" onClick={ this.switchView }>Back</BackButton>
             </React.Fragment>
         )
     }
 
 
-    switchView = (e) => {
-        this.props.switchView(e);
-        e.preventDefault();
+    clearPlaceholder = (e) => {
+        e.target.placeholder=''
+        this.props.setFormError(false)
     }
 
-    // Form validation
+    // Raise error if user inputs nothing
     inputValidation = () => {
-        let RegEx = /^\d{4}$/
-        if (!(this.props.retrieveArtworks.title.match(RegEx))) {
-            this.props.inputError(true)
+        const RegEx = /\S.+/
+        if (!(this.props.admin.title.match(RegEx))) {
+            this.props.setFormError(true)
         }
     }
+
 }
 
 
-export default TitleForm;
+export default TitleForm
