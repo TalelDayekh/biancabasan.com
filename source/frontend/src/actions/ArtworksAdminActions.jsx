@@ -25,7 +25,7 @@ export function setInputErrors(inputError, errorField) {
         let newInputErrorsArray = [ ...getState().ArtworksAdmin.inputErrors ]
 
         if (inputError) {
-            if (!(newInputErrorsArray.includes(errorField))) {
+            if (newInputErrorsArray.indexOf(errorField) === -1) {
                 newInputErrorsArray.push(errorField)
             }
 
