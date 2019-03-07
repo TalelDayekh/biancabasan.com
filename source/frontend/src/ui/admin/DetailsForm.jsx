@@ -8,8 +8,20 @@ import {
 } from '../elements/'
 
 
+const formFields = [
+    {id: 'SET_YEAR_FROM', name: 'years', inputField: 'yearFrom'},
+    {id: 'SET_YEAR_TO', name: 'years', inputField: 'yearTo'},
+    {id: 'SET_MATERIAL', name: 'text', inputField: 'material'},
+    {id: 'SET_HEIGHT', name: 'measurement', inputField: 'height'},
+    {id: 'SET_WIDTH', name: 'measurement', inputField: 'width'},
+    {id: 'SET_DEPTH', name: 'measurement', inputField: 'depth'},
+    {id: 'SET_DESCRIPTION', name: 'text', inputField: 'description'}
+]
+
+
 class DetailsForm extends Component {
 
+    // Variables for input field placeholders
     yearFrom='Created between YYYY*'
     yearTo='and YYYY*'
     material='Material*'
@@ -22,95 +34,59 @@ class DetailsForm extends Component {
         return(
             <React.Fragment>
                 <form>
-                    <div>
-                        <ShortInputField
-                            id='SET_YEAR_FROM'
-                            name='years'
-                            size='1'
-                            placeholder={ this.yearFrom }
-                            onFocus={ this.clearPlaceholder }
-                            onBlur={ (e) => {this.inputValidation(e); this.errorCheck(e)} }
+                    {
+                        formFields.map((formField, i) => {
+                            if ((formField.name==='years') || (formField.name==='measurement')) {
+                                return(
+                                    <div key={i}>
+                                        <ShortInputField
+                                            id={ formField.id }
+                                            name={ formField.name }
+                                            size='1'
+                                            placeholder={ this[formField.inputField] }
+                                            onFocus={ this.clearPlaceholder }
+                                            onBlur={ this.inputValidation }
 
-                            onChange={ (e) => {this.props.setArtwork(e)} }
-                            // raiseError={ customAttribute }
-                        />
-                        <ShortInputField
-                            id='SET_YEAR_TO'
-                            name='years'
-                            size='1'
-                            placeholder={ this.yearTo }
-                            onFocus={ this.clearPlaceholder }
-                            onBlur={ this.inputValidation }
+                                            onChange={ (e) => {this.props.setArtwork(e)} }
+                                            raiseError={ (this.props.admin.inputErrors.indexOf(formField.id) !== -1) ? true : undefined }
+                                        />
+                                    </div>
+                                )
+                            }
+                            if ((formField.name==='text') && (!(formField.id==='SET_DESCRIPTION'))) {
+                                return(
+                                    <div key={i}>
+                                        <LongInputField
+                                            id={ formField.id }
+                                            name={ formField.name }
+                                            size='1'
+                                            placeholder={ this[formField.inputField] }
+                                            onFocus={ this.clearPlaceholder }
+                                            onBlur={ this.inputValidation }
 
-                            onChange={ (e) => {this.props.setArtwork(e)} }
-                            raiseError={ this.props.admin.formValidationError ? true : undefined }
-                        />
-                    </div>
-                    <div>
-                        <LongInputField
-                            id='SET_MATERIAL'
-                            name='text'
-                            size='1'
-                            placeholder={ this.material }
-                            onFocus={ this.clearPlaceholder }
-                            onBlur={ this.inputValidation }
+                                            onChange={ (e) => {this.props.setArtwork(e)} }
+                                            raiseError={ (this.props.admin.inputErrors.indexOf(formField.id) !== -1) ? true : undefined }
+                                        />
+                                    </div>
+                                )
+                            }
+                            else {
+                                return(
+                                    <TextField
+                                        id={ formField.id }
+                                        name={ formField.name }
+                                        size='1'
+                                        placeholder={ this[formField.inputField] }
+                                        onFocus={ this.clearPlaceholder }
+                                        onBlur={ this.inputValidation }
 
-                            onChange={ (e) => {this.props.setArtwork(e)} }
-                            raiseError={ this.props.admin.formValidationError ? true : undefined }
-                        />
-                    </div>
-                    <div>
-                        <ShortInputField
-                            id='SET_HEIGHT'
-                            name='measurement'
-                            size='1'
-                            placeholder={ this.height }
-                            onFocus={ this.clearPlaceholder }
-                            onBlur={ this.inputValidation }
-
-                            onChange={ (e) => {this.props.setArtwork(e)} }
-                            raiseError={ this.props.admin.formValidationError ? true : undefined }
-                        />
-                    </div>
-                    <div>
-                        <ShortInputField
-                            id='SET_WIDTH'
-                            name='measurement'
-                            size='1'
-                            placeholder={ this.width }
-                            onFocus={ this.clearPlaceholder }
-                            onBlur={ this.inputValidation }
-
-                            onChange={ (e) => {this.props.setArtwork(e)} }
-                            raiseError={ this.props.admin.formValidationError ? true : undefined }
-                        />
-                    </div>
-                    <div>
-                        <ShortInputField
-                            id='SET_DEPTH'
-                            name='measurement'
-                            size='1'
-                            placeholder={ this.depth }
-                            onFocus={ this.clearPlaceholder }
-                            onBlur={ this.inputValidation }
-
-                            onChange={ (e) => {this.props.setArtwork(e)} }
-                            raiseError={ this.props.admin.formValidationError ? true : undefined }
-                        />
-                    </div>
-                    <div>
-                        <TextField
-                            id='SET_DESCRIPTION'
-                            name='text'
-                            size='1'
-                            placeholder={ this.description }
-                            onFocus={ this.clearPlaceholder }
-                            onBlur={ this.inputValidation }
-
-                            onChange={ (e) => {this.props.setArtwork(e)} }
-                            raiseError={ this.props.admin.formValidationError ? true : undefined }
-                        />
-                    </div>
+                                        onChange={ (e) => {this.props.setArtwork(e)} }
+                                        raiseError={ (this.props.admin.inputErrors.indexOf(formField.id) !== -1) ? true : undefined }
+                                    />
+                                )
+                            }
+                        })
+                    }
                 </form>
             </React.Fragment>
         )
