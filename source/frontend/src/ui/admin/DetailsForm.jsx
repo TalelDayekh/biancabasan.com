@@ -4,7 +4,9 @@ import React, { Component } from 'react'
 import {
     ShortInputField,
     LongInputField,
-    TextField
+    TextField,
+    NextButton,
+    BackButton
 } from '../elements/'
 
 
@@ -33,7 +35,7 @@ class DetailsForm extends Component {
     render = () => {
         return(
             <React.Fragment>
-                <form>
+                <form id='next' onSubmit={ this.errorCheck }>
                     {
                         formFields.map((formField, i) => {
                             if ((formField.name==='years') || (formField.name==='measurement')) {
@@ -72,21 +74,24 @@ class DetailsForm extends Component {
                             }
                             else {
                                 return(
-                                    <TextField
-                                        id={ formField.id }
-                                        name={ formField.name }
-                                        size='1'
-                                        placeholder={ this[formField.inputField] }
-                                        onFocus={ this.clearPlaceholder }
-                                        onBlur={ this.inputValidation }
+                                    <div key={i}>
+                                        <TextField
+                                            id={ formField.id }
+                                            name={ formField.name }
+                                            size='1'
+                                            placeholder={ this[formField.inputField] }
+                                            onFocus={ this.clearPlaceholder }
+                                            onBlur={ this.inputValidation }
 
-                                        onChange={ (e) => {this.props.setArtwork(e)} }
-                                        raiseError={ (this.props.admin.inputErrors.indexOf(formField.id) !== -1) ? true : undefined }
-                                    />
+                                            onChange={ (e) => {this.props.setArtwork(e)} }
+                                            raiseError={ (this.props.admin.inputErrors.indexOf(formField.id) !== -1) ? true : undefined }
+                                        />
+                                    </div>
                                 )
                             }
                         })
                     }
+                    <NextButton type='submit'>Next</NextButton>
                 </form>
             </React.Fragment>
         )
@@ -118,7 +123,7 @@ class DetailsForm extends Component {
             }
         }
         // Raise error if user inputs nothing or anything but digits
-        // seperated by either perios or comma. Except for the depth
+        // seperated by either period or comma. Except for the depth
         // field which accepts an empty string as value.
         if (e.target.name==='measurement') {
             const RegEx=/^\d*(.|,)?\d+$/
@@ -133,6 +138,35 @@ class DetailsForm extends Component {
         }
     }
 
+    // Catch if user input is not matching the requirements and
+    // add all the faulty input fields to the inputErrors array.
+    errorCheck = (e) => {
+        e.preventDefault()
+        
+        try {
+            formFields.forEach((formField) => {
+                if (((this.props.admin[formField.inputField].length===0) && (!(formField.id==='SET_DEPTH'))) ||
+                    (this.props.admin.inputErrors.indexOf(formField.id) !== -1)) {
+                        throw new Error('Required input fields are either empty or'
+                                        + ' have a faulty value')
+                    }
+            })
+            this.switchAdminPanel(e)
+        } catch(error) {
+            formFields.forEach((formField) => {
+                if(((this.props.admin[formField.inputField].length===0) && (!(formField.id==='SET_DEPTH'))) ||
+                    (this.props.admin.inputErrors.indexOf(formField.id) !== -1)) {
+                        this.props.setInputErrors(true, formField.id)
+                    }
+            })
+        }
+    }
+
+    //
+    switchAdminPanel = (e) => {
+
+    }
+    
 }
 
 
