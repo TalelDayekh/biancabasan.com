@@ -1,46 +1,44 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 // React Router
-import { Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom'
 // Local imports
-import TitleForm from './TitleForm.jsx';
-import {
-    AdminContentWrapper
-} from '../layouts/';
+// Admin
+import TitleForm from './TitleForm.jsx'
 
 
 class AdminTitle extends Component {
 
-    componentDidMount = () => {
-        this.props.resetRedirect()
-    }
     render = () => {
-        if (this.props.redirect.toAdminDetails === true) {
-            return <Redirect push to="/admin/admin_details/"/>
+        if (this.props.redirect.toAdminMain) {
+            return <Redirect push to='/admin/main/'/>
         }
-        if (this.props.redirect.toAdminMain === true) {
-            return <Redirect push to="/admin/"/>
+        if (this.props.redirect.toAdminDetails) {
+            return <Redirect push to='/admin/details/'/>
         }
 
         return(
-            <AdminContentWrapper>
+            <React.Fragment>
                 <TitleForm
                     { ...this.props }
-                    switchView={ this.switchView }
+                    switchAdminPanel={ this.switchAdminPanel }
                 />
-            </AdminContentWrapper>
+            </React.Fragment>
         )
     }
 
 
-    switchView = (e) => {
-        if (e.target.id === 'next') {
+    // Trigger state change to redirect the user
+    // either to next or previous admin panel.
+    switchAdminPanel = (e) => {
+        if (e.target.id==='next') {
             this.props.toggleRedirect('ADMIN_DETAILS')
-        };
-        if (e.target.id === 'back') {
+        }
+        if (e.target.id==='back') {
             this.props.toggleRedirect('ADMIN_MAIN')
-        };
+        }
     }
+
 }
 
 
-export default AdminTitle;
+export default AdminTitle

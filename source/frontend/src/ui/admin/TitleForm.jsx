@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 // Local imports
 // Elements
 import {
-    LongInputField
+    LongInputField,
+    NextButton,
+    BackButton
 } from '../elements/'
 
 
@@ -14,7 +16,7 @@ class TitleForm extends Component {
     render = () => {
         return(
             <React.Fragment>
-                <form>
+                <form id='next' onSubmit={ this.errorCheck }>
                     <div>
                         <LongInputField
                             id='SET_TITLE'
@@ -24,10 +26,12 @@ class TitleForm extends Component {
                             onBlur={ this.inputValidation }
 
                             onChange={ (e) => {this.props.setArtwork(e)} }
-                            raiseError={ this.props.admin.formError ? true : undefined }
+                            raiseError={ (this.props.admin.inputErrors.indexOf('SET_TITLE') !== -1) ? true : undefined }
                         />
                     </div>
+                    <NextButton type='submit'>Next</NextButton>
                 </form>
+                <BackButton id='back' onClick={ this.switchAdminPanel }>Back</BackButton>
             </React.Fragment>
         )
     }
@@ -35,15 +39,38 @@ class TitleForm extends Component {
 
     clearPlaceholder = (e) => {
         e.target.placeholder=''
-        this.props.setFormError(false)
+        this.props.setInputErrors(false, e.target.id)
     }
 
     // Raise error if user inputs nothing
-    inputValidation = () => {
-        const RegEx = /\S.+/
-        if (!(this.props.admin.title.match(RegEx))) {
-            this.props.setFormError(true)
+    // or begins string with white space.
+    inputValidation = (e) => {
+        const RegEx=/\S.*/
+        
+        if (!(e.target.value.match(RegEx))) {
+            this.props.setInputErrors(true, e.target.id)
         }
+    }
+
+    // Catch if user input is not matching the requirements
+    // and add the input field id to the inputErrors array.
+    errorCheck = (e) => {
+        e.preventDefault()
+
+        try {
+            if ((this.props.admin.title.length===0) || 
+                (this.props.admin.inputErrors.indexOf('SET_TITLE') !== -1)) {
+                    throw new Error('Required input field is either empty or'
+                                    + ' have a faulty value')
+            }
+            this.switchAdminPanel(e)
+        } catch(error) {
+            this.props.setInputErrors(true, 'SET_TITLE')
+        }
+    }
+
+    switchAdminPanel = (e) => {
+        this.props.switchAdminPanel(e)
     }
 
 }
