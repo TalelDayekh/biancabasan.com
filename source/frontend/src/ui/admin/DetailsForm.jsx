@@ -93,6 +93,7 @@ class DetailsForm extends Component {
                     }
                     <NextButton type='submit'>Next</NextButton>
                 </form>
+                <BackButton id='back' onClick={ this.switchAdminPanel }>Back</BackButton>
             </React.Fragment>
         )
     }
@@ -162,9 +163,8 @@ class DetailsForm extends Component {
         }
     }
 
-    //
     switchAdminPanel = (e) => {
-
+        this.props.switchAdminPanel(e)
     }
     
 }
