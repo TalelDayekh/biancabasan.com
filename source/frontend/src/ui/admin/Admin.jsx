@@ -8,7 +8,14 @@ import {
 // Local imports
 // Actions
 import {
-    loadSortedArtworks
+    toggleRedirect,
+    toggleEditMode,
+    resetRedirect,
+    loadSortedArtworks,
+    loadArtworkForEdit,
+    setInputErrors,
+    setFormError,
+    setArtwork
 } from '../../actions/'
 // Layouts
 import {
@@ -16,6 +23,8 @@ import {
 } from '../layouts/'
 // Admin
 import AdminMain from './AdminMain.jsx'
+import AdminTitle from './AdminTitle.jsx'
+import AdminDetails from './AdminDetails.jsx'
 
 
 class Admin extends Component {
@@ -27,7 +36,11 @@ class Admin extends Component {
                 { this.props.artworks.artworksLoading ?
                     <h2>Spinner...</h2>
                 :
-                    <Route path='/admin/main' render={ () => (<AdminMain { ...this.props }/>) }/>
+                    <React.Fragment>
+                        <Route path='/admin/main' render={ () => (<AdminMain { ...this.props }/>) }/>
+                        <Route path='/admin/title/' render={ () => (<AdminTitle { ...this.props }/>) }/>
+                        <Route path='/admin/details/' render={ () => (<AdminDetails { ...this.props }/>) }/>
+                    </React.Fragment>
                 }
             </ModalWrapper>
         )
@@ -38,14 +51,26 @@ class Admin extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        admin: state.ArtworksAdmin
+        admin: state.ArtworksAdmin,
+        redirect: state.AdminRedirect
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        // Redirect
+        toggleRedirect: (toAdminPanel) => { dispatch(toggleRedirect(toAdminPanel)) },
+        toggleEditMode: (editMode, artworkId) => { dispatch(toggleEditMode(editMode, artworkId)) },
+        resetRedirect: () => { dispatch(resetRedirect()) },
         // Artwork retrieve data
-        loadSortedArtworks: () => { dispatch(loadSortedArtworks()) }
+        loadSortedArtworks: () => { dispatch(loadSortedArtworks()) },
+        loadArtworkForEdit: () => { dispatch(loadArtworkForEdit()) },
+        // Artwork input data
+        setInputErrors: (inputError, errorField) => { dispatch(setInputErrors(inputError, errorField)) },
+        setFormError: (error) => { dispatch(setFormError(error)) },
+        setArtwork: (inputFieldId, inputData) => { 
+            dispatch(setArtwork(inputFieldId, inputData))
+        }
     }
 }
 
