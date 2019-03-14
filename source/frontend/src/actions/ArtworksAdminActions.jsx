@@ -60,3 +60,45 @@ export function setArtwork(inputFieldId, inputData) {
         })
     }
 }
+
+export function toggleEditMode(editMode, artworkId) {
+    return (dispatch) => {
+        dispatch({
+            type: 'TOGGLE_EDIT_MODE',
+            payload: editMode
+        })
+        if (artworkId) {
+            dispatch({
+                type: 'SET_ID',
+                payload: artworkId
+            })
+        } else {
+            dispatch({
+                type: 'SET_ID',
+                payload: ''
+            })
+            dispatch({
+                type: 'SET_ARTWORK_FOR_EDIT',
+                payload: {}
+            })
+        }
+    }
+}
+
+// Find relevant artwork for edit based on id 
+// and dispatch the artwork object to state.
+export function loadArtworkForEdit() {
+    return (dispatch, getState) => {
+        Object.values(getState().ArtworksViews.allArtworks).forEach((artwork) => {
+            const artworkForEdit = artwork.find(
+                findArtwork => findArtwork.id === getState().ArtworksAdmin.artworkId
+            )
+            if (artworkForEdit) {
+                dispatch({
+                    type: 'SET_ARTWORK_FOR_EDIT',
+                    payload: artworkForEdit
+                })
+            }
+        })
+    }
+}

@@ -3,9 +3,11 @@ const defaultState = {
     artworksSorting: true,
     // Toggle edit mode
     editMode: false,
+    artworkForEdit: {},
     // User input
     inputErrors: [],
     formError: false,
+    artworkId: '',
     title: '',
     yearFrom: '',
     yearTo: '',
@@ -30,6 +32,16 @@ const ArtworksAdmin = (state = defaultState, action) => {
                 ...state,
                 artworksSorting: false
             }
+        case 'TOGGLE_EDIT_MODE':
+            return state = {
+                ...state,
+                editMode: action.payload
+            }
+        case 'SET_ARTWORK_FOR_EDIT':
+            return state = {
+                ...state,
+                artworkForEdit: action.payload
+            }
         
         // User input
         case 'SET_INPUT_ERRORS':
@@ -41,6 +53,11 @@ const ArtworksAdmin = (state = defaultState, action) => {
             return state = {
                 ...state,
                 formError: action.payload
+            }
+        case 'SET_ID':
+            return state = {
+                ...state,
+                artworkId: action.payload
             }
         case 'SET_TITLE':
             return state = {
