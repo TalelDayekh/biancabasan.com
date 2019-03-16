@@ -1,5 +1,3 @@
-// Axios
-import axios from 'axios'
 // Local imports
 import {
     userLoginAPI
@@ -12,14 +10,9 @@ export function loginUser(username, password) {
     }
 }
 
-// Set authentication token globally in
-// headers for all axios requests.
 export function authenticationSuccess() {
-    return (dispatch) => {
-        axios.defaults.headers.common = {'Authorization': `token ${sessionStorage.getItem('token')}`}
-        dispatch({
-            type: 'AUTH_SUCCESS'
-        })
+    return {
+        type: 'AUTH_SUCCESS'
     }
 }
 
