@@ -4,6 +4,8 @@ import React, { Component } from 'react'
 import {
     ContentWrapper
 } from '../layouts/'
+// Views
+import NoContent from './NoContent'
 
 
 // Pagination counters
@@ -27,10 +29,22 @@ class Content extends Component {
 
     render = () => {
         return(
-            /////
             <React.Fragment>
-                <ContentWrapper>
-                </ContentWrapper>
+                { (Object.entries(this.props.artworks.allArtworks).length === 0) ?
+                    <NoContent/>
+                :
+                    <React.Fragment>
+                        { this.props.artworks.yearsPagination.map((year) => {
+                            return (<ContentWrapper>
+                                {year}
+                                <br/>
+                                { this.props.artworks.artworksPagination[year].map((theArtwork) => {
+                                    return <div style={{width: '100%', height: '300px', backgroundColor: 'green', borderTop: 'solid 3px yellow'}}>{theArtwork.title}</div>
+                                })}
+                            </ContentWrapper>)
+                        })}
+                    </React.Fragment>
+                }
             </React.Fragment>
         )
     }
@@ -42,11 +56,11 @@ class Content extends Component {
         yearsTotalIterations = this.props.artworks.allYears.length -1
         year = this.props.artworks.allYears[yearsCurrentIteration]
 
+        // Add the first artwork for the current year
+        this.artworksPagination()
+
         this.props.addYearToPagination(year)
         yearsCurrentIteration += 1
-
-        // Add the first artwork for the current year
-        this.artworksPagination()       
     }
 
     // Declare total amount of artworks pagination for the
@@ -54,9 +68,15 @@ class Content extends Component {
     // the page and add new artworks to pagination. If all
     // artworks for a year has been added, call a function
     // to start over the process with a new year.
-    artworksPagination = () => {        
-        if ((year && (artworksCurrentIteration === 0)) || 
-            (year && (window.innerHeight + window.scrollY >= document.body.offsetHeight))) {
+    artworksPagination = () => {
+        // Perform pagination on the very first iteration count if a year is stored
+        // in the year variable or if a year is stored in the year variable and the
+        // user scrolls to the bottom of the page. Do not perform pagination if the
+        // allArtworks object has no entries.
+        if (((year && (artworksCurrentIteration === 0)) || 
+            (year && (window.innerHeight + window.scrollY >= document.body.offsetHeight))) &&
+            (Object.entries(this.props.artworks.allArtworks).length > 0)) {
+
             artworksTotalIterations = this.props.artworks.allArtworks[year].length -1
 
             if (artworksCurrentIteration <= artworksTotalIterations) {
