@@ -15,7 +15,8 @@ import {
     loadArtworkForEdit,
     setInputErrors,
     setFormError,
-    setArtwork
+    setArtwork,
+    deleteArtworksAPI
 } from '../../actions/'
 // Layouts
 import {
@@ -70,7 +71,9 @@ const mapDispatchToProps = (dispatch) => {
         setFormError: (error) => { dispatch(setFormError(error)) },
         setArtwork: (inputFieldId, inputData) => { 
             dispatch(setArtwork(inputFieldId, inputData))
-        }
+        },
+        // DELETE requests
+        deleteArtwork: (artworkId) => { dispatch(deleteArtworksAPI(artworkId)) }
     }
 }
 
