@@ -61,44 +61,47 @@ export function setArtwork(inputFieldId, inputData) {
     }
 }
 
+// Find relevant artwork for edit based on id when edit
+// mode is true and dispatch all info about the artwork
+// to state.
 export function toggleEditMode(editMode, artworkId) {
-    return (dispatch) => {
+    return (dispatch, getState) => {
         dispatch({
             type: 'TOGGLE_EDIT_MODE',
             payload: editMode
         })
+
         if (artworkId) {
-            dispatch({
-                type: 'SET_ID',
-                payload: artworkId
+            Object.values(getState().ArtworksViews.allArtworks).forEach((artwork) => {
+                const artworkForEdit = artwork.find(
+                    findArtwork => findArtwork.id === artworkId
+                )
+
+                if (artworkForEdit) {
+                    const artworkInfoState = {
+                        SET_ID: artworkForEdit.id,
+                        SET_TITLE: artworkForEdit.title,
+                        SET_YEAR_FROM: artworkForEdit.year_from,
+                        SET_YEAR_TO: artworkForEdit.year_to,
+                        SET_HEIGHT: artworkForEdit.height,
+                        SET_WIDTH: artworkForEdit.width,
+                        SET_DEPTH: artworkForEdit.depth,
+                        SET_DESCRIPTION: artworkForEdit.description
+
+                    }
+
+                    for (let [key, value] of Object.entries(artworkInfoState)) {
+                        dispatch({
+                            type: key,
+                            payload: value
+                        })
+                    }
+                }
             })
         } else {
             dispatch({
-                type: 'SET_ID',
-                payload: ''
-            })
-            dispatch({
-                type: 'SET_ARTWORK_FOR_EDIT',
-                payload: {}
+                type: 'RESET_ARTWORK_INFO'
             })
         }
-    }
-}
-
-// Find relevant artwork for edit based on id 
-// and dispatch the artwork object to state.
-export function loadArtworkForEdit() {
-    return (dispatch, getState) => {
-        Object.values(getState().ArtworksViews.allArtworks).forEach((artwork) => {
-            const artworkForEdit = artwork.find(
-                findArtwork => findArtwork.id === getState().ArtworksAdmin.artworkId
-            )
-            if (artworkForEdit) {
-                dispatch({
-                    type: 'SET_ARTWORK_FOR_EDIT',
-                    payload: artworkForEdit
-                })
-            }
-        })
     }
 }

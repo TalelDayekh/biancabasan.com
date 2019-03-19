@@ -12,7 +12,6 @@ import {
     toggleEditMode,
     resetRedirect,
     loadSortedArtworks,
-    loadArtworkForEdit,
     setInputErrors,
     setFormError,
     setArtwork,
@@ -65,7 +64,6 @@ const mapDispatchToProps = (dispatch) => {
         resetRedirect: () => { dispatch(resetRedirect()) },
         // Artwork retrieve data
         loadSortedArtworks: () => { dispatch(loadSortedArtworks()) },
-        loadArtworkForEdit: () => { dispatch(loadArtworkForEdit()) },
         // Artwork input data
         setInputErrors: (inputError, errorField) => { dispatch(setInputErrors(inputError, errorField)) },
         setFormError: (error) => { dispatch(setFormError(error)) },
