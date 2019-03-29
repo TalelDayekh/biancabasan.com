@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 // Local imports
-import '../../App.css';
+// Elements
 import {
     ImageDropZone,
     NextButton
-} from '../elements/';
+} from '../elements/'
 
 
 class ImagesForm extends Component {
@@ -12,23 +12,41 @@ class ImagesForm extends Component {
     render = () => {
         return(
             <React.Fragment>
-                <div className="top-input-flex-container">
+                <div>
                     <ImageDropZone
-                        id="UPLOAD_IMAGES"
-                        onDragOver={ this.fileDropHover }
-                        onDrop={ (e) => { this.props.uploadArtworkImages(e) } }
+                        id='SET_IMAGES'
+                        onDragOver={ (e) => {this.clearFileErrors(e)} }
+                        onDrop={ (e) => {this.fileValidation(e)} }
                     />
                 </div>
-                <NextButton onClick={ this.props.createArtwork }>Save</NextButton>
             </React.Fragment>
         )
     }
 
 
-    fileDropHover = (e) => {
-        e.preventDefault();
+    clearFileErrors = (e) => {
+        e.preventDefault()
+        this.props.setInputErrors(false, e.target.id)
     }
+
+    fileValidation = (e) => {
+        e.preventDefault()
+
+        // Raise error if user tries to upload any files but
+        // jpg, jpeg or png and if the file size exceeds 2MB.
+        const RegEx=/.*\.(jpg|jpeg|png)$/i
+        let files = e.dataTransfer.files
+
+        Object.values(files).forEach((file) => {
+            if ((!(file.name.match(RegEx))) || (file.size > 2000000)) {
+                this.props.setInputErrors(true, e.target.id)
+            } else {
+                this.props.prepareImageUpload(file)
+            }
+        })
+    }
+
 }
 
 
-export default ImagesForm;
+export default ImagesForm
