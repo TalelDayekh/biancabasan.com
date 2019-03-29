@@ -24,8 +24,8 @@ class TitleForm extends Component {
                             placeholder={ this.title }
                             onFocus={ this.clearPlaceholder }
                             onBlur={ this.inputValidation }
-
-                            onChange={ (e) => {this.props.setArtwork(e)} }
+                            defaultValue={ this.props.admin.title }
+                            onChange={ (e) => {this.props.setArtwork(e.target.id, e.target.value)} }
                             raiseError={ (this.props.admin.inputErrors.indexOf('SET_TITLE') !== -1) ? true : undefined }
                         />
                     </div>
