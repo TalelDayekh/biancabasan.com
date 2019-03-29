@@ -14,6 +14,7 @@ import {
     loadSortedArtworks,
     setInputErrors,
     setFormError,
+    prepareImageUpload,
     setArtwork,
     deleteArtworksAPI
 } from '../../actions/'
@@ -25,6 +26,7 @@ import {
 import AdminMain from './AdminMain.jsx'
 import AdminTitle from './AdminTitle.jsx'
 import AdminDetails from './AdminDetails.jsx'
+import AdminImages from './AdminImages.jsx'
 
 
 class Admin extends Component {
@@ -40,6 +42,7 @@ class Admin extends Component {
                         <Route path='/admin/main' render={ () => (<AdminMain { ...this.props }/>) }/>
                         <Route path='/admin/title/' render={ () => (<AdminTitle { ...this.props }/>) }/>
                         <Route path='/admin/details/' render={ () => (<AdminDetails { ...this.props }/>) }/>
+                        <Route path='/admin/images/' render={ () => (<AdminImages { ...this.props }/>) }/>
                     </React.Fragment>
                 }
             </ModalWrapper>
@@ -67,6 +70,7 @@ const mapDispatchToProps = (dispatch) => {
         // Artwork input data
         setInputErrors: (inputError, errorField) => { dispatch(setInputErrors(inputError, errorField)) },
         setFormError: (error) => { dispatch(setFormError(error)) },
+        prepareImageUpload: (imageFile) => { dispatch(prepareImageUpload(imageFile)) },
         setArtwork: (inputFieldId, inputData) => { 
             dispatch(setArtwork(inputFieldId, inputData))
         },
