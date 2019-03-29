@@ -48,8 +48,8 @@ class DetailsForm extends Component {
                                             placeholder={ this[formField.inputField] }
                                             onFocus={ this.clearPlaceholder }
                                             onBlur={ this.inputValidation }
-
-                                            onChange={ (e) => {this.props.setArtwork(e)} }
+                                            defaultValue={ this.props.admin[formField.inputField] }
+                                            onChange={ (e) => {this.props.setArtwork(e.target.id, e.target.value)} }
                                             raiseError={ (this.props.admin.inputErrors.indexOf(formField.id) !== -1) ? true : undefined }
                                         />
                                     </div>
@@ -65,8 +65,8 @@ class DetailsForm extends Component {
                                             placeholder={ this[formField.inputField] }
                                             onFocus={ this.clearPlaceholder }
                                             onBlur={ this.inputValidation }
-
-                                            onChange={ (e) => {this.props.setArtwork(e)} }
+                                            defaultValue={ this.props.admin[formField.inputField] }
+                                            onChange={ (e) => {this.props.setArtwork(e.target.id, e.target.value)} }
                                             raiseError={ (this.props.admin.inputErrors.indexOf(formField.id) !== -1) ? true : undefined }
                                         />
                                     </div>
@@ -82,8 +82,8 @@ class DetailsForm extends Component {
                                             placeholder={ this[formField.inputField] }
                                             onFocus={ this.clearPlaceholder }
                                             onBlur={ this.inputValidation }
-
-                                            onChange={ (e) => {this.props.setArtwork(e)} }
+                                            defaultValue={ this.props.admin[formField.inputField] }
+                                            onChange={ (e) => {this.props.setArtwork(e.target.id, e.target.value)} }
                                             raiseError={ (this.props.admin.inputErrors.indexOf(formField.id) !== -1) ? true : undefined }
                                         />
                                     </div>
