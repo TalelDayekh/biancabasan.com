@@ -8,6 +8,10 @@ import TitleForm from './TitleForm.jsx'
 
 class AdminTitle extends Component {
 
+    componentDidMount = () => {
+        this.props.resetRedirect()
+    }
+
     render = () => {
         if (this.props.redirect.toAdminMain) {
             return <Redirect push to='/admin/main/'/>

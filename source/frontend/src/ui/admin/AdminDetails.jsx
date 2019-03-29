@@ -8,6 +8,10 @@ import DetailsForm from './DetailsForm.jsx'
 
 class AdminDetails extends Component {
 
+    componentDidMount = () => {
+        this.props.resetRedirect()
+    }
+
     render = () => {
         if (this.props.redirect.toAdminImages) {
             return <Redirect push to='/admin/images/'/>
