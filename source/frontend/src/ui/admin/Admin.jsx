@@ -16,6 +16,7 @@ import {
     setFormError,
     prepareImageUpload,
     setArtwork,
+    removeImageFromUpload,
     deleteArtworksAPI
 } from '../../actions/'
 // Layouts
@@ -74,7 +75,8 @@ const mapDispatchToProps = (dispatch) => {
         setArtwork: (inputFieldId, inputData) => { 
             dispatch(setArtwork(inputFieldId, inputData))
         },
-        // DELETE requests
+        // Artwork delete data
+        removeImageFromUpload: (imageIndex) => { dispatch(removeImageFromUpload(imageIndex)) },
         deleteArtwork: (artworkId) => { dispatch(deleteArtworksAPI(artworkId)) }
     }
 }
