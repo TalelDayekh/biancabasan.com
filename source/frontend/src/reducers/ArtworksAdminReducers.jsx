@@ -3,7 +3,6 @@ const defaultState = {
     artworksSorting: true,
     // Toggle edit mode
     editMode: false,
-    artworkForEdit: {},
     // User input
     inputErrors: [],
     formError: false,
@@ -15,7 +14,8 @@ const defaultState = {
     height: '',
     width: '',
     depth: '',
-    description: ''
+    description: '',
+    images: []
 }
 
 
@@ -36,11 +36,6 @@ const ArtworksAdmin = (state = defaultState, action) => {
             return state = {
                 ...state,
                 editMode: action.payload
-            }
-        case 'SET_ARTWORK_FOR_EDIT':
-            return state = {
-                ...state,
-                artworkForEdit: action.payload
             }
         
         // User input
@@ -98,6 +93,24 @@ const ArtworksAdmin = (state = defaultState, action) => {
             return state = {
                 ...state,
                 description: action.payload
+            }
+        case 'SET_IMAGES':
+            return state = {
+                ...state,
+                images: action.payload
+            }
+        case 'RESET_ARTWORK_INFO':
+            return state = {
+                ...state,
+                artworkId: '',
+                title: '',
+                yearFrom: '',
+                yearTo: '',
+                material: '',
+                height: '',
+                width: '',
+                depth: '',
+                description: ''
             }
 
         default:
