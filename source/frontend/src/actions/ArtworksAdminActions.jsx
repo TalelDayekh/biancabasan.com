@@ -53,10 +53,44 @@ export function setFormError(error) {
 
 //
 export function setArtwork(inputFieldId, inputData) {
+    return {
+        type: inputFieldId,
+        payload: inputData
+    }
+}
+
+// Add uploaded image files to the images array
+export function prepareImageUpload(imageFile) {
     return (dispatch, getState) => {
+        const oldImagesArray = getState().ArtworksAdmin.images
+        let newImagesArray = [ ...oldImagesArray ]
+
+        newImagesArray.push(imageFile)
+
         dispatch({
-            type: inputFieldId,
-            payload: inputData
+            type: 'SET_IMAGES',
+            payload: newImagesArray
+        })
+    }
+}
+
+//
+export function removeImageFromUpload(imageIndex) {
+    return (dispatch, getState) => {
+        const artworkDetails = getState().ArtworksAdmin
+        const oldImagesArray = getState().ArtworksAdmin.images
+        let newImagesArray = [ ...oldImagesArray ]
+
+        if (artworkDetails.artworkId) {
+            console.log('The artwork has an id. Delete it from the db')
+        } else {
+            newImagesArray.splice(imageIndex, 1)
+            console.log('The artwork has no id. Remove it from state')
+        }
+
+        dispatch({
+            type: 'SET_IMAGES',
+            payload: newImagesArray
         })
     }
 }
@@ -83,6 +117,7 @@ export function toggleEditMode(editMode, artworkId) {
                         SET_TITLE: artworkForEdit.title,
                         SET_YEAR_FROM: artworkForEdit.year_from,
                         SET_YEAR_TO: artworkForEdit.year_to,
+                        SET_MATERIAL: artworkForEdit.material,
                         SET_HEIGHT: artworkForEdit.height,
                         SET_WIDTH: artworkForEdit.width,
                         SET_DEPTH: artworkForEdit.depth,
