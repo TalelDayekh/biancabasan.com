@@ -3,3 +3,9 @@ export function toggleRedirect(toAdminPanel) {
         type: toAdminPanel
     }
 }
+
+export function resetRedirect() {
+    return {
+        type: 'RESET_REDIRECT'
+    }
+}
