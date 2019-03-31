@@ -1,45 +1,24 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 // React Router
-import { Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom'
 // Local imports
-import ImagesForm from './ImagesForm.jsx';
-import {
-    AdminContentWrapper
-} from '../layouts/';
+// Admin
+import ImagesForm from './ImagesForm.jsx'
 
 
 class AdminImages extends Component {
 
-    componentDidMount = () => {
-        this.props.resetRedirect();
-    }
     render = () => {
-        if (this.props.redirect.toAdminMain === true) {
-            return <Redirect push to="/admin/"/>
-        }
-        if (this.props.redirect.toAdminDetails === true) {
-            return <Redirect push to="/admin/admin_details/"/>
-        }
-
         return(
-            <AdminContentWrapper>
+            <React.Fragment>
                 <ImagesForm
                     { ...this.props }
                 />
-            </AdminContentWrapper>
+            </React.Fragment>
         )
     }
 
-
-    redirect = (e) => {
-        if (e.target.id === 'next') {
-            this.props.toggleRedirect('ADMIN_MAIN')
-        };
-        if (e.target.id === 'back') {
-            this.props.toggleRedirect('ADMIN_DETAILS')
-        };
-    }
 }
 
 
-export default AdminImages;
+export default AdminImages
