@@ -14,7 +14,10 @@ class ArtworkDetailsTest(TestCase):
             title='Starry Night',
             from_year=1889,
             to_year=1889,
-            materials='Oil on canvas'
+            materials='Oil on canvas',
+            height=74,
+            width=92,
+            depth=0
         )
 
         self.artwork_details = ArtworkDetails.objects.get(id=1)
@@ -28,18 +31,24 @@ class ArtworkDetailsTest(TestCase):
 
         # _meta provides access to meta-information about the model
         title_label = self.artwork_details._meta.get_field('title').name
-        title_type = (self.artwork_details
-                        ._meta.get_field('title')
-                        .get_internal_type())
+        title_type = (
+            self.artwork_details
+            ._meta.get_field('title')
+            .get_internal_type()
+            )
         title_length = self.artwork_details._meta.get_field('title').max_length
 
         materials_label = self.artwork_details._meta.get_field('materials').name
-        materials_type = (self.artwork_details
-                            ._meta.get_field('materials')
-                            .get_internal_type())
-        materials_length = (self.artwork_details
-                            ._meta.get_field('materials')
-                            .max_length)
+        materials_type = (
+            self.artwork_details
+            ._meta.get_field('materials')
+            .get_internal_type()
+            )
+        materials_length = (
+            self.artwork_details
+            ._meta.get_field('materials')
+            .max_length
+            )
 
         self.assertEqual(title_label, 'title')
         self.assertEqual(title_length, 200)
@@ -57,14 +66,57 @@ class ArtworkDetailsTest(TestCase):
         """
 
         from_year_label = self.artwork_details._meta.get_field('from_year').name
-        from_year_type = (self.artwork_details
-                            ._meta.get_field('from_year')
-                            .get_internal_type())
+        from_year_type = (
+            self.artwork_details._meta
+            .get_field('from_year')
+            .get_internal_type()
+            )
+
         to_year_label = self.artwork_details._meta.get_field('to_year').name
-        to_year_type = (self.artwork_details
-                            ._meta.get_field('to_year')
-                            .get_internal_type())
+        to_year_type = (
+            self.artwork_details
+            ._meta.get_field('to_year')
+            .get_internal_type()
+            )
 
         self.assertEqual(from_year_label, 'from_year')
+
         self.assertEqual(to_year_label, 'to_year')
+
         self.assertEqual((from_year_type and to_year_type), 'IntegerField')
+
+    def test_measurements(self):
+        """
+        Test for FloatField.
+        """
+
+        height_label = self.artwork_details._meta.get_field('height').name
+        height_type = (
+            self.artwork_details
+            ._meta.get_field('height')
+            .get_internal_type()
+            )
+
+        width_label = self.artwork_details._meta.get_field('width').name
+        width_type = (
+            self.artwork_details
+            ._meta.get_field('width')
+            .get_internal_type()
+            )
+
+        depth_label = self.artwork_details._meta.get_field('depth').name
+        depth_type = (
+            self.artwork_details
+            ._meta.get_field('depth')
+            .get_internal_type()
+            )
+
+        self.assertEqual(height_label, 'height')
+
+        self.assertEqual(width_label, 'width')
+
+        self.assertEqual(depth_label, 'depth')
+
+        self.assertEqual(
+            (height_type and width_type and depth_type), 'FloatField'
+            )
