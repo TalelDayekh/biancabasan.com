@@ -8,55 +8,60 @@ from ..models import(
 
 
 class ArtworkDetailsTest(TestCase):
-    # Call setUpTestData() for objects that are not
-    # going to be modified or changed in any of the
-    # test methods.
-    @classmethod
-    def setUpTestData(cls):
-        """
-        Create an ArtworkDetails object and set
-        details to be used in all test methods.
-        """
 
+    def setUp(self):
         ArtworkDetails.objects.create(
             title='Starry Night',
             from_year=1889,
-            to_year=1889
+            to_year=1889,
+            materials='Oil on canvas'
         )
 
-    def test_title(self):
-        """
-        Test that title has a label of title, is of
-        type CharField and has a max_length of 200.
-        """
+        self.artwork_details = ArtworkDetails.objects.get(id=1)
 
-        artwork_details = ArtworkDetails.objects.get(id=1)
+    def test_title_and_materials(self):
+        """
+        Test for CharField. Test that title has a label of title and a
+        max_length of 200, that materials has a label of materials and
+        a max_length of 500. Test that both are of type CharField.
+        """
 
         # _meta provides access to meta-information about the model
-        title_label = artwork_details._meta.get_field('title').name
-        title_type = (artwork_details
+        title_label = self.artwork_details._meta.get_field('title').name
+        title_type = (self.artwork_details
                         ._meta.get_field('title')
                         .get_internal_type())
-        title_length = artwork_details._meta.get_field('title').max_length
+        title_length = self.artwork_details._meta.get_field('title').max_length
+
+        materials_label = self.artwork_details._meta.get_field('materials').name
+        materials_type = (self.artwork_details
+                            ._meta.get_field('materials')
+                            .get_internal_type())
+        materials_length = (self.artwork_details
+                            ._meta.get_field('materials')
+                            .max_length)
 
         self.assertEqual(title_label, 'title')
-        self.assertEqual(title_type, 'CharField')
         self.assertEqual(title_length, 200)
+
+        self.assertEqual(materials_label, 'materials')
+        self.assertEqual(materials_length, 500)
+
+        self.assertEqual((title_type and materials_type), 'CharField')
     
     def test_years(self):
         """
-        Test that years have a label of from_year
-        and to_year and are of type IntegerField.
+        Test for IntegerField. Test that years have
+        a label of from_year and to_year and are of
+        type IntegerField.
         """
 
-        artwork_details = ArtworkDetails.objects.get(id=1)
-
-        from_year_label = artwork_details._meta.get_field('from_year').name
-        from_year_type = (artwork_details
+        from_year_label = self.artwork_details._meta.get_field('from_year').name
+        from_year_type = (self.artwork_details
                             ._meta.get_field('from_year')
                             .get_internal_type())
-        to_year_label = artwork_details._meta.get_field('to_year').name
-        to_year_type = (artwork_details
+        to_year_label = self.artwork_details._meta.get_field('to_year').name
+        to_year_type = (self.artwork_details
                             ._meta.get_field('to_year')
                             .get_internal_type())
 
