@@ -16,6 +16,7 @@
 /source/backend/users/*
 
 !/source/backend/artworks/admin.py
+!/source/backend/artworks/images.py
 !/source/backend/artworks/models.py
 
 !/source/backend/users/admin.py
