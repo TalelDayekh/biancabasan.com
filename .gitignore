@@ -10,8 +10,12 @@
 # Backend
 !/source/backend/
 /source/backend/*
+!/source/backend/artworks/
+/source/backend/artworks/*
 !/source/backend/users/
 /source/backend/users/*
+
+!/source/backend/artworks/models.py
 
 !/source/backend/users/admin.py
 !/source/backend/users/models.py
