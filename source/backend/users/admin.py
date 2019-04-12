@@ -9,7 +9,7 @@ from .models import(
 
 
 class CustomUserAdmin(UserAdmin):
-    # Set fields to be displayed on the users list page
+    # Set which fields to display on the users list page
     list_display = ['id', 'username', 'email', 'is_staff']
 
 
