@@ -3,7 +3,8 @@ from django.contrib import admin
 # Local imports
 # Models
 from .models import(
-    ArtworkDetails
+    ArtworkDetails,
+    ArtworkImages
 )
 
 
@@ -11,3 +12,4 @@ from .models import(
 Registered models
 """
 admin.site.register(ArtworkDetails)
+admin.site.register(ArtworkImages)
