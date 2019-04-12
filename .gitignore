@@ -2,36 +2,16 @@
 /*
 
 
-# Except theses committed directories and files
-
-# Design directory and files
-!/design/
-
-
-# Source code
+# Source directory
 !/source/
 /source/*
 
-# Backend directories and files
+
+# Backend
 !/source/backend/
 /source/backend/*
+!/source/backend/users/
+/source/backend/users/*
 
-!/source/backend/admin_artworks/
-/source/backend/admin_artworks/*
-
-!/source/backend/admin_artworks/api/
-
-
-# Frontend directories and files
-!/source/frontend/
-/source/frontend/*
-
-!/source/frontend/src/
-/source/frontend/src/*
-
-!/source/frontend/src/App.js
-!/source/frontend/src/App.css
-!/source/frontend/src/store.jsx
-!/source/frontend/src/actions/
-!/source/frontend/src/reducers/
-!/source/frontend/src/ui/
+!/source/backend/users/admin.py
+!/source/backend/users/models.py
