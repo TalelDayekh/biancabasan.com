@@ -30,12 +30,13 @@ def create_artwork_img_obj(img_file):
         prefix='biancabasan_test_files_').name
 )
 class TestImgPathHandler(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         test_img = create_temp_test_img_file('starry_night', 'jpeg')
-        self.uploaded_img = create_artwork_img_obj(test_img)
+        cls.uploaded_img = create_artwork_img_obj(test_img)
 
         print('Temporary test directories and files are being created at path:\n' 
-            + self.uploaded_img.path)
+            + cls.uploaded_img.path)
     
     def test_artwork_title_formatting(self):
         img_path_handler_obj = ImgPathHandler(
@@ -46,3 +47,6 @@ class TestImgPathHandler(TestCase):
         self.assertEqual(
             img_path_handler_obj.artwork_title, 
             'starry_night_1889__vincent_van_gogh')
+
+    def test_(self):
+        pass
