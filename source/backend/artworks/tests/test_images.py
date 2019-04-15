@@ -33,8 +33,8 @@ class TestImgPathHandler(TestCase):
     def setUp(self):
         test_img = create_temp_test_img_file('starry_night', 'jpeg')
         self.uploaded_img = create_artwork_img_obj(test_img)
-        
-        print('Temporary test directories and files are being created in:\n' 
+
+        print('Temporary test directories and files are being created at path:\n' 
             + self.uploaded_img.path)
     
     def test_artwork_title_formatting(self):
