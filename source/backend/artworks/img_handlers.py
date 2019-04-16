@@ -32,3 +32,7 @@ class ImgPathHandler():
             print(err)
         else:
             return(self.new_img_path)
+
+
+class ImgManipulationsHandler():
+    pass

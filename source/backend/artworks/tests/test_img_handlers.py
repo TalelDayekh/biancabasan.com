@@ -4,7 +4,7 @@ from django.test import TestCase, override_settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from PIL import Image
 from ..models import ArtworkImages
-from ..images import ImgPathHandler
+from ..img_handlers import ImgPathHandler
 
 
 def create_temp_test_img_file(img_name, img_file_format):
@@ -14,6 +14,7 @@ def create_temp_test_img_file(img_name, img_file_format):
     temp_img_file.name = f'{img_name}' + '.' + f'{img_file_format}'
     temp_img_file.seek(0)
     return temp_img_file
+
 
 def create_artwork_img_obj(img_file):
     artwork_image = ArtworkImages.objects.create(
