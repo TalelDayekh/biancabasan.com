@@ -23,3 +23,12 @@ class ImgPathHandler():
             self.new_img_path = os.path.join(
                 self.initial_img_path, self.artwork_title
             )
+
+    def mkdir_from_artwork_title(self):
+        os.chdir(self.initial_img_path)
+        try:
+            os.mkdir(self.artwork_title)
+        except FileExistsError as err:
+            print(err)
+        else:
+            return(self.new_img_path)
