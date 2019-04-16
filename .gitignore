@@ -22,10 +22,10 @@
 # Backend files
 # artworks app
 !/source/backend/artworks/admin.py
-!/source/backend/artworks/images.py
+!/source/backend/artworks/img_handlers.py
 !/source/backend/artworks/models.py
 # users app
 !/source/backend/users/admin.py
 !/source/backend/users/models.py
 # tests
-!/source/backend/artworks/tests/test_images.py
+!/source/backend/artworks/tests/test_img_handlers.py
