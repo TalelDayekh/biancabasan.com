@@ -1,3 +1,4 @@
+import os
 import tempfile
 from django.test import TestCase, override_settings
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -26,8 +27,10 @@ def create_artwork_img_obj(img_file):
 
 
 @override_settings(
-    MEDIA_ROOT=tempfile.TemporaryDirectory(
-        prefix='biancabasan_test_files_').name
+    # os.path.realpath returns the absolute path,
+    # not just the path prefixed with a symlink.
+    MEDIA_ROOT=os.path.realpath(tempfile.TemporaryDirectory(
+        prefix='biancabasan_test_files_').name)
 )
 class TestImgPathHandler(TestCase):
     @classmethod
@@ -35,13 +38,13 @@ class TestImgPathHandler(TestCase):
         test_img = create_temp_test_img_file('starry_night', 'jpeg')
         uploaded_img = create_artwork_img_obj(test_img)
 
-        img_path_handler_obj = ImgPathHandler(
+        cls.img_path_handler_obj = ImgPathHandler(
             uploaded_img,
             '#sTArrY niGHT 1!8.,8?9;  (vInCEnt: vAN GÖogH)'
         )
-        cls.artwork_title = img_path_handler_obj.artwork_title
-        cls.initial_img_path = img_path_handler_obj.initial_img_path
-        cls.new_img_path = img_path_handler_obj.new_img_path
+        cls.artwork_title = cls.img_path_handler_obj.artwork_title
+        cls.initial_img_path = cls.img_path_handler_obj.initial_img_path
+        cls.new_img_path = cls.img_path_handler_obj.new_img_path
 
         print('Temporary test directories and files are being created at path:\n' 
             + uploaded_img.path)
@@ -56,3 +59,9 @@ class TestImgPathHandler(TestCase):
             self.new_img_path,
             (self.initial_img_path + '/' + self.artwork_title)
         )
+    
+    def test_mkdir_from_artwork_title(self):
+        new_dir_path = self.img_path_handler_obj.mkdir_from_artwork_title()
+        os.chdir(new_dir_path)
+
+        self.assertEqual(os.getcwd(), self.new_img_path)
