@@ -33,20 +33,26 @@ class TestImgPathHandler(TestCase):
     @classmethod
     def setUpTestData(cls):
         test_img = create_temp_test_img_file('starry_night', 'jpeg')
-        cls.uploaded_img = create_artwork_img_obj(test_img)
+        uploaded_img = create_artwork_img_obj(test_img)
 
-        print('Temporary test directories and files are being created at path:\n' 
-            + cls.uploaded_img.path)
-    
-    def test_artwork_title_formatting(self):
         img_path_handler_obj = ImgPathHandler(
-            self.uploaded_img,
+            uploaded_img,
             '#sTArrY niGHT 1!8.,8?9;  (vInCEnt: vAN GÖogH)'
         )
+        cls.artwork_title = img_path_handler_obj.artwork_title
+        cls.initial_img_path = img_path_handler_obj.initial_img_path
+        cls.new_img_path = img_path_handler_obj.new_img_path
 
+        print('Temporary test directories and files are being created at path:\n' 
+            + uploaded_img.path)
+    
+    def test_artwork_title_formatting(self):
         self.assertEqual(
-            img_path_handler_obj.artwork_title, 
+            self.artwork_title, 
             'starry_night_1889__vincent_van_gogh')
 
-    def test_(self):
-        pass
+    def test_new_img_path(self):
+        self.assertEqual(
+            self.new_img_path,
+            (self.initial_img_path + '/' + self.artwork_title)
+        )
