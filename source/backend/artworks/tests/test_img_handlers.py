@@ -3,7 +3,7 @@ import tempfile
 from django.test import TestCase, override_settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from PIL import Image
-from ..models import ArtworkImages
+from ..models import ArtworkDetails, ArtworkImages
 from ..img_handlers import ImgPathHandler, ImgManipulationHandler
 
 
@@ -17,13 +17,19 @@ def create_temp_test_img_file(img_name, img_file_format):
 
 
 def create_artwork_img_obj(img_file):
+    artwork_details = ArtworkDetails.objects.create(
+        title='Starry Night'
+    )
+
     artwork_image = ArtworkImages.objects.create(
-        image=SimpleUploadedFile(
+        artwork_details=artwork_details,
+        img=SimpleUploadedFile(
             name=img_file.name,
             content=img_file.read()
         )
     )
-    uploaded_img = ArtworkImages.objects.get(id=1).image
+    
+    uploaded_img = ArtworkImages.objects.get(id=1).img
     return uploaded_img
 
 
