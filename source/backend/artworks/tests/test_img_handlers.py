@@ -4,7 +4,7 @@ from django.test import TestCase, override_settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from PIL import Image
 from ..models import ArtworkImages
-from ..img_handlers import ImgPathHandler, ImgManipulationsHandler
+from ..img_handlers import ImgPathHandler, ImgManipulationHandler
 
 
 def create_temp_test_img_file(img_name, img_file_format):
@@ -75,7 +75,7 @@ class TestImgManipulationsHandler(TestCase):
         cls.test_img = Image.open(created_test_img)
 
     def test_resize_img_proportionally(self):
-        resized_img = ImgManipulationsHandler(
+        resized_img = ImgManipulationHandler(
             self.test_img,
             1024
         ).resize_img_proportionally()

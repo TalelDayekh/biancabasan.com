@@ -35,7 +35,7 @@ class ImgPathHandler():
             return(self.new_img_path)
 
 
-class ImgManipulationsHandler():
+class ImgManipulationHandler():
     def __init__(self, img_file, new_img_width):
         self.img_file = img_file
         self.new_img_width = int(new_img_width)
