@@ -9,6 +9,9 @@
 # Backend directories
 !/source/backend/
 /source/backend/*
+# api app
+!/source/backend/api/
+/source/backend/api/*
 # artworks app
 !/source/backend/artworks/
 /source/backend/artworks/*
@@ -20,6 +23,8 @@
 /source/backend/artworks/tests/*
 
 # Backend files
+# api app
+!/source/backend/api/serializers.py
 # artworks app
 !/source/backend/artworks/admin.py
 !/source/backend/artworks/img_handlers.py
