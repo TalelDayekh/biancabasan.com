@@ -14,7 +14,7 @@ class ArtworkImagesSerializer(serializers.Serializer):
         return instance
 
 
-class ArtworkDetailsSerializer(serializers.Serializer):
+class ArtworksSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     title = serializers.CharField(max_length=200)
     images = ArtworkImagesSerializer(many=True)
