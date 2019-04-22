@@ -25,6 +25,8 @@
 # Backend files
 # api app
 !/source/backend/api/serializers.py
+!/source/backend/api/urls.py
+!/source/backend/api/views.py
 # artworks app
 !/source/backend/artworks/admin.py
 !/source/backend/artworks/img_handlers.py
