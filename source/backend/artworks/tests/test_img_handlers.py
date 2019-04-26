@@ -15,63 +15,61 @@ def create_temp_test_img_file(img_name, img_file_format):
     temp_img_file.seek(0)
     return temp_img_file
 
-
-def create_artwork_img_obj(img_file):
+def create_artwork_test_obj(img_file):
     artwork_details = ArtworkDetails.objects.create(
-        title='Starry Night'
+        title='#sTArry niGHT 1!8.,8?9;  (vInCEnt: vAN GÖogH)'
     )
 
-    artwork_image = ArtworkImages.objects.create(
+    artwork_img = ArtworkImages.objects.create(
         artwork_details=artwork_details,
         img=SimpleUploadedFile(
             name=img_file.name,
             content=img_file.read()
         )
     )
-    
-    uploaded_img = ArtworkImages.objects.get(id=1).img
-    return uploaded_img
+
+    uploaded_artwork = []
+    uploaded_artwork.append(artwork_details)
+    uploaded_artwork.append(artwork_img)
+    return uploaded_artwork
 
 
 @override_settings(
     # os.path.realpath returns the absolute path,
     # not just the path prefixed with a symlink.
     MEDIA_ROOT=os.path.realpath(tempfile.TemporaryDirectory(
-        prefix='biancabasan_test_files_').name)
-)
+        prefix='biancabasan_test_files').name))
 class TestImgPathHandler(TestCase):
     @classmethod
     def setUpTestData(cls):
         test_img = create_temp_test_img_file('starry_night', 'jpeg')
-        artwork_img_obj = create_artwork_img_obj(test_img)
+        artwork_test_obj = create_artwork_test_obj(test_img)
+        uploaded_artwork_img = artwork_test_obj[1]
+        cls.img_path_handler_obj = ImgPathHandler(uploaded_artwork_img)
 
-        cls.img_path_handler_obj = ImgPathHandler(
-            artwork_img_obj,
-            '#sTArrY niGHT 1!8.,8?9;  (vInCEnt: vAN GÖogH)'
-        )
-        cls.artwork_title = cls.img_path_handler_obj.artwork_title
-        cls.initial_img_path = cls.img_path_handler_obj.initial_img_path
-        cls.new_img_path = cls.img_path_handler_obj.new_img_path
-
-        print('\nTemporary test directories and files are being created at path:\n' 
-            + artwork_img_obj.path)
+        print('\nTemp test directories and files are being created at path:\n'
+            + uploaded_artwork_img.img.path)
     
     def test_artwork_title_formatting(self):
-        self.assertEqual(
-            self.artwork_title, 
-            'starry_night_1889__vincent_van_gogh')
+        formatted_title = self.img_path_handler_obj.artwork_title
+
+        self.assertEqual(formatted_title, 'starry_night_1889__vincent_van_gogh')
 
     def test_new_img_path(self):
-        self.assertEqual(
-            self.new_img_path,
-            (self.initial_img_path + '/' + self.artwork_title)
-        )
-    
-    def test_mkdir_from_artwork_title(self):
-        new_dir_path = self.img_path_handler_obj.mkdir_from_artwork_title()
-        os.chdir(new_dir_path)
+        initial_img_path = self.img_path_handler_obj.initial_img_path
+        new_img_path = self.img_path_handler_obj.new_img_path
 
-        self.assertEqual(os.getcwd(), self.new_img_path)
+        self.assertEqual(
+            new_img_path,
+            (initial_img_path + '/' + 'starry_night_1889__vincent_van_gogh')
+        )
+
+    def test_mkdir_from_artwork_title(self):
+        new_dir = self.img_path_handler_obj.mkdir_from_artwork_title()
+        new_img_path = self.img_path_handler_obj.new_img_path
+        os.chdir(new_dir)
+
+        self.assertEqual(os.getcwd(), new_img_path)
 
 
 class TestImgManipulationsHandler(TestCase):

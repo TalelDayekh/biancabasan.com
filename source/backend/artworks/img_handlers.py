@@ -4,35 +4,41 @@ from PIL import Image
 
 
 class ImgPathHandler():
-    def __init__(self, artwork_img_obj, artwork_title):
-        self.artwork_img_obj = artwork_img_obj
-        self.artwork_title = str(artwork_title)
+    def __init__(self, artwork_images_obj):
+        self.artwork_images_obj = artwork_images_obj
 
         try:
-            self.artwork_img_obj.path
+            self.artwork_images_obj.img
         except AttributeError as err:
-            print(err)
+            print(str(err) + ', ImgPathHandler needs to be passed an instance '
+                + 'of the ArtworkImages model')
         else:
             # Remove characters that are not letters or numbers from
             # artwork_title, convert remaining ones to lowercase and
             # replace whitespaces with underscores.
+            self.artwork_title = str(
+                self.artwork_images_obj.artwork_details.title)
             self.artwork_title = re.sub(
                 '[^A-Za-z0-9\s]{1}', '', self.artwork_title).replace(
                 ' ', '_').lower()
-            
-            self.initial_img_path = os.path.dirname(self.artwork_img_obj.path)
+
+            self.initial_img_path = os.path.dirname(
+                self.artwork_images_obj.img.path
+            )
             self.new_img_path = os.path.join(
                 self.initial_img_path, self.artwork_title
             )
 
     def mkdir_from_artwork_title(self):
         os.chdir(self.initial_img_path)
+
         try:
             os.mkdir(self.artwork_title)
         except FileExistsError as err:
-            print(err)
+            print(str(err) 
+                + ', a image directory already exists for this artwork')
         else:
-            return(self.new_img_path)
+            return self.new_img_path
 
 
 class ImgManipulationHandler():
