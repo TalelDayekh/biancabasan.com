@@ -88,4 +88,9 @@ class TestImgManipulationsHandler(TestCase):
         self.assertEqual(resized_img.height, 811)
 
     def test_upload_img_to_memory(self):
-        pass
+        in_memory_uploaded_img = (
+            self.img_manipulation_handler_obj.upload_img_to_memory(
+                'starry_night',
+                'JPEG'
+            )
+        )

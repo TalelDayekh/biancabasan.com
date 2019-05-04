@@ -1,5 +1,6 @@
 import os
 import re
+from io import BytesIO
 from PIL import Image
 
 
@@ -60,4 +61,12 @@ class ImgManipulationHandler():
         return resized_img
 
     def upload_img_to_memory(self, img_file_name, img_file_format):
-        pass
+        allowed_file_formats = ['jpeg', 'jpg', 'png']
+
+        try:
+            if img_file_format.lower() not in allowed_file_formats:
+                raise Exception
+        except Exception:
+            print('Image format has to be jpeg, jpg or png')
+        else:
+            pass
