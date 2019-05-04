@@ -42,19 +42,22 @@ class ImgPathHandler():
 
 
 class ImgManipulationHandler():
-    def __init__(self, img_file, new_img_width):
-        self.img_file = img_file
-        self.new_img_width = int(new_img_width)
+    def __init__(self, open_img_file):
+        self.open_img_file = open_img_file
 
-    def resize_img_proportionally(self):
         try:
-            self.img_file.verify
+            self.open_img_file.verify
         except Exception:
             print('Not a valid image file')
-        else:
-            img_width, img_height = self.img_file.size
-            new_img_height = (img_height/img_width) * self.new_img_width
-            resized_img = self.img_file.resize(
-                (self.new_img_width, int(round(new_img_height)))
-            )
-            return resized_img
+
+    def resize_img_proportionally(self, new_img_width):
+        new_img_width = int(new_img_width)
+        img_width, img_height = self.open_img_file.size
+        new_img_height = (img_height/img_width) * new_img_width
+        resized_img = self.open_img_file.resize(
+            (new_img_width, int(round(new_img_height)))
+        )
+        return resized_img
+
+    def upload_img_to_memory(self, img_file_name, img_file_format):
+        pass
