@@ -27,20 +27,25 @@ class ImgPathHandler():
             self.initial_img_path = os.path.dirname(
                 self.artwork_images_obj.img.path
             )
-            self.new_img_path = os.path.join(
-                self.initial_img_path, self.artwork_title
-            )
 
     def mkdir_from_artwork_title(self):
         os.chdir(self.initial_img_path)
 
+        new_img_path = os.path.join(
+            self.initial_img_path, self.artwork_title
+        )
+
         try:
             os.mkdir(self.artwork_title)
         except FileExistsError as err:
-            print(str(err) 
+            print(str(err)
                 + ', a image directory already exists for this artwork')
+            return new_img_path
         else:
-            return self.new_img_path
+            return new_img_path
+
+    def mv_img_to_artwork_title_dir(self):
+        pass
 
 
 class ImgManipulationHandler():

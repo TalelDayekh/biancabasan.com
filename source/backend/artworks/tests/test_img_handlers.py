@@ -58,21 +58,14 @@ class TestImgPathHandler(TestCase):
 
         self.assertEqual(formatted_title, 'starry_night_1889__vincent_van_gogh')
 
-    def test_new_img_path(self):
-        initial_img_path = self.img_path_handler_obj.initial_img_path
-        new_img_path = self.img_path_handler_obj.new_img_path
-
-        self.assertEqual(
-            new_img_path,
-            (initial_img_path + '/' + 'starry_night_1889__vincent_van_gogh')
-        )
-
     def test_mkdir_from_artwork_title(self):
         new_dir = self.img_path_handler_obj.mkdir_from_artwork_title()
-        new_img_path = self.img_path_handler_obj.new_img_path
         os.chdir(new_dir)
 
-        self.assertEqual(os.getcwd(), new_img_path)
+        self.assertEqual(os.getcwd(), new_dir)
+
+    def test_mv_img_to_artwork_title_dir(self):
+        pass
 
 
 class TestImgManipulationsHandler(TestCase):
