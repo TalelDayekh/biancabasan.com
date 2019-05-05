@@ -1,6 +1,7 @@
 import os
 import re
 from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image
 
 
@@ -69,4 +70,19 @@ class ImgManipulationHandler():
         except Exception:
             print('Image format has to be jpeg, jpg or png')
         else:
-            pass
+            memory_buffer = BytesIO()
+            self.open_img_file.save(
+                memory_buffer,
+                format=img_file_format,
+                quality=10
+            )
+
+            in_memory_img = InMemoryUploadedFile(
+                memory_buffer,
+                None,
+                img_file_name + '.' + img_file_format,
+                img_file_format,
+                None,
+                None
+            )
+            return in_memory_img

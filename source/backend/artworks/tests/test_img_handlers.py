@@ -1,7 +1,10 @@
 import os
 import tempfile
 from django.test import TestCase, override_settings
-from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.files.uploadedfile import(
+    SimpleUploadedFile,
+    InMemoryUploadedFile
+)
 from PIL import Image
 from ..models import ArtworkDetails, ArtworkImages
 from ..img_handlers import ImgPathHandler, ImgManipulationHandler
@@ -94,3 +97,7 @@ class TestImgManipulationsHandler(TestCase):
                 'JPEG'
             )
         )
+        in_memory_img = type(in_memory_uploaded_img) is InMemoryUploadedFile
+
+        self.assertEqual(in_memory_uploaded_img.name, 'starry_night.JPEG')
+        self.assertEqual(in_memory_img, True)
