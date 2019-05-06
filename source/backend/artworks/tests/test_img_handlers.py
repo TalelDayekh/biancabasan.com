@@ -64,8 +64,17 @@ class TestImgPathHandler(TestCase):
 
         self.assertEqual(os.getcwd(), new_dir)
 
-    def test_mv_img_to_artwork_title_dir(self):
-        pass
+    def test_mv_img_to_new_dir(self):
+        # Create an alternative artwork title dir for this test
+        # to be independent from the tests that runs before it.
+        initial_img_path = os.path.dirname(
+            self.img_path_handler_obj.artwork_images_obj.img.path
+        )
+        os.chdir(initial_img_path)
+        os.mkdir('alt_artwork_title_dir')
+        new_img_path = os.path.join(initial_img_path, 'alt_artwork_title_dir')
+
+        self.img_path_handler_obj.mv_img_to_new_dir(new_img_path)
 
 
 class TestImgManipulationsHandler(TestCase):

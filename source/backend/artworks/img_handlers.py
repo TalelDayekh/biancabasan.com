@@ -44,8 +44,15 @@ class ImgPathHandler():
         else:
             return new_img_path
 
-    def mv_img_to_artwork_title_dir(self):
-        pass
+    def mv_img_to_new_dir(self, new_img_path):
+        try:
+            if not os.path.isdir(new_img_path):
+                raise Exception
+        except Exception:
+            print('The directory "' + new_img_path + '" does not exist, it '
+                + 'needs to be created before attempting to move image')
+        else:
+            pass
 
 
 class ImgManipulationHandler():
