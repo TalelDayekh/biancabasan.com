@@ -52,6 +52,15 @@ class TestImgPathHandler(TestCase):
 
         print('\nTemp test directories and files are being created at path:\n'
             + uploaded_artwork_img.img.path)
+
+    def create_alt_img_dir(self, dir_name):
+        initial_img_path = os.path.dirname(
+            self.img_path_handler_obj.artwork_images_obj.img.path
+        )
+        os.chdir(initial_img_path)
+        os.mkdir(f'{dir_name}')
+        alt_img_dir = os.path.join(initial_img_path, f'{dir_name}')
+        return alt_img_dir
     
     def test_artwork_title_formatting(self):
         formatted_title = self.img_path_handler_obj.artwork_title
@@ -64,17 +73,12 @@ class TestImgPathHandler(TestCase):
 
         self.assertEqual(os.getcwd(), new_dir)
 
-    def test_mv_img_to_new_dir(self):
-        # Create an alternative artwork title dir for this test
-        # to be independent from the tests that runs before it.
-        initial_img_path = os.path.dirname(
-            self.img_path_handler_obj.artwork_images_obj.img.path
-        )
-        os.chdir(initial_img_path)
-        os.mkdir('alt_artwork_title_dir')
-        new_img_path = os.path.join(initial_img_path, 'alt_artwork_title_dir')
+    def test_change_duplicate_img_file_name(self):
+        pass
 
-        self.img_path_handler_obj.mv_img_to_new_dir(new_img_path)
+    def test_mv_img_to_new_dir(self):
+        new_img_dir = self.create_alt_img_dir('mv_img_test_dir')
+        self.img_path_handler_obj.mv_img_to_new_dir(new_img_dir)
 
 
 class TestImgManipulationsHandler(TestCase):

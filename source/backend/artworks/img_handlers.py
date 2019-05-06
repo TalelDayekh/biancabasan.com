@@ -1,5 +1,7 @@
 import os
 import re
+import uuid
+import shutil
 from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image
@@ -24,15 +26,15 @@ class ImgPathHandler():
                 '[^A-Za-z0-9\s]{1}', '', self.artwork_title).replace(
                 ' ', '_').lower()
 
-            self.initial_img_path = os.path.dirname(
+            self.initial_img_dir = os.path.dirname(
                 self.artwork_images_obj.img.path
             )
 
     def mkdir_from_artwork_title(self):
-        os.chdir(self.initial_img_path)
+        os.chdir(self.initial_img_dir)
 
-        new_img_path = os.path.join(
-            self.initial_img_path, self.artwork_title
+        new_img_dir = os.path.join(
+            self.initial_img_dir, self.artwork_title
         )
 
         try:
@@ -40,17 +42,20 @@ class ImgPathHandler():
         except FileExistsError as err:
             print(str(err)
                 + ', a image directory already exists for this artwork')
-            return new_img_path
+            return new_img_dir
         else:
-            return new_img_path
+            return new_img_dir
 
-    def mv_img_to_new_dir(self, new_img_path):
+    def change_duplicate_img_file_name(self):
+        pass
+
+    def mv_img_to_new_dir(self, new_img_dir):
         try:
-            if not os.path.isdir(new_img_path):
+            if not os.path.isdir(new_img_dir):
                 raise Exception
         except Exception:
-            print('The directory "' + new_img_path + '" does not exist, it '
-                + 'needs to be created before attempting to move image')
+            print('The directory "' + new_img_dir + '" does not exist, it '
+                + 'needs to be created before attempting to move any image')
         else:
             pass
 
