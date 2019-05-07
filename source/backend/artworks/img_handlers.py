@@ -83,6 +83,7 @@ class ImgPathHandler():
     def mv_img_to_new_dir(self, new_img_dir_path):
         new_img_file_path = os.path.join(new_img_dir_path, self.img_file)
         shutil.move(self.img_file_path, new_img_file_path)
+        return new_img_file_path
 
 
 class ImgManipulationHandler():
