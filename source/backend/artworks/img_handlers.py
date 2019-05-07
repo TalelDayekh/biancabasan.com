@@ -21,6 +21,7 @@ class ImgPathHandler():
             )
         else:
             self.initial_img_dir_path = os.path.dirname(self.img_file_path)
+            self.img_file = os.path.basename(self.img_file_path)
             # Remove characters that are not letters or numbers from
             # artwork_title, convert remaining ones to lowercase and
             # replace whitespaces with underscores.
@@ -47,12 +48,16 @@ class ImgPathHandler():
     def add_uuid_to_duplicate_img_names(self, destination_dir_path):
         # Specify a destination path for the image file to check whether
         # an image with the same name already exists in that location.
-        img_file = os.path.basename(self.img_file_path)
-        img_file_destination_path = os.path.join(destination_dir_path, img_file)
+        img_file_destination_path = os.path.join(
+            destination_dir_path,
+            self.img_file
+        )
 
         try:
             if os.path.isfile(img_file_destination_path):
-                img_file_name, img_file_extension = os.path.splitext(img_file)
+                img_file_name, img_file_extension = os.path.splitext(
+                    self.img_file
+                )
                 unique_file_identifier = str(uuid.uuid4().hex)
                 new_img_file = (
                     img_file_name
@@ -75,8 +80,9 @@ class ImgPathHandler():
         except Exception:
             return self.img_file_path
 
-    def mv_img_to_new_dir(self):
-        pass
+    def mv_img_to_new_dir(self, new_img_dir_path):
+        new_img_file_path = os.path.join(new_img_dir_path, self.img_file)
+        shutil.move(self.img_file_path, new_img_file_path)
 
 
 class ImgManipulationHandler():
