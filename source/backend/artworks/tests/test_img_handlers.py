@@ -84,7 +84,26 @@ class TestImgPathHandler(TestCase):
         self.assertNotEqual(old_img_file_path, new_img_file_path)
 
     def test_mv_img_to_new_dir(self):
-        pass
+        # Create an alternative artwork title dir for this test
+        # to be independent from the tests that runs before it.
+        initial_img_dir_path = self.img_path_handler_obj.initial_img_dir_path
+        os.chdir(initial_img_dir_path)
+        os.mkdir('mv_img_test_dir')
+        new_img_dir_path = os.path.join(
+            initial_img_dir_path,
+            'mv_img_test_dir'
+        )
+
+        old_img_file_path = self.img_path_handler_obj.img_file_path
+        new_img_file_path = (
+            self.img_path_handler_obj.mv_img_to_new_dir(new_img_dir_path)
+        )
+
+        img_in_old_path = os.path.isfile(old_img_file_path)
+        img_in_new_path = os.path.isfile(new_img_file_path)
+
+        self.assertEqual(img_in_old_path, False)
+        self.assertEqual(img_in_new_path, True)
 
 
 class TestImgManipulationsHandler(TestCase):
