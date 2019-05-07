@@ -8,56 +8,75 @@ from PIL import Image
 
 
 class ImgPathHandler():
-    def __init__(self, artwork_images_obj):
-        self.artwork_images_obj = artwork_images_obj
+    def __init__(self, img_file_path, artwork_title):
+        self.img_file_path = img_file_path
+        self.artwork_title = str(artwork_title)
 
         try:
-            self.artwork_images_obj.img
-        except AttributeError as err:
-            print(str(err) + ', ImgPathHandler needs to be passed an instance '
-                + 'of the ArtworkImages model')
+            if not os.path.isfile(img_file_path):
+                raise Exception
+        except Exception:
+            print(
+                'ImgPathHandler needs to be passed path of existing image file'
+            )
         else:
+            self.initial_img_dir_path = os.path.dirname(self.img_file_path)
             # Remove characters that are not letters or numbers from
             # artwork_title, convert remaining ones to lowercase and
             # replace whitespaces with underscores.
-            self.artwork_title = str(
-                self.artwork_images_obj.artwork_details.title)
             self.artwork_title = re.sub(
-                '[^A-Za-z0-9\s]{1}', '', self.artwork_title).replace(
-                ' ', '_').lower()
-
-            self.initial_img_dir = os.path.dirname(
-                self.artwork_images_obj.img.path
-            )
+                '[^A-Za-z0-9\s]{1}', '', self.artwork_title
+            ).replace(' ', '_').lower()
 
     def mkdir_from_artwork_title(self):
-        os.chdir(self.initial_img_dir)
-
-        new_img_dir = os.path.join(
-            self.initial_img_dir, self.artwork_title
+        os.chdir(self.initial_img_dir_path)
+        new_img_dir_path = os.path.join(
+            self.initial_img_dir_path,
+            self.artwork_title
         )
 
         try:
             os.mkdir(self.artwork_title)
+            return new_img_dir_path
         except FileExistsError as err:
-            print(str(err)
-                + ', a image directory already exists for this artwork')
-            return new_img_dir
-        else:
-            return new_img_dir
+            print(
+                str(err) + ', a image directory already exists for this artwork'
+            )
+            return new_img_dir_path
 
-    def change_duplicate_img_file_name(self):
-        pass
+    def add_uuid_to_duplicate_img_names(self, destination_dir_path):
+        # Specify a destination path for the image file to check whether
+        # an image with the same name already exists in that location.
+        img_file = os.path.basename(self.img_file_path)
+        img_file_destination_path = os.path.join(destination_dir_path, img_file)
 
-    def mv_img_to_new_dir(self, new_img_dir):
         try:
-            if not os.path.isdir(new_img_dir):
+            if os.path.isfile(img_file_destination_path):
+                img_file_name, img_file_extension = os.path.splitext(img_file)
+                unique_file_identifier = str(uuid.uuid4().hex)
+                new_img_file = (
+                    img_file_name
+                    + '_' 
+                    + unique_file_identifier 
+                    + img_file_extension
+                )
+
+                old_img_file_path = self.img_file_path
+                self.img_file_path = os.path.join(
+                    os.path.dirname(self.img_file_path), new_img_file
+                )
+
+                # Update path with the old image file name
+                # to the path with the new image file name.
+                os.rename(old_img_file_path, self.img_file_path)
+                return self.img_file_path
+            else:
                 raise Exception
         except Exception:
-            print('The directory "' + new_img_dir + '" does not exist, it '
-                + 'needs to be created before attempting to move any image')
-        else:
-            pass
+            return self.img_file_path
+
+    def mv_img_to_new_dir(self):
+        pass
 
 
 class ImgManipulationHandler():

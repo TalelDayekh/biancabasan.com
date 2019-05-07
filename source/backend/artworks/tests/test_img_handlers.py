@@ -40,45 +40,51 @@ def create_artwork_test_obj(img_file):
 @override_settings(
     # os.path.realpath returns the absolute path,
     # not just the path prefixed with a symlink.
-    MEDIA_ROOT=os.path.realpath(tempfile.TemporaryDirectory(
-        prefix='biancabasan_test_files').name))
+    MEDIA_ROOT = os.path.realpath(
+        tempfile.TemporaryDirectory(prefix='biancabasan_test_files').name
+    )
+)
 class TestImgPathHandler(TestCase):
-    @classmethod
-    def setUpTestData(cls):
+    def setUp(self):
         test_img = create_temp_test_img_file('starry_night', 'jpeg')
         artwork_test_obj = create_artwork_test_obj(test_img)
-        uploaded_artwork_img = artwork_test_obj[1]
-        cls.img_path_handler_obj = ImgPathHandler(uploaded_artwork_img)
+        uploaded_artwork_img_obj = artwork_test_obj[1]
 
-        print('\nTemp test directories and files are being created at path:\n'
-            + uploaded_artwork_img.img.path)
+        img_file_path = uploaded_artwork_img_obj.img.path
+        artwork_title = uploaded_artwork_img_obj.artwork_details.title
 
-    def create_alt_img_dir(self, dir_name):
-        initial_img_path = os.path.dirname(
-            self.img_path_handler_obj.artwork_images_obj.img.path
+        self.img_path_handler_obj = ImgPathHandler(
+            img_file_path,
+            artwork_title
         )
-        os.chdir(initial_img_path)
-        os.mkdir(f'{dir_name}')
-        alt_img_dir = os.path.join(initial_img_path, f'{dir_name}')
-        return alt_img_dir
-    
+
     def test_artwork_title_formatting(self):
         formatted_title = self.img_path_handler_obj.artwork_title
 
         self.assertEqual(formatted_title, 'starry_night_1889__vincent_van_gogh')
 
     def test_mkdir_from_artwork_title(self):
-        new_dir = self.img_path_handler_obj.mkdir_from_artwork_title()
-        os.chdir(new_dir)
+        new_img_dir_path = self.img_path_handler_obj.mkdir_from_artwork_title()
+        os.chdir(new_img_dir_path)
 
-        self.assertEqual(os.getcwd(), new_dir)
+        self.assertEqual(os.getcwd(), new_img_dir_path)
 
-    def test_change_duplicate_img_file_name(self):
-        pass
+    def test_add_uuid_to_duplicate_img_names(self):
+        destination_dir_path = os.path.dirname(
+            self.img_path_handler_obj.img_file_path
+        )
+
+        old_img_file_path = self.img_path_handler_obj.img_file_path
+        new_img_file_path = (
+            self.img_path_handler_obj.add_uuid_to_duplicate_img_names(
+                destination_dir_path
+            )
+        )
+
+        self.assertNotEqual(old_img_file_path, new_img_file_path)
 
     def test_mv_img_to_new_dir(self):
-        new_img_dir = self.create_alt_img_dir('mv_img_test_dir')
-        self.img_path_handler_obj.mv_img_to_new_dir(new_img_dir)
+        pass
 
 
 class TestImgManipulationsHandler(TestCase):
