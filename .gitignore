@@ -5,6 +5,9 @@ manage.py
 settings.py
 wsgi.py
 
+# MyPy
+.mypy_cache
+
 # Environments
 .venv
 
