@@ -1,38 +1,16 @@
-/*
+# Python
+__pycache__
+migrations/
+manage.py
+settings.py
+wsgi.py
 
+# Environments
+.venv
 
-# Source directory
-!/source/
-/source/*
+# VSCode
+*.code-workspace
+settings.json
 
-
-# Backend directories
-!/source/backend/
-/source/backend/*
-# api app
-!/source/backend/api/
-/source/backend/api/*
-# artworks app
-!/source/backend/artworks/
-/source/backend/artworks/*
-# users app
-!/source/backend/users/
-/source/backend/users/*
-# tests
-!/source/backend/artworks/tests/
-/source/backend/artworks/tests/*
-
-# Backend files
-# api app
-!/source/backend/api/serializers.py
-!/source/backend/api/urls.py
-!/source/backend/api/views.py
-# artworks app
-!/source/backend/artworks/admin.py
-!/source/backend/artworks/img_handlers.py
-!/source/backend/artworks/models.py
-# users app
-!/source/backend/users/admin.py
-!/source/backend/users/models.py
-# tests
-!/source/backend/artworks/tests/test_img_handlers.py
+# System
+.DS_Store
