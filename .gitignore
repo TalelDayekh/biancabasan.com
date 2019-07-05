@@ -1,9 +1,11 @@
 # Python
 __pycache__
 migrations/
-manage.py
 settings.py
 wsgi.py
+
+# Node
+node_modules
 
 # MyPy
 .mypy_cache
