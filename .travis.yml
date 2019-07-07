@@ -1,10 +1,21 @@
-dist: xenial
-language: python
-python:
-  - "3.7"
+matrix:
+  include:
+    - dist: xenial
+      language: python
+      python:
+        - "3.7"
 
-install:
-  - pip install -r requirements.txt
+      install:
+        - pip install -r requirements.txt
 
-script:
-  - python ./src/backend/manage.py test
+      script:
+        - python ./src/backend/manage.py test
+    
+    - language: node_js
+      node_js:
+        - "stable"
+      cache:
+        directories:
+          - node_modules
+      script:
+        - npm test
