@@ -1,2 +1,2 @@
 def smoke_test():
-    return 'Hello World'
+    return "Hello World"
