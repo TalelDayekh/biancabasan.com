@@ -9,8 +9,8 @@ matrix:
         - pip install -r requirements.txt
 
       script:
-        - cd src/backend
         - make format
+        - cd src/backend
         - python manage.py test
     
     - language: node_js
