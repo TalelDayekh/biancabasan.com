@@ -10,7 +10,7 @@ matrix:
 
       script:
         - cd src/backend
-        - make isort
+        - make format
         - python manage.py test
     
     - language: node_js
