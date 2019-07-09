@@ -1,4 +1,4 @@
-
+from ..image_handler import smoke_test
 from django.test import TestCase
 
 
