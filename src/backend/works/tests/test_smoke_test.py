@@ -8,6 +8,5 @@ class InitialTest(TestCase):
     def test_smoke_test(self):
         hello_world = smoke_test()
         self.assertEqual(
-            hello_world,
-            "Failed Test"
+            hello_world, "Failed Test"
             )
