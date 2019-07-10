@@ -9,8 +9,8 @@ matrix:
         - pip install -r requirements.txt
 
       script:
-        - make isort
-        - make black
+        - make isort_travis_build
+        - make black_travis_build
         - cd src/backend
         - python manage.py test
 
