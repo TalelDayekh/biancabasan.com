@@ -12,8 +12,14 @@ flake8:
 mypy:
 	mypy $(CODE_DIRS)
 
+# isort:
+# 	isort
+
+# black:
+# 	black $(CODE_DIRS) --line-length 79
+
 isort:
-	isort
+	isort $(ISORT_PARAMS)
 
 black:
-	black $(CODE_DIRS) --line-length 79
+	black $(CODE_DIRS) --line-length 79 --check
