@@ -1,5 +1,5 @@
 CODE_DIRS = src/backend/api src/backend/users src/backend/works/
-BLACK_PARAMS = --line-length 79
+BLACK_PARAMS = --line-length 79 --check
 
 lint:
 	flake8 $(CODE_DIRS)
@@ -9,4 +9,4 @@ annotation:
 
 format:
 	isort
-	black $(CODE_DIRS)
+	black $(CODE_DIRS) $(BLACK_PARAMS)
