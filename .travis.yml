@@ -12,7 +12,7 @@ matrix:
         - make format
         - cd src/backend
         - python manage.py test
-    
+
     - language: node_js
       node_js:
         - "stable"
