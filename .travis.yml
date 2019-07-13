@@ -21,4 +21,5 @@ matrix:
         directories:
           - "node_modules"
       script:
-        - npm test
+        - npm run lint
+        - npm run test
