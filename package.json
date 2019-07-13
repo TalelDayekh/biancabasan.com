@@ -10,7 +10,7 @@
     "build": "webpack --mode production",
     "test": "jest",
     "lint": "eslint ./src/frontend/ --ext .jsx,js",
-    "prettier": "prettier **/*.jsx --write"
+    "prettier": "prettier **/*.{jsx,js} --write"
   },
   "devDependencies": {
     "@babel/core": "^7.5.0",
