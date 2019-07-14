@@ -9,9 +9,9 @@ matrix:
         - pip install -r requirements.txt
 
       script:
+        - cd src/server
         - make isort_travis_build
         - make black_travis_build
-        - cd src/backend
         - python manage.py test
 
     - language: node_js
