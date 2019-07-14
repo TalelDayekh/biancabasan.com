@@ -5,11 +5,13 @@ matrix:
       python:
         - "3.7"
 
+      before_install:
+        - cd src/server
+
       install:
         - pip install -r requirements.txt
 
       script:
-        - cd src/server
         - make isort_travis_build
         - make black_travis_build
         - python manage.py test
