@@ -19,9 +19,14 @@ matrix:
     - language: node_js
       node_js:
         - "stable"
+
+      before_install:
+        - cd src/client
+
       cache:
         directories:
           - "node_modules"
+          
       script:
         - npm run lint
         - npm run test
