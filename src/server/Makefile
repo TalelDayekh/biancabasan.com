@@ -1,4 +1,4 @@
-CODE_DIRS = src/backend/api/ src/backend/users/ src/backend/works/
+CODE_DIRS = api/ users/ works/
 BLACK_PARAMS = --line-length 79
 
 flake8:
