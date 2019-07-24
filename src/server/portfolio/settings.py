@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'portfolio.wsgi.application'
 if 'TRAVIS' in os.environ:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql',
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': 'travis_ci_db',
             'USER': 'travis',
             'PASSWORD': '',
