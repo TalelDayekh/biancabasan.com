@@ -1,6 +1,7 @@
 # Python
 __pycache__
 migrations/
+!migrations/__init__.py
 wsgi.py
 
 # Node
