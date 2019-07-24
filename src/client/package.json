@@ -4,13 +4,13 @@
   "description": "Portfolio Website of Bianca Basan",
   "author": "Talel Dayekh",
   "license": "MIT",
-  "main": "index.js",
+  "main": "index.jsx",
   "scripts": {
     "dev": "webpack-dev-server --mode development --open --hot",
     "build": "webpack --mode production",
     "test": "jest",
-    "lint": "eslint ./src/frontend/ --ext .jsx,js",
-    "prettier": "prettier **/*.{jsx,js} --write"
+    "lint": "eslint ./src/ --ext .jsx,js",
+    "prettier": "prettier '**/*.{jsx,js}' --write"
   },
   "devDependencies": {
     "@babel/core": "^7.5.0",

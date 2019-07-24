@@ -22,7 +22,7 @@ module.exports = {
         },
         ecmaVersion: 2018
     },
-    plugins: ['react'],
+    plugins: ['react', 'prettier'],
     rules: {
         indent: ['error', 4],
         'linebreak-style': ['error', 'unix'],

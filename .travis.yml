@@ -4,19 +4,28 @@ matrix:
       language: python
       python:
         - "3.7"
-
+      services:
+        - postgresql
+      env:
+        - BIANCA_BASAN_SECRET_KEY='!BW!_PZKZas/?tQFTi^DnFb=biorP"*KpbMoEVJ:N:oI!9cieZ'
+      before_install:
+        - cd src/server
       install:
         - pip install -r requirements.txt
-
+      before_script:
+       - psql -c 'create database travis_ci_db;' -U travis
       script:
         - make isort_travis_build
         - make black_travis_build
-        - cd src/backend
+        - python manage.py makemigrations
+        - python manage.py migrate
         - python manage.py test
 
     - language: node_js
       node_js:
         - "stable"
+      before_install:
+        - cd src/client
       cache:
         directories:
           - "node_modules"
