@@ -18,7 +18,7 @@ matrix:
         - make isort_travis_build
         - make black_travis_build
         - python manage.py makemigrations
-        - python manage.py migrate
+        # - python manage.py migrate
         - python manage.py test
 
     - language: node_js
