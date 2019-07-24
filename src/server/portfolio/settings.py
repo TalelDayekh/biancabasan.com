@@ -75,16 +75,28 @@ WSGI_APPLICATION = 'portfolio.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('BIANCA_BASAN_DB_NAME'),
-        'USER': os.environ.get('BIANCA_BASAN_DB_USER'),
-        'PASSWORD': os.environ.get('BIANCA_BASAN_DB_PASS'),
-        'HOST': 'localhost',
-        'PORT': '5432',
+if 'TRAVIS' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'travis_ci_db',
+            'USER': 'travis',
+            'PASSWORD': '',
+            'HOST': '',
+            'PORT': '',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('BIANCA_BASAN_DB_NAME'),
+            'USER': os.environ.get('BIANCA_BASAN_DB_USER'),
+            'PASSWORD': os.environ.get('BIANCA_BASAN_DB_PASS'),
+            'HOST': 'localhost',
+            'PORT': '5432',
+        }
+    }
 
 
 # Password validation
