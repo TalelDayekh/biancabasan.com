@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from ..image_handler import smoke_test
+from ..image_handlers import smoke_test
 
 
 class InitialTest(TestCase):
