@@ -1,3 +1,4 @@
+import os
 import re
 import shutil
 from pathlib import Path
@@ -46,3 +47,9 @@ class ImagePathHandler:
                 )
         except Exception as err:
             print(err)
+
+    def delete_image(self) -> None:
+        try:
+            os.remove(self.image_file)
+        except FileNotFoundError as err:
+            print("No such image file to delete")
