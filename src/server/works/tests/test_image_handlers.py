@@ -13,7 +13,14 @@ class ImagePathHandlerTest(TestCase):
             prefix="image_path_handler_test_directory"
         )
 
-    def test_create_directory_from_work_title(self):
+    def test_can_format_work_title(self):
+        formatted_work_title = ImagePathHandler(
+            "#sTAÄrry niGHT 1!8.,8?9;  "
+        ).formatted_work_title
+
+        self.assertEqual(formatted_work_title, "starry_night_1889__")
+
+    def test_can_create_directory_from_work_title(self):
         with override_settings(MEDIA_ROOT=self.temp_media_directory):
             work_title_directory = ImagePathHandler(
                 "starry_night"
