@@ -51,12 +51,23 @@ class ImagePathHandlerTest(TestCase):
         )
         self.assertFalse(self.image_file.exists())
 
-    def test_can_not_move_image_to_work_title_directory(self):
+    def test_can_not_move_image_to_non_existing_work_title_directory(self):
         ImagePathHandler(
             self.image_file, ""
         ).move_image_to_work_title_directory()
 
         self.assertTrue(self.image_file.exists())
+
+    def test_can_delete_image(self):
+        ImagePathHandler(self.image_file, "").delete_image()
+
+        self.assertFalse(self.image_file.exists())
+
+    def test_can_not_delete_image(self):
+        image_file = Path("/path/to/non/existing/image")
+        ImagePathHandler(image_file, "").delete_image()
+
+        self.assertFalse(image_file.exists())
 
     @classmethod
     def tearDownClass(cls):
