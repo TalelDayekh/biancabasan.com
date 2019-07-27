@@ -40,6 +40,8 @@ class ImagePathHandler:
                 raise ValueError(
                     "A work title has to be provided for moving images to a new directory"
                 )
+            elif not Path(self.image_file).exists():
+                raise OSError("Path to image file is not valid")
             else:
                 self._create_directory_from_work_title()
                 shutil.move(
