@@ -1,12 +1,15 @@
 import re
 import shutil
 from pathlib import Path
+from typing import Optional
 
 from django.conf import settings
 
 
 class ImagePathHandler:
-    def __init__(self, image_file: Path, work_title: str) -> None:
+    def __init__(
+        self, image_file: Path, work_title: Optional[str] = None
+    ) -> None:
         self.media_root = settings.MEDIA_ROOT
         self.image_file = image_file
         self.work_title_directory_name = self._format_work_title(work_title)
@@ -23,13 +26,23 @@ class ImagePathHandler:
         )
         return formatted_work_title
 
-    def _create_directory_from_work_title(self) -> Path:
+    def _create_directory_from_work_title(self) -> None:
         work_title_directory_path = Path(self.media_root).joinpath(
             self.work_title_directory_name
         )
         work_title_directory_path.mkdir(parents=True, exist_ok=True)
         self.work_title_directory_path = work_title_directory_path
 
-    def move_image_to_work_title_directory(self):
-        self._create_directory_from_work_title()
-        shutil.move(str(self.image_file), str(self.work_title_directory_path))
+    def move_image_to_work_title_directory(self) -> None:
+        try:
+            if not self.work_title_directory_name:
+                raise ValueError(
+                    "A work title has to be provided for moving images to a new directory"
+                )
+            else:
+                self._create_directory_from_work_title()
+                shutil.move(
+                    str(self.image_file), str(self.work_title_directory_path)
+                )
+        except Exception as err:
+            print(err)
