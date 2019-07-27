@@ -21,32 +21,29 @@ class ImagePathHandlerTest(TestCase):
         ).joinpath("black_square.jpg")
         test_image = Image.new("RGB", (500, 500))
         test_image.save(self.image_file)
+        self.image_path_handler_instance = ImagePathHandler(
+            self.image_file, "#bLAÄck SQuaRe, 20!.19;  "
+        )
 
     def test_can_format_work_title(self):
-        work_title_directory_name = ImagePathHandler(
-            "", "#sTAÄrry niGHT 1!8.,8?9;  "
-        ).work_title_directory_name
-
-        self.assertEqual(work_title_directory_name, "starry_night_1889__")
+        work_title_directory_name = (
+            self.image_path_handler_instance.work_title_directory_name
+        )
+        self.assertEqual(work_title_directory_name, "black_square_2019__")
 
     def test_can_create_directory_from_work_title(self):
-        image_path_handler_instance = ImagePathHandler("", "starry_night")
-        image_path_handler_instance._create_directory_from_work_title()
-
+        self.image_path_handler_instance._create_directory_from_work_title()
         self.assertTrue(
             Path(
-                image_path_handler_instance.work_title_directory_path
+                self.image_path_handler_instance.work_title_directory_path
             ).exists()
         )
 
     def test_can_move_image_to_work_title_directory(self):
-        ImagePathHandler(
-            self.image_file, "blÄAck SQuaRE"
-        ).move_image_to_work_title_directory()
-
+        self.image_path_handler_instance.move_image_to_work_title_directory()
         self.assertTrue(
             Path(image_path_handler_temp_media_directory)
-            .joinpath("black_square/black_square.jpg")
+            .joinpath("black_square_2019__/black_square.jpg")
             .exists()
         )
         self.assertFalse(self.image_file.exists())
@@ -55,18 +52,15 @@ class ImagePathHandlerTest(TestCase):
         ImagePathHandler(
             self.image_file, ""
         ).move_image_to_work_title_directory()
-
         self.assertTrue(self.image_file.exists())
 
     def test_can_delete_image(self):
-        ImagePathHandler(self.image_file, "").delete_image()
-
+        self.image_path_handler_instance.delete_image()
         self.assertFalse(self.image_file.exists())
 
     def test_can_not_delete_image(self):
         image_file = Path("/path/to/non/existing/image")
         ImagePathHandler(image_file, "").delete_image()
-
         self.assertFalse(image_file.exists())
 
     @classmethod
