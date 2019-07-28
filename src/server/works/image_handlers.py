@@ -7,7 +7,7 @@ from typing import Optional
 from django.conf import settings
 
 
-class ImagePathHandler:
+class ImageHandler:
     def __init__(
         self, image_file: Path, work_title: Optional[str] = None
     ) -> None:

@@ -6,7 +6,7 @@ from django.test import TestCase, override_settings
 
 from PIL import Image
 
-from ..image_handlers import ImagePathHandler
+from ..image_handlers import ImageHandler
 
 image_path_handler_temp_media_directory = tempfile.mkdtemp(
     prefix="image_path_handler_test_directory"
@@ -14,7 +14,7 @@ image_path_handler_temp_media_directory = tempfile.mkdtemp(
 
 
 @override_settings(MEDIA_ROOT=image_path_handler_temp_media_directory)
-class ImagePathHandlerTest(TestCase):
+class ImageHandlerTest(TestCase):
     def setUp(self):
         self.image_file = Path(
             image_path_handler_temp_media_directory
@@ -22,7 +22,7 @@ class ImagePathHandlerTest(TestCase):
         test_image = Image.new("RGB", (500, 500))
         test_image.save(self.image_file)
         self.non_existing_image_file = Path("/path/to/non/existing/image")
-        self.image_path_handler_instance = ImagePathHandler(
+        self.image_path_handler_instance = ImageHandler(
             self.image_file, "#bLAÄck SQuaRe, 20!.19;  "
         )
 
@@ -50,13 +50,13 @@ class ImagePathHandlerTest(TestCase):
         self.assertFalse(self.image_file.exists())
 
     def test_can_not_move_image_to_non_existing_work_title_directory(self):
-        ImagePathHandler(
+        ImageHandler(
             self.image_file, ""
         ).move_image_to_work_title_directory()
         self.assertTrue(self.image_file.exists())
 
     def test_can_not_move_non_existing_image_to_work_title_directory(self):
-        ImagePathHandler(
+        ImageHandler(
             self.non_existing_image_file, "No Title"
         ).move_image_to_work_title_directory()
         self.assertFalse(self.non_existing_image_file.exists())
@@ -66,7 +66,7 @@ class ImagePathHandlerTest(TestCase):
         self.assertFalse(self.image_file.exists())
 
     def test_can_not_delete_image(self):
-        ImagePathHandler(self.non_existing_image_file, "").delete_image()
+        ImageHandler(self.non_existing_image_file, "").delete_image()
         self.assertFalse(self.non_existing_image_file.exists())
 
     @classmethod
