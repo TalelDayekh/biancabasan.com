@@ -15,8 +15,8 @@ node_modules
 .venv
 
 # VSCode
+.vscode
 *.code-workspace
-settings.json
 
 # System
 .DS_Store
