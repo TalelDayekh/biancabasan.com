@@ -27,3 +27,10 @@ class Work(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+
+class Image(models.Model):
+    image = models.ImageField(verbose_name="Image", upload_to="images")
+    work = models.ForeignKey(
+        Work, related_name="images", on_delete=models.CASCADE
+    )
