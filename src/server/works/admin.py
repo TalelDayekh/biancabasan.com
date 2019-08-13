@@ -1,5 +1,6 @@
 from django.contrib import admin
 
-from .models import WorksImages
+from .models import Image, Work
 
-admin.site.register(WorksImages)
+admin.site.register(Work)
+admin.site.register(Image)
