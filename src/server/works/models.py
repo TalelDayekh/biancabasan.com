@@ -1,10 +1,15 @@
 from django.db import models
 
+from users.models import CustomUser
+
 
 class Work(models.Model):
     YEARS = [year for year in range(1990, 2090)]
     YEAR_CHOICES = tuple((year, year) for year in YEARS)
 
+    owner = models.ForeignKey(
+        CustomUser, related_name="works", on_delete=models.CASCADE
+    )
     title = models.CharField(verbose_name="Title", max_length=80)
     year_from = models.IntegerField(
         verbose_name="Year (from)", choices=YEAR_CHOICES, blank=True, null=True
