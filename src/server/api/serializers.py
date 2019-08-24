@@ -1,19 +1,11 @@
-from rest_framework import serializers
+from __future__ import annotations
 
-from works.models import Work
+from api.v1.serializers import ImageSerializerVersion1, WorkSerializerVersion1
 
 
-class WorkSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Work
-        fields = [
-            "id",
-            "title",
-            "year_from",
-            "year_to",
-            "technique",
-            "height",
-            "width",
-            "depth",
-            "description",
-        ]
+def get_serializer_classes(api_version: str) -> List[serializers]:
+    api_serializer_mapping = {
+        "v1": [WorkSerializerVersion1, ImageSerializerVersion1]
+    }
+    serializer_classes = api_serializer_mapping.get(api_version)
+    return serializer_classes
