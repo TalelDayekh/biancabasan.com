@@ -41,7 +41,7 @@ class ImageDirectoryHandlerTest(TestCase):
             self.image_directory_handler.image_directory_path.exists()
         )
 
-    def test_can_not_create_directory_from_non_existing_work_title(self):
+    def test_cannot_create_directory_from_non_existing_work_title(self):
         image_directory = ImageDirectoryHandler("")
         image_directory.create_directory_from_formatted_work_title()
 
@@ -74,11 +74,11 @@ class ImageFileHandlerTest(TestCase):
 
         self.assertEqual(image_file_type, "JPEG")
 
-    def test_can_not_get_image_file_type_from_non_existing_image(self):
+    def test_cannot_get_image_file_type_from_non_existing_image(self):
         with self.assertRaises(FileNotFoundError):
             self.image_file_handler_invalid_image.image_file_type
 
-    def test_can_not_get_image_file_type_from_non_image_file(self):
+    def test_cannot_get_image_file_type_from_non_image_file(self):
         with tempfile.NamedTemporaryFile(
             suffix=".pdf", dir=image_file_handler_test_folder
         ) as pdf_file:
@@ -92,7 +92,7 @@ class ImageFileHandlerTest(TestCase):
 
         self.assertEqual(image_file_size, 4)
 
-    def test_can_not_get_floor_image_file_size_from_non_existing_image(self):
+    def test_cannot_get_floor_image_file_size_from_non_existing_image(self):
         with self.assertRaises(FileNotFoundError):
             self.image_file_handler_invalid_image.floor_image_file_size
 
@@ -111,7 +111,7 @@ class ImageFileHandlerTest(TestCase):
         )
         self.assertFalse(self.image_file.exists())
 
-    def test_can_not_move_image_to_non_existing_work_title_directory(self):
+    def test_cannot_move_image_to_non_existing_work_title_directory(self):
         non_existing_work_title_directory = Path(
             "path/to/non/existing/directory"
         )
@@ -127,7 +127,7 @@ class ImageFileHandlerTest(TestCase):
 
         self.assertFalse(self.image_file.exists())
 
-    def test_can_not_delete_image(self):
+    def test_cannot_delete_image(self):
         self.image_file_handler_invalid_image.delete_image()
 
         self.assertFalse(self.non_existing_image_file.exists())
@@ -143,7 +143,7 @@ class ImageFileHandlerTest(TestCase):
         self.assertEqual(web_images[0].size, (1250, 1250))
         self.assertEqual(web_images[1].size, (2500, 2500))
 
-    def test_can_not_create_web_images_set_from_non_existing_image(self):
+    def test_cannot_create_web_images_set_from_non_existing_image(self):
         web_images_set = ImageFileHandler.create_web_images_set(
             self.non_existing_image_file
         )
