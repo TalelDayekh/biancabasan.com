@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
+from api.v1.serializers import WorkSerializerVersion1
 from api.views import GetSerializerClasses, Works
 from rest_framework.test import APITestCase
 from users.models import CustomUser
@@ -36,7 +37,10 @@ class WorksAPIRequestTest(APITestCase):
 
     def test_can_get_works_for_specific_user(self):
         response = self.client.get(
-            reverse("Works", kwargs={"version": "v1", "username": "matisse"})
+            reverse("Works", kwargs={"version": "v1", "username": self.user})
         )
+        works = Work.objects.filter(owner__username=self.user)
+        serializer = WorkSerializerVersion1(works, many=True)
 
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, serializer.data)
