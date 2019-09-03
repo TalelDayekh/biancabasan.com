@@ -22,7 +22,7 @@ class Work(models.Model):
     width = models.FloatField(verbose_name="Width", blank=True, null=True)
     depth = models.FloatField(verbose_name="Depth", blank=True, null=True)
     description = models.TextField(verbose_name="Description")
-    date_added = models.DateTimeField(
+    created_at = models.DateTimeField(
         verbose_name="Date Added", auto_now_add=True
     )
 
