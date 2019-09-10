@@ -1,6 +1,7 @@
 from django.http import HttpRequest
 
 from api.v1.serializers import ImageSerializerVersion1, WorkSerializerVersion1
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -28,6 +29,17 @@ class Works(APIView):
         self, request: HttpRequest, version: str, username: str, format=None
     ) -> Response:
         work_serializer = GetSerializerClasses(version).work_serializer
-        works = Work.objects.filter(owner__username=username)
-        serializer = work_serializer(works, many=True)
-        return Response(serializer.data)
+        query_params = self.request.query_params.get("year_to")
+
+        try:
+            if query_params:
+                works = Work.objects.filter(
+                    owner__username=username, year_to=query_params
+                )
+                serializer = work_serializer(works, many=True)
+            else:
+                works = Work.objects.filter(owner__username=username)
+                serializer = work_serializer(works, many=True)
+            return Response(serializer.data)
+        except ValueError:
+            return Response(data=[], status=status.HTTP_400_BAD_REQUEST)
