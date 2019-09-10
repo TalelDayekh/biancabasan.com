@@ -17,11 +17,12 @@ class SerializerRetrievalTest(TestCase):
         self.assertEqual(image_serializer.__name__, "ImageSerializerVersion1")
 
 
-class WorksAPIRequestTest(APITestCase):
-    def setUp(self):
-        self.user_one = CustomUser.objects.create(username="matisse")
-        self.user_one_work = Work.objects.create(
-            owner=self.user_one,
+class WorksGetRequestTest(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user_one = CustomUser.objects.create(username="matisse")
+        cls.user_one_work = Work.objects.create(
+            owner=cls.user_one,
             title="Dance",
             year_from=1910,
             year_to=1910,
@@ -34,11 +35,11 @@ class WorksAPIRequestTest(APITestCase):
             ),
         )
 
-        self.user_two = CustomUser.objects.create(username="rousseau")
-        self.user_two_work = Work.objects.bulk_create(
+        cls.user_two = CustomUser.objects.create(username="rousseau")
+        cls.user_two_work = Work.objects.bulk_create(
             [
                 Work(
-                    owner=self.user_two,
+                    owner=cls.user_two,
                     title="Exotic Landscape",
                     year_to=1908,
                     technique="Oil on canvas",
@@ -49,7 +50,7 @@ class WorksAPIRequestTest(APITestCase):
                     ),
                 ),
                 Work(
-                    owner=self.user_two,
+                    owner=cls.user_two,
                     title="Combat of a Tiger and a Buffalo",
                     year_to=1908,
                     technique="Oil on canvas",
@@ -60,7 +61,7 @@ class WorksAPIRequestTest(APITestCase):
                     ),
                 ),
                 Work(
-                    owner=self.user_two,
+                    owner=cls.user_two,
                     title="The Dream",
                     year_to=1910,
                     technique="Oil on canvas",
@@ -84,7 +85,12 @@ class WorksAPIRequestTest(APITestCase):
         self.assertEqual(response.data, serializer.data)
 
     def test_cannot_get_works_for_non_existing_user(self):
-        pass
+        response = self.client.get(
+            "http://127.0.0.1:8000/api/v1/users/non-existing-user/works/"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, [])
 
     def test_can_get_works_from_year_to_for_specific_user(self):
         response = self.client.get(
@@ -98,3 +104,12 @@ class WorksAPIRequestTest(APITestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, serializer.data)
+
+    def test_cannot_get_works_from_non_year(self):
+        response = self.client.get(
+            "http://127.0.0.1:8000/api/v1/users/rousseau/works/",
+            {"year_to": "not a year"},
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, [])
