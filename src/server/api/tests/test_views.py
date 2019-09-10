@@ -1,5 +1,4 @@
 from django.test import TestCase
-from django.urls import reverse
 
 from api.v1.serializers import WorkSerializerVersion1
 from api.views import GetSerializerClasses, Works
@@ -20,9 +19,9 @@ class SerializerRetrievalTest(TestCase):
 
 class WorksAPIRequestTest(APITestCase):
     def setUp(self):
-        self.user = CustomUser.objects.create(username="matisse")
-        self.work = Work.objects.create(
-            owner=self.user,
+        self.user_one = CustomUser.objects.create(username="matisse")
+        self.user_one_work = Work.objects.create(
+            owner=self.user_one,
             title="Dance",
             year_from=1910,
             year_to=1910,
@@ -35,11 +34,66 @@ class WorksAPIRequestTest(APITestCase):
             ),
         )
 
+        self.user_two = CustomUser.objects.create(username="rousseau")
+        self.user_two_work = Work.objects.bulk_create(
+            [
+                Work(
+                    owner=self.user_two,
+                    title="Exotic Landscape",
+                    year_to=1908,
+                    technique="Oil on canvas",
+                    description=(
+                        "The painting shows monkeys picking up oranges it has"
+                        " rich shades of green used in the leaves, grass and "
+                        "trees of the jungle."
+                    ),
+                ),
+                Work(
+                    owner=self.user_two,
+                    title="Combat of a Tiger and a Buffalo",
+                    year_to=1908,
+                    technique="Oil on canvas",
+                    description=(
+                        "The painting shows a imaginary scene of a tiger attacking a"
+                        " buffalo within a fantastic jungle environment derived from"
+                        " reading travel books and visiting the botanical garden."
+                    ),
+                ),
+                Work(
+                    owner=self.user_two,
+                    title="The Dream",
+                    year_to=1910,
+                    technique="Oil on canvas",
+                    description=(
+                        "The painting shows an almost surreal portrait of Rousseau's "
+                        "mistress lying naked on a divan, gazing over a landscape of "
+                        "lotus flowers and animals."
+                    ),
+                ),
+            ]
+        )
+
     def test_can_get_works_for_specific_user(self):
         response = self.client.get(
-            reverse("Works", kwargs={"version": "v1", "username": self.user})
+            "http://127.0.0.1:8000/api/v1/users/matisse/works/"
         )
-        works = Work.objects.filter(owner__username=self.user)
+        works = Work.objects.filter(owner__username=self.user_one)
+        serializer = WorkSerializerVersion1(works, many=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, serializer.data)
+
+    def test_cannot_get_works_for_non_existing_user(self):
+        pass
+
+    def test_can_get_works_from_year_to_for_specific_user(self):
+        response = self.client.get(
+            "http://127.0.0.1:8000/api/v1/users/rousseau/works/",
+            {"year_to": 1908},
+        )
+        works = Work.objects.filter(
+            owner__username=self.user_two, year_to=1908
+        )
         serializer = WorkSerializerVersion1(works, many=True)
 
         self.assertEqual(response.status_code, 200)
