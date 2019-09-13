@@ -17,7 +17,7 @@ class SerializerRetrievalTest(TestCase):
         self.assertEqual(image_serializer.__name__, "ImageSerializerVersion1")
 
 
-class WorksGetRequestTest(APITestCase):
+class WorkViewsGETTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user_one = CustomUser.objects.create(username="matisse")
@@ -30,8 +30,8 @@ class WorksGetRequestTest(APITestCase):
             height=260,
             width=391,
             description=(
-                "The painting shows five dancing figures, painted in a strong red,"
-                " set against a very simplified green landscape and deep blue sky."
+                "Five dancing figures painted in a strong red and set"
+                " against a green landscape and deep blue sky."
             ),
         )
 
@@ -44,20 +44,18 @@ class WorksGetRequestTest(APITestCase):
                     year_to=1908,
                     technique="Oil on canvas",
                     description=(
-                        "The painting shows monkeys picking up oranges it has"
-                        " rich shades of green used in the leaves, grass and "
-                        "trees of the jungle."
+                        "Monkeys picking up oranges in a jungle painted with"
+                        " rich greens in the leaves, grass and trees."
                     ),
                 ),
                 Work(
                     owner=cls.user_two,
-                    title="Combat of a Tiger and a Buffalo",
+                    title="Fight Between a Tiger and a Buffalo",
                     year_to=1908,
                     technique="Oil on canvas",
                     description=(
-                        "The painting shows a imaginary scene of a tiger attacking a"
-                        " buffalo within a fantastic jungle environment derived from"
-                        " reading travel books and visiting the botanical garden."
+                        "A imaginary scene of a tiger attacking a buffalo in"
+                        " a fantastic jungle environment."
                     ),
                 ),
                 Work(
@@ -66,34 +64,33 @@ class WorksGetRequestTest(APITestCase):
                     year_to=1910,
                     technique="Oil on canvas",
                     description=(
-                        "The painting shows an almost surreal portrait of Rousseau's "
-                        "mistress lying naked on a divan, gazing over a landscape of "
-                        "lotus flowers and animals."
+                        "A surreal scene of Rousseau's mistress on a divan,"
+                        "gazing over a landscape of flowers and animals."
                     ),
                 ),
             ]
         )
 
-    def test_can_get_works_for_specific_user(self):
-        response = self.client.get(
+    def test_can_get_all_works_for_user(self):
+        res = self.client.get(
             "http://127.0.0.1:8000/api/v1/users/matisse/works/"
         )
         works = Work.objects.filter(owner__username=self.user_one)
         serializer = WorkSerializerVersion1(works, many=True)
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data, serializer.data)
 
     def test_cannot_get_works_for_non_existing_user(self):
-        response = self.client.get(
+        res = self.client.get(
             "http://127.0.0.1:8000/api/v1/users/non-existing-user/works/"
         )
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, [])
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data, [])
 
-    def test_can_get_works_from_year_to_for_specific_user(self):
-        response = self.client.get(
+    def test_can_get_all_works_from_year_to_for_user(self):
+        res = self.client.get(
             "http://127.0.0.1:8000/api/v1/users/rousseau/works/",
             {"year_to": 1908},
         )
@@ -102,18 +99,36 @@ class WorksGetRequestTest(APITestCase):
         )
         serializer = WorkSerializerVersion1(works, many=True)
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data, serializer.data)
 
-    def test_cannot_get_works_from_non_year(self):
-        response = self.client.get(
+    def test_cannot_get_works_from_non_existing_year_to(self):
+        res = self.client.get(
             "http://127.0.0.1:8000/api/v1/users/rousseau/works/",
             {"year_to": "not a year"},
         )
 
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data, [])
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.data, [])
 
+    def test_can_get_single_work_for_user(self):
+        res = self.client.get(
+            "http://127.0.0.1:8000/api/v1/users/rousseau/works/4/"
+        )
+        work = Work.objects.filter(owner__username=self.user_two, id=4)
+        serializer = WorkSerializerVersion1(work, many=True)
 
-class SingleWorkGETRequestTest(APITestCase):
-    pass
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data, serializer.data)
+
+    def test_cannot_get_work_from_invalid_id(self):
+        res_invalid_integer = self.client.get(
+            "http://127.0.0.1:8000/api/v1/users/rousseau/works/1000/"
+        )
+        res_invalid_string = self.client.get(
+            "http://127.0.0.1:8000/api/v1/users/rousseau/works/not-a-integer/"
+        )
+
+        self.assertEqual(res_invalid_integer.status_code, 200)
+        self.assertEqual(res_invalid_integer.data, [])
+        self.assertEqual(res_invalid_string.status_code, 404)
