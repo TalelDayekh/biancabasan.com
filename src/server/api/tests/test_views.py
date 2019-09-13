@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from api.v1.serializers import WorkSerializerVersion1
-from api.views import GetSerializerClasses, Works
+from api.views import GetSerializerClasses, AllWorks
 from rest_framework.test import APITestCase
 from users.models import CustomUser
 
@@ -17,7 +17,7 @@ class SerializerRetrievalTest(TestCase):
         self.assertEqual(image_serializer.__name__, "ImageSerializerVersion1")
 
 
-class WorksGetRequestTest(APITestCase):
+class AllWorksGetRequestTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user_one = CustomUser.objects.create(username="matisse")
@@ -76,7 +76,7 @@ class WorksGetRequestTest(APITestCase):
 
     def test_can_get_works_for_specific_user(self):
         response = self.client.get(
-            "http://127.0.0.1:8000/api/v1/users/matisse/works/"
+            "http://127.0.0.1:8000/api/v1/users/matisse/works"
         )
         works = Work.objects.filter(owner__username=self.user_one)
         serializer = WorkSerializerVersion1(works, many=True)
@@ -86,7 +86,7 @@ class WorksGetRequestTest(APITestCase):
 
     def test_cannot_get_works_for_non_existing_user(self):
         response = self.client.get(
-            "http://127.0.0.1:8000/api/v1/users/non-existing-user/works/"
+            "http://127.0.0.1:8000/api/v1/users/non-existing-user/works"
         )
 
         self.assertEqual(response.status_code, 200)
@@ -94,7 +94,7 @@ class WorksGetRequestTest(APITestCase):
 
     def test_can_get_works_from_year_to_for_specific_user(self):
         response = self.client.get(
-            "http://127.0.0.1:8000/api/v1/users/rousseau/works/",
+            "http://127.0.0.1:8000/api/v1/users/rousseau/works",
             {"year_to": 1908},
         )
         works = Work.objects.filter(
@@ -107,7 +107,7 @@ class WorksGetRequestTest(APITestCase):
 
     def test_cannot_get_works_from_non_year(self):
         response = self.client.get(
-            "http://127.0.0.1:8000/api/v1/users/rousseau/works/",
+            "http://127.0.0.1:8000/api/v1/users/rousseau/works",
             {"year_to": "not a year"},
         )
 
