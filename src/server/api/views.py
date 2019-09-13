@@ -24,7 +24,7 @@ class GetSerializerClasses:
         return self.api_image_serializer_mapping.get(self.api_version)
 
 
-class Works(APIView):
+class AllWorks(APIView):
     def get(
         self, request: HttpRequest, version: str, username: str, format=None
     ) -> Response:
@@ -43,3 +43,18 @@ class Works(APIView):
             return Response(serializer.data)
         except ValueError:
             return Response(data=[], status=status.HTTP_400_BAD_REQUEST)
+
+
+class SingleWork(APIView):
+    def get(
+        self,
+        request: HttpRequest,
+        version: str,
+        username: str,
+        pk: int,
+        format=None,
+    ) -> Response:
+        work_serializer = GetSerializerClasses(version).work_serializer
+        work = Work.objects.filter(owner__username=username, id=pk)
+        serializer = work_serializer(work, many=True)
+        return Response(serializer.data)

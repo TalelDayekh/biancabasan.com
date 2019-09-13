@@ -4,8 +4,13 @@ from api import views
 
 urlpatterns = [
     path(
-        "<str:version>/users/<str:username>/works",
+        "<str:version>/users/<str:username>/works/",
         views.AllWorks.as_view(),
-        name="Works",
-    )
+        name="all-works",
+    ),
+    path(
+        "<str:version>/users/<str:username>/works/<int:pk>/",
+        views.SingleWork.as_view(),
+        name="single-work",
+    ),
 ]
