@@ -2,6 +2,7 @@ from django.http import HttpRequest
 
 from api.v1.serializers import ImageSerializerVersion1, WorkSerializerVersion1
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -25,36 +26,38 @@ class GetSerializerClasses:
 
 
 class AllWorks(APIView):
-    def get(
-        self, request: HttpRequest, version: str, username: str, format=None
-    ) -> Response:
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request: HttpRequest, version: str, format=None) -> Response:
         work_serializer = GetSerializerClasses(version).work_serializer
         query_params = self.request.query_params.get("year_to")
 
         try:
             if query_params:
                 works = Work.objects.filter(
-                    owner__username=username, year_to=query_params
+                    owner__username=request.user, year_to=query_params
                 )
                 serializer = work_serializer(works, many=True)
             else:
-                works = Work.objects.filter(owner__username=username)
+                works = Work.objects.filter(owner__username=request.user)
                 serializer = work_serializer(works, many=True)
             return Response(serializer.data)
         except ValueError:
             return Response(data=[], status=status.HTTP_400_BAD_REQUEST)
 
+    def post(
+        self, request: HttpRequest, version: str, username: str, format=None
+    ) -> Response:
+        pass
+
 
 class SingleWork(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(
-        self,
-        request: HttpRequest,
-        version: str,
-        username: str,
-        pk: int,
-        format=None,
+        self, request: HttpRequest, version: str, pk: int, format=None
     ) -> Response:
         work_serializer = GetSerializerClasses(version).work_serializer
-        work = Work.objects.filter(owner__username=username, id=pk)
+        work = Work.objects.filter(owner__username=request.user, id=pk)
         serializer = work_serializer(work, many=True)
         return Response(serializer.data)
