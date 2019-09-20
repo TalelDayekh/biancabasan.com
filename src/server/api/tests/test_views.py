@@ -72,27 +72,25 @@ class WorkViewsGETTest(APITestCase):
         )
 
     def test_can_get_all_works_for_user(self):
-        res = self.client.get(
-            "http://127.0.0.1:8000/api/v1/users/matisse/works/"
-        )
+        self.client.force_authenticate(self.user_one)
+
+        res = self.client.get("http://127.0.0.1:8000/api/v1/works/")
         works = Work.objects.filter(owner__username=self.user_one)
         serializer = WorkSerializerVersion1(works, many=True)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data, serializer.data)
 
-    def test_cannot_get_works_for_non_existing_user(self):
-        res = self.client.get(
-            "http://127.0.0.1:8000/api/v1/users/non-existing-user/works/"
-        )
+    def test_cannot_get_works_for_unauthorized_user(self):
+        res = self.client.get("http://127.0.0.1:8000/api/v1/works/")
 
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.data, [])
+        self.assertEqual(res.status_code, 401)
 
     def test_can_get_all_works_from_year_to_for_user(self):
+        self.client.force_authenticate(self.user_two)
+
         res = self.client.get(
-            "http://127.0.0.1:8000/api/v1/users/rousseau/works/",
-            {"year_to": 1908},
+            "http://127.0.0.1:8000/api/v1/works/", {"year_to": 1908}
         )
         works = Work.objects.filter(
             owner__username=self.user_two, year_to=1908
@@ -103,18 +101,19 @@ class WorkViewsGETTest(APITestCase):
         self.assertEqual(res.data, serializer.data)
 
     def test_cannot_get_works_from_non_existing_year_to(self):
+        self.client.force_authenticate(self.user_two)
+
         res = self.client.get(
-            "http://127.0.0.1:8000/api/v1/users/rousseau/works/",
-            {"year_to": "not a year"},
+            "http://127.0.0.1:8000/api/v1/works/", {"year_to": "not a year"}
         )
 
         self.assertEqual(res.status_code, 400)
         self.assertEqual(res.data, [])
 
     def test_can_get_single_work_for_user(self):
-        res = self.client.get(
-            "http://127.0.0.1:8000/api/v1/users/rousseau/works/4/"
-        )
+        self.client.force_authenticate(self.user_two)
+
+        res = self.client.get("http://127.0.0.1:8000/api/v1/works/4/")
         work = Work.objects.filter(owner__username=self.user_two, id=4)
         serializer = WorkSerializerVersion1(work, many=True)
 
@@ -122,13 +121,15 @@ class WorkViewsGETTest(APITestCase):
         self.assertEqual(res.data, serializer.data)
 
     def test_cannot_get_work_from_invalid_id(self):
-        res_invalid_integer = self.client.get(
-            "http://127.0.0.1:8000/api/v1/users/rousseau/works/1000/"
+        self.client.force_authenticate(self.user_two)
+
+        res_invalid_int = self.client.get(
+            "http://127.0.0.1:8000/api/v1/works/1000/"
         )
-        res_invalid_string = self.client.get(
-            "http://127.0.0.1:8000/api/v1/users/rousseau/works/not-a-integer/"
+        res_invalid_str = self.client.get(
+            "http://127.0.0.1:8000/api/v1/works/not-a-integer/"
         )
 
-        self.assertEqual(res_invalid_integer.status_code, 200)
-        self.assertEqual(res_invalid_integer.data, [])
-        self.assertEqual(res_invalid_string.status_code, 404)
+        self.assertEqual(res_invalid_int.status_code, 200)
+        self.assertEqual(res_invalid_int.data, [])
+        self.assertEqual(res_invalid_str.status_code, 404)
