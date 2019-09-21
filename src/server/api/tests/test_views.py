@@ -133,3 +133,55 @@ class WorkViewsGETTest(APITestCase):
         self.assertEqual(res_invalid_int.status_code, 200)
         self.assertEqual(res_invalid_int.data, [])
         self.assertEqual(res_invalid_str.status_code, 404)
+
+
+class WorkViewPOSTTest(APITestCase):
+    def setUp(self):
+        self.user = CustomUser.objects.create(username="adrianghenie")
+        self.valid_payload = {
+            "title": "The Sunflowers in 1937",
+            "year_to": 2014,
+            "technique": "Oil on canvas",
+            "description": "A homage to Van Gogh's sunflowers.",
+        }
+        self.invalid_payload = {
+            "title": "",
+            "year_to": "",
+            "technique": "",
+            "description": "",
+        }
+
+    def test_can_create_work_for_user(self):
+        self.client.force_authenticate(self.user)
+
+        res = self.client.post(
+            "http://127.0.0.1:8000/api/v1/works/", self.valid_payload
+        )
+
+        self.assertEqual(res.status_code, 201)
+
+    def test_cannot_create_work_for_unauthorized_user(self):
+        res = self.client.post(
+            "http://127.0.0.1:8000/api/v1/works/", self.valid_payload
+        )
+
+        self.assertEqual(res.status_code, 401)
+
+    def test_cannot_create_work_from_invalid_payload(self):
+        self.client.force_authenticate(self.user)
+
+        res = self.client.post(
+            "http://127.0.0.1:8000/api/v1/works/", self.invalid_payload
+        )
+
+        self.assertEqual(res.status_code, 400)
+
+    def test_cannot_create_work_from_non_selectable_year(self):
+        self.client.force_authenticate(self.user)
+
+        self.valid_payload["year_to"] = 1888
+        res = self.client.post(
+            "http://127.0.0.1:8000/api/v1/works/", self.valid_payload
+        )
+
+        self.assertEqual(res.status_code, 400)
