@@ -46,9 +46,15 @@ class AllWorks(APIView):
             return Response(data=[], status=status.HTTP_400_BAD_REQUEST)
 
     def post(
-        self, request: HttpRequest, version: str, username: str, format=None
+        self, request: HttpRequest, version: str, format=None
     ) -> Response:
-        pass
+        work_serializer = GetSerializerClasses(version).work_serializer
+        serializer = work_serializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save(owner=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SingleWork(APIView):
