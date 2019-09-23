@@ -64,6 +64,18 @@ class SingleWork(APIView):
         self, request: HttpRequest, version: str, pk: int, format=None
     ) -> Response:
         work_serializer = GetSerializerClasses(version).work_serializer
-        work = Work.objects.filter(owner__username=request.user, id=pk)
-        serializer = work_serializer(work, many=True)
-        return Response(serializer.data)
+
+        try:
+            work = Work.objects.get(owner__username=request.user, id=pk)
+            serializer = work_serializer(work)
+            return Response(serializer.data)
+        except Work.DoesNotExist:
+            return Response(data={}, status=status.HTTP_404_NOT_FOUND)
+
+    # def put(
+    #     self, request: HttpRequest, version: str, pk: int, format=None
+    # ) -> Response:
+    #     work_serializer = GetSerializerClasses(version).work_serializer
+
+    #     bla = Work.objects.get(id=pk)
+    #     print(bla)
