@@ -131,11 +131,10 @@ class WorkViewsGETTest(APITestCase):
         )
 
         self.assertEqual(res_invalid_int.status_code, 404)
-        self.assertEqual(res_invalid_int.data, {})
         self.assertEqual(res_invalid_str.status_code, 404)
 
 
-class WorkViewPOSTTest(APITestCase):
+class WorkViewsPOSTTest(APITestCase):
     def setUp(self):
         self.user = CustomUser.objects.create(username="adrianghenie")
         self.valid_payload = {
@@ -185,3 +184,7 @@ class WorkViewPOSTTest(APITestCase):
         )
 
         self.assertEqual(res.status_code, 400)
+
+
+class WorkViewsPUTTest(APITestCase):
+    pass

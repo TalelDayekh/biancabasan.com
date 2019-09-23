@@ -1,4 +1,4 @@
-from django.http import HttpRequest
+from django.http import Http404, HttpRequest
 
 from api.v1.serializers import ImageSerializerVersion1, WorkSerializerVersion1
 from rest_framework import status
@@ -60,22 +60,21 @@ class AllWorks(APIView):
 class SingleWork(APIView):
     permission_classes = [IsAuthenticated]
 
+    def get_object(self, username: str, pk: int) -> object:
+        try:
+            return Work.objects.get(owner__username=username, id=pk)
+        except Work.DoesNotExist:
+            raise Http404
+
     def get(
         self, request: HttpRequest, version: str, pk: int, format=None
     ) -> Response:
         work_serializer = GetSerializerClasses(version).work_serializer
+        work = self.get_object(request.user, pk)
+        serializer = work_serializer(work)
+        return Response(serializer.data)
 
-        try:
-            work = Work.objects.get(owner__username=request.user, id=pk)
-            serializer = work_serializer(work)
-            return Response(serializer.data)
-        except Work.DoesNotExist:
-            return Response(data={}, status=status.HTTP_404_NOT_FOUND)
-
-    # def put(
-    #     self, request: HttpRequest, version: str, pk: int, format=None
-    # ) -> Response:
-    #     work_serializer = GetSerializerClasses(version).work_serializer
-
-    #     bla = Work.objects.get(id=pk)
-    #     print(bla)
+    def put(
+        self, request: HttpRequest, version: str, pk: int, format=None
+    ) -> Response:
+        pass
