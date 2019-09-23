@@ -114,8 +114,8 @@ class WorkViewsGETTest(APITestCase):
         self.client.force_authenticate(self.user_two)
 
         res = self.client.get("http://127.0.0.1:8000/api/v1/works/4/")
-        work = Work.objects.filter(owner__username=self.user_two, id=4)
-        serializer = WorkSerializerVersion1(work, many=True)
+        work = Work.objects.get(owner__username=self.user_two, id=4)
+        serializer = WorkSerializerVersion1(work)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data, serializer.data)
@@ -127,11 +127,11 @@ class WorkViewsGETTest(APITestCase):
             "http://127.0.0.1:8000/api/v1/works/1000/"
         )
         res_invalid_str = self.client.get(
-            "http://127.0.0.1:8000/api/v1/works/not-a-integer/"
+            "http://127.0.0.1:8000/api/v1/works/not-a-int/"
         )
 
-        self.assertEqual(res_invalid_int.status_code, 200)
-        self.assertEqual(res_invalid_int.data, [])
+        self.assertEqual(res_invalid_int.status_code, 404)
+        self.assertEqual(res_invalid_int.data, {})
         self.assertEqual(res_invalid_str.status_code, 404)
 
 
