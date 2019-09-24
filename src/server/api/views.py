@@ -77,4 +77,11 @@ class SingleWork(APIView):
     def put(
         self, request: HttpRequest, version: str, pk: int, format=None
     ) -> Response:
-        pass
+        work_serializer = GetSerializerClasses(version).work_serializer
+        work = self.get_object(request.user, pk)
+        serializer = work_serializer(work, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save(owner=request.user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

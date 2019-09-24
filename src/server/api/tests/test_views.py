@@ -127,7 +127,7 @@ class WorkViewsGETTest(APITestCase):
             "http://127.0.0.1:8000/api/v1/works/1000/"
         )
         res_invalid_str = self.client.get(
-            "http://127.0.0.1:8000/api/v1/works/not-a-int/"
+            "http://127.0.0.1:8000/api/v1/works/not-an-int/"
         )
 
         self.assertEqual(res_invalid_int.status_code, 404)
@@ -187,4 +187,58 @@ class WorkViewsPOSTTest(APITestCase):
 
 
 class WorkViewsPUTTest(APITestCase):
-    pass
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = CustomUser.objects.create(username="username")
+        cls.work = Work.objects.create(
+            owner=cls.user,
+            title="title",
+            year_to=2000,
+            technique="oil on canvas",
+            description="description",
+        )
+        cls.updated_work = {
+            "title": "new title",
+            "year_to": 2015,
+            "technique": "Oil on canvas",
+            "description": "New description",
+        }
+
+    def test_can_update_work_for_user(self):
+        self.client.force_authenticate(self.user)
+
+        get_res_work = self.client.get("http://127.0.0.1:8000/api/v1/works/6/")
+        serializer = WorkSerializerVersion1(self.work)
+
+        # Assert get initial work
+        self.assertEqual(get_res_work.data, serializer.data)
+
+        put_res = self.client.put(
+            "http://127.0.0.1:8000/api/v1/works/6/", self.updated_work
+        )
+        get_res_updated_work = self.client.get(
+            "http://127.0.0.1:8000/api/v1/works/6/"
+        )
+
+        # Assert get updated work
+        self.assertEqual(put_res.data, get_res_updated_work.data)
+
+    def test_cannot_update_work_for_unauthorized_user(self):
+        res = self.client.put(
+            "http://127.0.0.1:8000/api/v1/works/6/", self.updated_work
+        )
+
+        self.assertEqual(res.status_code, 401)
+
+    def test_cannot_update_non_existing_work(self):
+        self.client.force_authenticate(self.user)
+
+        res_invalid_int = self.client.put(
+            "http://127.0.0.1:8000/api/v1/works/1000/", self.updated_work
+        )
+        res_invalid_str = self.client.put(
+            "http://127.0.0.1:8000/api/v1/works/non-an-int/", self.updated_work
+        )
+
+        self.assertEqual(res_invalid_int.status_code, 404)
+        self.assertEqual(res_invalid_str.status_code, 404)
