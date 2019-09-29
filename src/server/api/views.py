@@ -43,7 +43,7 @@ class AllWorks(APIView):
                 serializer = work_serializer(works, many=True)
             return Response(serializer.data)
         except ValueError:
-            return Response(data=[], status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def post(
         self, request: HttpRequest, version: str, format=None
@@ -74,14 +74,21 @@ class SingleWork(APIView):
         serializer = work_serializer(work)
         return Response(serializer.data)
 
-    def put(
+    def patch(
         self, request: HttpRequest, version: str, pk: int, format=None
     ) -> Response:
         work_serializer = GetSerializerClasses(version).work_serializer
         work = self.get_object(request.user, pk)
-        serializer = work_serializer(work, data=request.data)
+        serializer = work_serializer(work, data=request.data, partial=True)
 
         if serializer.is_valid():
             serializer.save(owner=request.user)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(
+        self, request: HttpRequest, version: str, pk: int, format=None
+    ) -> Response:
+        work = self.get_object(request.user, pk)
+        work.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
