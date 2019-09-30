@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from django.http import Http404, HttpRequest
 
 from api.v1.serializers import ImageSerializerVersion1, WorkSerializerVersion1
@@ -92,3 +94,19 @@ class SingleWork(APIView):
         work = self.get_object(request.user, pk)
         work.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class YearsTo(APIView):
+    def get(
+        self, request: HttpRequest, version: str, username: str, format=None
+    ) -> Response:
+        work_serializer = GetSerializerClasses(version).work_serializer
+        years_to = Work.objects.filter(owner__username=username).values_list(
+            "year_to", flat=True
+        )
+
+        # Sort all year_to descending and remove duplicate years
+        years_to_descending = sorted(years_to, reverse=True)
+        sorted_years_to = list(OrderedDict.fromkeys(years_to_descending))
+
+        return Response(sorted_years_to)

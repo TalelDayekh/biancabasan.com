@@ -78,6 +78,13 @@ class WorksGETTest(APITestCase):
 
         self.assertEqual(res.status_code, 400)
 
+    def test_can_get_sorted_list_of_year_to_for_user(self):
+        res = self.client.get(
+            f"http://127.0.0.1:8000/api/v1/{self.user}/works/years/"
+        )
+
+        self.assertEqual(res.data, [1910, 1908])
+
     def test_can_get_single_work_for_user(self):
         # Get id from work title instead of hardcoding it in the request
         # in case the database provides different id values on testruns.
