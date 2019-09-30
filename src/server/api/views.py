@@ -96,7 +96,7 @@ class SingleWork(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class YearsTo(APIView):
+class YearsToList(APIView):
     def get(
         self, request: HttpRequest, version: str, username: str, format=None
     ) -> Response:
@@ -110,3 +110,7 @@ class YearsTo(APIView):
         sorted_years_to = list(OrderedDict.fromkeys(years_to_descending))
 
         return Response(sorted_years_to)
+
+
+class AllImages(APIView):
+    pass

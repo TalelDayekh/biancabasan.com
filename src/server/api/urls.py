@@ -11,7 +11,7 @@ urlpatterns = [
     ),
     path(
         "<str:version>/<str:username>/works/years/",
-        views.YearsTo.as_view(),
+        views.YearsToList.as_view(),
         name="years-to",
     ),
 ]
