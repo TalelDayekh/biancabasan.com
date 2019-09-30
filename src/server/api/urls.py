@@ -9,4 +9,9 @@ urlpatterns = [
         views.SingleWork.as_view(),
         name="single-work",
     ),
+    path(
+        "<str:version>/<str:username>/works/years/",
+        views.YearsTo.as_view(),
+        name="years-to",
+    ),
 ]
