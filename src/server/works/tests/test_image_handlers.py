@@ -8,8 +8,11 @@ from django.test import TestCase, override_settings
 
 from PIL import Image
 
-from ..image_handlers import (ImageDirectoryHandler, ImageFileHandler,
-                              ImageValidationHandler)
+from ..image_handlers import (
+    ImageDirectoryHandler,
+    ImageFileHandler,
+    ImageValidationHandler,
+)
 
 image_directory_handler_test_folder = tempfile.mkdtemp(
     prefix="image_directory_handler_test_folder"
@@ -62,7 +65,7 @@ class ImageValidationHandlerTest(TestCase):
     @contextmanager
     def create_temporary_in_memory_image_file(
         self, image_format: str, image_size: int
-    ) -> None:
+    ) -> InMemoryUploadedFile:
         try:
             test_image = Image.new("RGB", (500, 500))
             temporary_image_file = tempfile.NamedTemporaryFile(
