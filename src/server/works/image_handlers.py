@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Optional
 
 from django.conf import settings
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from PIL import Image
 
@@ -43,6 +44,29 @@ class ImageDirectoryHandler:
                 work_title_directory.mkdir(parents=True, exist_ok=True)
         except Exception as err:
             print(err)
+
+
+class ImageValidationHandler:
+    maximum_image_size = 2097152
+    allowed_image_format = ["JPEG"]
+
+    def __init__(self, image_file: InMemoryUploadedFile) -> None:
+        self.image_file = image_file
+
+    def _validate_image_format(self) -> bool:
+        try:
+            image = Image.open(self.image_file)
+            return True if image.format in self.allowed_image_format else False
+        except IOError:
+            return False
+
+    def _validate_image_size(self) -> bool:
+        return (
+            True if self.image_file.size <= self.maximum_image_size else False
+        )
+
+    def is_valid(self) -> bool:
+        return self._validate_image_format() and self._validate_image_size()
 
 
 class ImageFileHandler:

@@ -1,12 +1,15 @@
 import shutil
 import tempfile
+from contextlib import contextmanager
 from pathlib import Path
 
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.test import TestCase, override_settings
 
 from PIL import Image
 
-from ..image_handlers import ImageDirectoryHandler, ImageFileHandler
+from ..image_handlers import (ImageDirectoryHandler, ImageFileHandler,
+                              ImageValidationHandler)
 
 image_directory_handler_test_folder = tempfile.mkdtemp(
     prefix="image_directory_handler_test_folder"
@@ -53,6 +56,98 @@ class ImageDirectoryHandlerTest(TestCase):
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree(image_directory_handler_test_folder)
+
+
+class ImageValidationHandlerTest(TestCase):
+    @contextmanager
+    def create_temporary_in_memory_image_file(
+        self, image_format: str, image_size: int
+    ) -> None:
+        try:
+            test_image = Image.new("RGB", (500, 500))
+            temporary_image_file = tempfile.NamedTemporaryFile(
+                prefix="black_square"
+            )
+            test_image.save(temporary_image_file, image_format)
+            temporary_image_file.seek(0)
+
+            in_memory_image_file = InMemoryUploadedFile(
+                file=temporary_image_file,
+                field_name="image",
+                name=f"black_square.{image_format}",
+                content_type=f"image/{image_format}",
+                size=image_size,
+                charset=None,
+            )
+            yield in_memory_image_file
+        finally:
+            temporary_image_file.close()
+
+    def test_can_validate_image_format_as_true_or_false(self):
+        with self.create_temporary_in_memory_image_file(
+            "JPEG", 2097152
+        ) as temporary_in_memory_image:
+            valid_image_format = ImageValidationHandler(
+                temporary_in_memory_image
+            )._validate_image_format()
+
+            self.assertEqual(valid_image_format, True)
+
+        with self.create_temporary_in_memory_image_file(
+            "PNG", 2097152
+        ) as temporary_in_memory_image:
+            valid_image_format = ImageValidationHandler(
+                temporary_in_memory_image
+            )._validate_image_format()
+
+            self.assertEqual(valid_image_format, False)
+
+    def test_can_validate_image_size_as_true_or_false(self):
+        with self.create_temporary_in_memory_image_file(
+            "JPEG", 2097152
+        ) as temporary_in_memory_image:
+            valid_image_size = ImageValidationHandler(
+                temporary_in_memory_image
+            )._validate_image_size()
+
+            self.assertEqual(valid_image_size, True)
+
+        with self.create_temporary_in_memory_image_file(
+            "JPEG", 2097153
+        ) as temporary_in_memory_image:
+            valid_image_size = ImageValidationHandler(
+                temporary_in_memory_image
+            )._validate_image_size()
+
+            self.assertEqual(valid_image_size, False)
+
+    def test_can_validate_image_as_true_or_false(self):
+        with self.create_temporary_in_memory_image_file(
+            "JPEG", 2097152
+        ) as temporary_in_memory_image:
+            valid_image = ImageValidationHandler(
+                temporary_in_memory_image
+            ).is_valid()
+
+            self.assertEqual(valid_image, True)
+
+        with self.create_temporary_in_memory_image_file(
+            "PNG", 2097152
+        ) as temporary_in_memory_image:
+            valid_image = ImageValidationHandler(
+                temporary_in_memory_image
+            ).is_valid()
+
+            self.assertEqual(valid_image, False)
+
+        with self.create_temporary_in_memory_image_file(
+            "JPEG", 2097153
+        ) as temporary_in_memory_image:
+            valid_image = ImageValidationHandler(
+                temporary_in_memory_image
+            ).is_valid()
+
+            self.assertEqual(valid_image, False)
 
 
 @override_settings(MEDIA_ROOT=image_file_handler_test_folder)
