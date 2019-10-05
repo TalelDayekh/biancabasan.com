@@ -8,11 +8,8 @@ from django.test import TestCase, override_settings
 
 from PIL import Image
 
-from ..image_handlers import (
-    ImageDirectoryHandler,
-    ImageFileHandler,
-    ImageValidationHandler,
-)
+from ..image_handlers import (ImageDirectoryHandler, ImageFileHandler,
+                              ImageValidationHandler)
 
 image_directory_handler_test_folder = tempfile.mkdtemp(
     prefix="image_directory_handler_test_folder"
