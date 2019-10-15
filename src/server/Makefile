@@ -1,4 +1,5 @@
 CODE_DIRS = api/ users/ works/
+ISORT_PARAMS = --skip migrations/*
 BLACK_PARAMS = --line-length 79
 
 flake8:
@@ -8,7 +9,7 @@ mypy:
 	mypy $(CODE_DIRS)
 
 isort:
-	isort
+	isort $(ISORT_PARAMS)
 
 isort_travis_build:
 	isort --check-only
