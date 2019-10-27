@@ -13,7 +13,7 @@ class OwnerSerializerVersion1(serializers.ModelSerializer):
 class ImageSerializerVersion1(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fields = ["id", "image"]
+        fields = ["work_id", "id", "image"]
 
 
 class WorkSerializerVersion1(serializers.ModelSerializer):
