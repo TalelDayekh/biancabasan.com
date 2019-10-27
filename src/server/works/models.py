@@ -2,6 +2,8 @@ from django.db import models
 
 from users.models import CustomUser
 
+from works.image_handlers import image_upload_handler
+
 
 class Work(models.Model):
     YEARS = [year for year in range(1990, 2090)]
@@ -35,7 +37,9 @@ class Work(models.Model):
 
 
 class Image(models.Model):
-    image = models.ImageField(verbose_name="Image", upload_to="images")
+    image = models.ImageField(
+        verbose_name="Image", upload_to=image_upload_handler
+    )
     work = models.ForeignKey(
         Work, related_name="images", on_delete=models.CASCADE
     )
