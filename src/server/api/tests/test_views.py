@@ -113,6 +113,26 @@ class ImageGETTest(APITestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data, serializer.data)
 
+    def test_cannot_get_image_from_invalid_image_or_work_id(self):
+        image_id = random.choice(self.images_id)
+        res_invalid_image_id_int = self.client.get(
+            f"http://127.0.0.1:8000/api/v1/works/{self.work_id}/images/9999"
+        )
+        res_invalid_image_id_str = self.client.get(
+            f"http://127.0.0.1:8000/api/v1/works/{self.work_id}/images/NaN"
+        )
+        res_invalid_work_id_int = self.client.get(
+            f"http://127.0.0.1:8000/api/v1/works/9999/images/{image_id}"
+        )
+        res_invalid_work_id_str = self.client.get(
+            f"http://127.0.0.1:8000/api/v1/works/NaN/images/{image_id}"
+        )
+
+        self.assertEqual(res_invalid_image_id_int.status_code, 404)
+        self.assertEqual(res_invalid_image_id_str.status_code, 404)
+        self.assertEqual(res_invalid_work_id_int.status_code, 404)
+        self.assertEqual(res_invalid_work_id_str.status_code, 404)
+
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree(image_get_request_test_folder)
