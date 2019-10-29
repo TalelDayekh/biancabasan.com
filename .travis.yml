@@ -19,7 +19,7 @@ matrix:
         - make black_travis_build
         - python manage.py makemigrations
         - python manage.py migrate
-        - codecov manage.py test
+        - codecov test
 
     - language: node_js
       node_js:
