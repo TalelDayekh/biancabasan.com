@@ -35,6 +35,25 @@ class GetSerializerClasses:
         return self.api_image_serializer_mapping.get(self.api_version)
 
 
+class WorkList(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get(self, request: HttpRequest, version: str, format=None) -> Response:
+        work_serializer = GetSerializerClasses(version).work_serializer
+        query_params = self.request.query_params.get("year_to")
+
+        try:
+            if query_params:
+                works = Work.objects.filter(year_to=query_params)
+                serializer = work_serializer(works, many=True)
+            else:
+                works = Work.objects.all()
+                serializer = work_serializer(works, many=True)
+            return Response(serializer.data)
+        except ValueError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
 class ImageList(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     parser_classes = [MultiPartParser, FormParser]
@@ -116,94 +135,3 @@ class ImageDetail(APIView):
                 return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             raise Http404
-
-
-# def get_work_object(user: str, work_id: int) -> Type[Work]:
-#     try:
-#         return Work.objects.get(owner__username=user, id=work_id)
-#     except Work.DoesNotExist:
-#         raise Http404
-
-# class AllWorks(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request: HttpRequest, version: str, format=None) -> Response:
-#         work_serializer = GetSerializerClasses(version).work_serializer
-#         query_params = self.request.query_params.get("year_to")
-
-#         try:
-#             if query_params:
-#                 works = Work.objects.filter(
-#                     owner__username=request.user, year_to=query_params
-#                 )
-#                 serializer = work_serializer(works, many=True)
-#             else:
-#                 works = Work.objects.filter(owner__username=request.user)
-#                 serializer = work_serializer(works, many=True)
-#             return Response(serializer.data)
-#         except ValueError:
-#             return Response(status=status.HTTP_400_BAD_REQUEST)
-
-#     def post(
-#         self, request: HttpRequest, version: str, format=None
-#     ) -> Response:
-#         work_serializer = GetSerializerClasses(version).work_serializer
-#         serializer = work_serializer(data=request.data)
-
-#         if serializer.is_valid():
-#             serializer.save(owner=request.user)
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# class SingleWork(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     def get_object(self, username: str, work_id: int) -> object:
-#         try:
-#             return Work.objects.get(owner__username=username, id=work_id)
-#         except Work.DoesNotExist:
-#             raise Http404
-
-#     def get(
-#         self, request: HttpRequest, version: str, work_id: int, format=None
-#     ) -> Response:
-#         work_serializer = GetSerializerClasses(version).work_serializer
-#         work = self.get_object(request.user, work_id)
-#         serializer = work_serializer(work)
-#         return Response(serializer.data)
-
-#     def patch(
-#         self, request: HttpRequest, version: str, work_id: int, format=None
-#     ) -> Response:
-#         work_serializer = GetSerializerClasses(version).work_serializer
-#         work = self.get_object(request.user, work_id)
-#         serializer = work_serializer(work, data=request.data, partial=True)
-
-#         if serializer.is_valid():
-#             serializer.save(owner=request.user)
-#             return Response(serializer.data, status=status.HTTP_200_OK)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#     def delete(
-#         self, request: HttpRequest, version: str, work_id: int, format=None
-#     ) -> Response:
-#         work = self.get_object(request.user, work_id)
-#         work.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-# class YearsToList(APIView):
-#     def get(
-#         self, request: HttpRequest, version: str, username: str, format=None
-#     ) -> Response:
-#         work_serializer = GetSerializerClasses(version).work_serializer
-#         years_to = Work.objects.filter(owner__username=username).values_list(
-#             "year_to", flat=True
-#         )
-
-#         # Sort all year_to descending and remove duplicate years
-#         years_to_descending = sorted(years_to, reverse=True)
-#         sorted_years_to = list(OrderedDict.fromkeys(years_to_descending))
-
-#         return Response(sorted_years_to)
