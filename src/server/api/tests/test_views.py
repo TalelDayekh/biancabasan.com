@@ -93,7 +93,7 @@ class WorkGETTest(APITestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data, serializer.data)
 
-    def test_cannot_get_works_from_non_existing_year_to(self):
+    def test_cannot_get_works_from_invalid_year_to(self):
         res_int = self.client.get(
             "http://127.0.0.1:8000/api/v1/works", {"year_to": 2020}
         )
@@ -103,6 +103,20 @@ class WorkGETTest(APITestCase):
 
         self.assertEqual(res_int.data, [])
         self.assertEqual(res_str.status_code, 400)
+
+    def test_can_get_sorted_list_of_years(self):
+        res = self.client.get(f"http://127.0.0.1:8000/api/v1/works/years")
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data, [2019, 2018])
+
+    def test_can_get_work_from_work_id(self):
+        work = Work.objects.get(title="Black Square #3")
+        res = self.client.get(f"http://127.0.0.1:8000/api/v1/works/{work.id}")
+        serializer = WorkSerializerVersion1(work)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data, serializer.data)
 
 
 @override_settings(
