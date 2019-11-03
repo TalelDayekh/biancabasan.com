@@ -53,6 +53,45 @@ class WorkList(APIView):
         except ValueError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+    def post(
+        self, request: HttpRequest, version: str, format=None
+    ) -> Response:
+        work_serializer = GetSerializerClasses(version).work_serializer
+        serializer = work_serializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save(owner=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
+
+
+class WorkDetail(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_work_object(self, work_id: int) -> Type[Work]:
+        try:
+            return Work.objects.get(id=work_id)
+        except Work.DoesNotExist:
+            raise Http404
+
+    def get(
+        self, request: HttpRequest, version: str, work_id: int, format=None
+    ) -> Response:
+        work_serializer = GetSerializerClasses(version).work_serializer
+        work = self.get_work_object(work_id)
+        serializer = work_serializer(work)
+        return Response(serializer.data)
+
+
+class WorkYearsList(APIView):
+    def get(self, request: HttpRequest, version: str, format=None) -> Response:
+        work_years = Work.objects.all().values_list("year_to", flat=True)
+
+        # Sort all work years descending and remove duplicate years
+        work_years_descending = sorted(work_years, reverse=True)
+        work_years_sorted = list(OrderedDict.fromkeys(work_years_descending))
+        return Response(work_years_sorted)
+
 
 class ImageList(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
