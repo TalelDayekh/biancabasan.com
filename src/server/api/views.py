@@ -62,15 +62,20 @@ class WorkList(APIView):
         if serializer.is_valid():
             serializer.save(owner=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class WorkDetail(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def get_work_object(self, work_id: int) -> Type[Work]:
+    def get_work_object(
+        self, work_id: int, user: Optional[str] = None
+    ) -> Type[Work]:
         try:
-            return Work.objects.get(id=work_id)
+            if user:
+                return Work.objects.get(id=work_id, owner__username=user)
+            else:
+                return Work.objects.get(id=work_id)
         except Work.DoesNotExist:
             raise Http404
 
@@ -81,6 +86,18 @@ class WorkDetail(APIView):
         work = self.get_work_object(work_id)
         serializer = work_serializer(work)
         return Response(serializer.data)
+
+    def patch(
+        self, request: HttpRequest, version: str, work_id: int, format=None
+    ) -> Response:
+        work_serializer = GetSerializerClasses(version).work_serializer
+        work = self.get_work_object(work_id, request.user)
+        serializer = work_serializer(work, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save(owner=request.user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class WorkYearsList(APIView):

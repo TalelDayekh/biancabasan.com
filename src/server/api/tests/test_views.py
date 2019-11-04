@@ -44,6 +44,13 @@ def test_data() -> list:
             "technique": "Oil on canvas",
             "description": "A painting of a black square",
         },
+        {
+            "title": "Black Square #4",
+            "year_to": 1986,
+            "technique": "Oil on canvas",
+            "description": "A painting of a black square",
+        },
+        {"title": "", "year_to": "", "technique": "", "description": ""},
     ]
 
 
@@ -117,6 +124,64 @@ class WorkGETTest(APITestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data, serializer.data)
+
+    def test_cannot_get_work_from_invalid_work_id(self):
+        res_int = self.client.get("http://127.0.0.1:8000/api/v1/works/9999")
+        res_str = self.client.get("http://127.0.0.1:8000/api/v1/works/Nan")
+
+        self.assertEqual(res_int.status_code, 404)
+        self.assertEqual(res_str.status_code, 404)
+
+    @classmethod
+    def tearDownClass(cls):
+        # Adding the tearDownClass seems to prevent
+        # connection already closed InterfaceError.
+        pass
+
+
+class WorkPOSTTest(APITestCase):
+    def setUp(self):
+        user = CustomUser.objects.create(username="post_work_user")
+        self.client.force_authenticate(user)
+
+    def test_can_create_work_for_user(self):
+        res = self.client.post(
+            "http://127.0.0.1:8000/api/v1/works", test_data()[0]
+        )
+
+        self.assertEqual(res.status_code, 201)
+
+    def test_cannot_create_work_for_unauthorized_user(self):
+        self.client.force_authenticate(user=None)
+        res = self.client.post(
+            "http://127.0.0.1:8000/api/v1/works", test_data()[0]
+        )
+
+        self.assertEqual(res.status_code, 401)
+
+    def test_cannot_create_work_from_invalid_payload(self):
+        res = self.client.post(
+            "http://127.0.0.1:8000/api/v1/works", test_data()[4]
+        )
+
+        self.assertEqual(res.status_code, 400)
+
+    def test_cannot_create_work_with_out_of_range_year(self):
+        res = self.client.post(
+            "http://127.0.0.1:8000/api/v1/works", test_data()[3]
+        )
+
+        self.assertEqual(res.status_code, 400)
+
+    @classmethod
+    def tearDownClass(cls):
+        # Adding the tearDownClass seems to prevent
+        # connection already closed InterfaceError.
+        pass
+
+
+class WorkPATCHTest(APITestCase):
+    pass
 
 
 @override_settings(
