@@ -99,6 +99,21 @@ class WorkDetail(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def delete(
+        self, request: HttpRequest, version: str, work_id: int, format=None
+    ) -> Response:
+        work = self.get_work_object(work_id, request.user)
+
+        for image in work.images.all():
+            image_file = Path(image.image.path)
+            ImageFileHandler(image_file).delete_image_set()
+
+            if image_file.exists():
+                return Response(status=status.HTTP_409_CONFLICT)
+
+        work.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class WorkYearsList(APIView):
     def get(self, request: HttpRequest, version: str, format=None) -> Response:

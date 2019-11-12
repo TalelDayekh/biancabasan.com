@@ -101,15 +101,15 @@ class WorkGETTest(APITestCase):
         self.assertEqual(res.data, serializer.data)
 
     def test_cannot_get_works_from_invalid_year_to(self):
-        res_int = self.client.get(
+        res_invalid_year_to_int = self.client.get(
             "http://127.0.0.1:8000/api/v1/works", {"year_to": 2020}
         )
-        res_str = self.client.get(
+        res_invalid_year_to_str = self.client.get(
             "http://127.0.0.1:8000/api/v1/works", {"year_to": "NaN"}
         )
 
-        self.assertEqual(res_int.data, [])
-        self.assertEqual(res_str.status_code, 400)
+        self.assertEqual(res_invalid_year_to_int.data, [])
+        self.assertEqual(res_invalid_year_to_str.status_code, 400)
 
     def test_can_get_sorted_list_of_years(self):
         res = self.client.get(f"http://127.0.0.1:8000/api/v1/works/years")
@@ -126,11 +126,15 @@ class WorkGETTest(APITestCase):
         self.assertEqual(res.data, serializer.data)
 
     def test_cannot_get_work_from_invalid_work_id(self):
-        res_int = self.client.get("http://127.0.0.1:8000/api/v1/works/9999")
-        res_str = self.client.get("http://127.0.0.1:8000/api/v1/works/Nan")
+        res_invalid_work_id_int = self.client.get(
+            "http://127.0.0.1:8000/api/v1/works/9999"
+        )
+        res_invalid_work_id_str = self.client.get(
+            "http://127.0.0.1:8000/api/v1/works/Nan"
+        )
 
-        self.assertEqual(res_int.status_code, 404)
-        self.assertEqual(res_str.status_code, 404)
+        self.assertEqual(res_invalid_work_id_int.status_code, 404)
+        self.assertEqual(res_invalid_work_id_str.status_code, 404)
 
     @classmethod
     def tearDownClass(cls):
@@ -212,14 +216,33 @@ class WorkPATCHTest(APITestCase):
 
     def test_cannot_update_work_as_unauthorized_user(self):
         self.client.force_authenticate(user=None)
+        res = self.client.patch(
+            f"http://127.0.0.1:8000/api/v1/works/{self.user_one_work_id}",
+            self.updated_payload,
+        )
+
+        self.assertEqual(res.status_code, 401)
 
     def test_cannot_update_work_from_invalid_work_id(self):
-        pass
+        res_invalid_work_id_int = self.client.patch(
+            "http://127.0.0.1:8000/api/v1/works/9999", self.updated_payload
+        )
+        res_invalid_work_id_str = self.client.patch(
+            "http://127.0.0.1:8000/api/v1/works/NaN", self.updated_payload
+        )
+
+        self.assertEqual(res_invalid_work_id_int.status_code, 404)
+        self.assertEqual(res_invalid_work_id_str.status_code, 404)
 
     @classmethod
     def tearDownClass(cls):
         # Adding the tearDownClass seems to prevent
         # connection already closed InterfaceError.
+        pass
+
+
+class WorkDELETETest(APITestCase):
+    def setUp(self):
         pass
 
 
@@ -260,15 +283,15 @@ class ImageGETTest(APITestCase):
         self.assertEqual(res.data, serializer.data)
 
     def test_cannot_get_images_from_invalid_work_id(self):
-        res_int = self.client.get(
+        res_invalid_work_id_int = self.client.get(
             "http://127.0.0.1:8000/api/v1/works/9999/images"
         )
-        res_str = self.client.get(
+        res_invalid_work_id_str = self.client.get(
             "http://127.0.0.1:8000/api/v1/works/NaN/images"
         )
 
-        self.assertEqual(res_int.status_code, 404)
-        self.assertEqual(res_str.status_code, 404)
+        self.assertEqual(res_invalid_work_id_int.status_code, 404)
+        self.assertEqual(res_invalid_work_id_str.status_code, 404)
 
     def test_can_get_image_for_work(self):
         # Tests with a random image from
