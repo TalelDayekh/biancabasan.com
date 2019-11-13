@@ -2,6 +2,7 @@ import random
 import shutil
 import tempfile
 from contextlib import contextmanager
+from pathlib import Path
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import override_settings
@@ -21,6 +22,9 @@ image_post_request_test_folder = tempfile.mkdtemp(
 )
 image_delete_request_test_folder = tempfile.mkdtemp(
     prefix="image_delete_request_test_folder"
+)
+work_delete_request_test_folder = tempfile.mkdtemp(
+    prefix="work_delete_request_test_folder"
 )
 
 
@@ -241,9 +245,67 @@ class WorkPATCHTest(APITestCase):
         pass
 
 
+@override_settings(
+    BASE_DIR=work_delete_request_test_folder,
+    MEDIA_URL="/",
+    MEDIA_ROOT=work_delete_request_test_folder,
+)
 class WorkDELETETest(APITestCase):
     def setUp(self):
-        pass
+        user_one = CustomUser.objects.create(username="delete_work_user_one")
+        user_two = CustomUser.objects.create(username="delete_work_user_two")
+        self.user_one_work = Work.objects.create(
+            owner=user_one, **test_data()[0]
+        )
+        user_two_work = Work.objects.create(owner=user_two, **test_data()[0])
+        self.user_one_work_id = self.user_one_work.id
+        self.user_two_work_id = user_two_work.id
+        self.uploaded_images_paths = []
+        self.client.force_authenticate(user_one)
+
+        for i in range(5):
+            with create_temporary_test_image("JPEG") as test_image:
+                image = Image.objects.create(
+                    work=self.user_one_work,
+                    image=SimpleUploadedFile(
+                        f"Black Square {i + 1}.JPEG", test_image.read()
+                    ),
+                )
+                self.uploaded_images_paths.append(Path(image.image.path))
+
+        with create_temporary_test_image("JPEG") as test_image:
+            Image.objects.create(
+                work=user_two_work,
+                image=SimpleUploadedFile(test_image.name, test_image.read()),
+            )
+
+    def test_can_delete_work_for_user(self):
+        res = self.client.delete(
+            f"http://127.0.0.1:8000/api/v1/works/{self.user_one_work_id}"
+        )
+
+        for image in self.uploaded_images_paths:
+            self.assertFalse(image.exists())
+        self.assertEqual(res.status_code, 204)
+
+    def test_cannot_delete_work_by_other_user(self):
+        res = self.client.delete(
+            f"http://127.0.0.1:8000/api/v1/works/{self.user_two_work_id}"
+        )
+
+        self.assertEqual(res.status_code, 404)
+
+    def test_cannot_delete_work_as_unauthorized_user(self):
+        self.client.force_authenticate(user=None)
+        res = self.client.delete(
+            f"http://127.0.0.1:8000/api/v1/works/{self.user_one_work_id}"
+        )
+
+        self.assertEqual(res.status_code, 401)
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(work_delete_request_test_folder)
 
 
 @override_settings(
@@ -265,7 +327,7 @@ class ImageGETTest(APITestCase):
                 image = Image.objects.create(
                     work=work,
                     image=SimpleUploadedFile(
-                        f"Black Square {i + 1}", test_image.read()
+                        f"Black Square {i + 1}.JPEG", test_image.read()
                     ),
                 )
                 cls.images_id.append(image.id)
@@ -401,21 +463,13 @@ class ImagePOSTTest(APITestCase):
 )
 class ImageDELETETest(APITestCase):
     def setUp(self):
-        self.user_one = CustomUser.objects.create(
-            username="delete_image_user_one"
-        )
-        self.user_two = CustomUser.objects.create(
-            username="delete_image_user_two"
-        )
-        user_one_work = Work.objects.create(
-            owner=self.user_one, **test_data()[0]
-        )
-        user_two_work = Work.objects.create(
-            owner=self.user_two, **test_data()[0]
-        )
+        user_one = CustomUser.objects.create(username="delete_image_user_one")
+        user_two = CustomUser.objects.create(username="delete_image_user_two")
+        user_one_work = Work.objects.create(owner=user_one, **test_data()[0])
+        user_two_work = Work.objects.create(owner=user_two, **test_data()[0])
         self.user_one_work_id = user_one_work.id
         self.user_two_work_id = user_two_work.id
-        self.client.force_authenticate(self.user_one)
+        self.client.force_authenticate(user_one)
 
         with create_temporary_test_image("JPEG") as test_image:
             user_one_image = Image.objects.create(
