@@ -8,10 +8,7 @@ from django.http import Http404, HttpRequest
 from api.v1.serializers import ImageSerializerVersion1, WorkSerializerVersion1
 from rest_framework import status
 from rest_framework.parsers import FormParser, MultiPartParser
-from rest_framework.permissions import (
-    IsAuthenticated,
-    IsAuthenticatedOrReadOnly,
-)
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
