@@ -8,9 +8,7 @@ coverage:
 				target: 90%
 				threshold: null
 		project:
-			default: off
-			server:
-				flags: server
+			default:
 				target: 90%
 				threshold: null
 
