@@ -16,5 +16,5 @@ comment:
 	layout: "reach, diff, flags, files"
 
 ignore:
-	- src/server/manage.py
-	- src/server/portfolio/settings.py
+	- "src/server/manage.py"
+	- "src/server/portfolio/settings.py"
