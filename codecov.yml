@@ -3,15 +3,10 @@ coverage:
 	round: nearest
 	precision: 2
 	status:
-		# Patch looks at the lines of code modified in a PR or single commit and gives a
-		# coverage rating for those files. "default" sets the entire repo as context.
 		patch:
 			default:
 				target: 90%
 				threshold: null
-		# Project measures the overall coverage, compares it against the PR and gives a
-		# global coverage rating for the project. "server" and "client" sets those two
-		# components to be independently monitored.
 		project:
 			default: off
 			server:
