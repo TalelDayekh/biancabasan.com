@@ -15,11 +15,6 @@ coverage:
 comment:
 	layout: "reach, diff, flags, files"
 
-flags:
-	server:
-		paths:
-			- src/server
-
 ignore:
 	- src/server/manage.py
 	- src/server/portfolio/settings.py
