@@ -19,16 +19,13 @@ coverage:
 				target: 90%
 				threshold: null
 
-
 comment:
 	layout: "reach, diff, flags, files"
-
 
 flags:
 	server:
 		paths:
 			- src/server
-
 
 ignore:
 	- src/server/manage.py
