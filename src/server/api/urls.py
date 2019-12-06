@@ -1,8 +1,13 @@
 from django.conf.urls import url
 
-from api import views
+from api import user_authentication, views
 
 urlpatterns = [
+    url(
+        r"^login",
+        user_authentication.AuthenticationToken.as_view(),
+        name="authentication_token",
+    ),
     url(
         r"^(?P<version>\w+)/works$", views.WorkList.as_view(), name="work_list"
     ),
