@@ -4,9 +4,14 @@ from api import user_authentication, views
 
 urlpatterns = [
     url(
-        r"^login",
+        r"^(?P<version>\w+)/login$",
         user_authentication.AuthenticationToken.as_view(),
         name="authentication_token",
+    ),
+    url(
+        r"^(?P<version>\w+)/password$",
+        user_authentication.PasswordChange.as_view(),
+        name="password_change",
     ),
     url(
         r"^(?P<version>\w+)/works$", views.WorkList.as_view(), name="work_list"
