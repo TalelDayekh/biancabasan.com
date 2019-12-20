@@ -4,11 +4,6 @@ from users.models import CustomUser
 from works.models import Image, Work
 
 
-class AuthenticationSerializer(serializers.Serializer):
-    old_password = serializers.CharField(required=True)
-    new_password = serializers.CharField(required=True)
-
-
 class OwnerSerializerVersion1(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
