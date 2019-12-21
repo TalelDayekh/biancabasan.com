@@ -3,6 +3,7 @@ from django.test import TestCase
 from api.exceptions import ValidationError
 from api.user_authentication import password_strength_validator
 from rest_framework.test import APITestCase
+from users.models import CustomUser
 
 
 class PasswordStrengthValidatorTest(TestCase):
@@ -33,4 +34,41 @@ class PasswordStrengthValidatorTest(TestCase):
 
 
 class PasswordChangeTest(APITestCase):
-    pass
+    def setUp(self):
+        self.password_payload = {
+            "old_password": "OldPassword123",
+            "new_password": "NewPassword123",
+            "new_password_confirm": "NewPassword123",
+        }
+        self.user = CustomUser.objects.create_user(
+            username="testuser", password=self.password_payload["old_password"]
+        )
+        self.client.force_authenticate(self.user)
+
+    def test_can_change_password_for_user(self):
+        new_password = self.password_payload["new_password"]
+        res = self.client.patch(
+            "http://127.0.0.1:8000/api/v1/password", self.password_payload
+        )
+        changed_user_password = CustomUser.objects.get(
+            username=self.user.username
+        ).check_password(new_password)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(changed_user_password)
+
+    def test_cannot_change_password_for_unauthorized_user(self):
+        self.client.force_authenticate(user=None)
+        res = self.client.patch(
+            "http://127.0.0.1:8000/api/v1/password", self.password_payload
+        )
+
+        self.assertEqual(res.status_code, 401)
+
+    def test_cannot_change_password_if_invalid_old_password_is_provided(self):
+        self.password_payload["old_password"] = "InvalidOldPassword123"
+        res = self.client.patch(
+            "http://127.0.0.1:8000/api/v1/password", self.password_payload
+        )
+
+        self.assertEqual(res.status_code, 400)

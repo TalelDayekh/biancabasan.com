@@ -45,7 +45,7 @@ class PasswordChange(APIView):
                 and user.check_password(old_password)
             ):
                 return Response(
-                    "Wrong password provided or your new password and confirmation password do not match",
+                    "Wrong password provided or your new password and confirmation password do not match.",
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             else:
