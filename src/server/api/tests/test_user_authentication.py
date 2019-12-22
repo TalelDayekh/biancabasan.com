@@ -72,3 +72,24 @@ class PasswordChangeTest(APITestCase):
         )
 
         self.assertEqual(res.status_code, 400)
+
+    def test_cannot_change_password_if_new_password_and_new_password_confirm_do_not_match(
+        self
+    ):
+        self.password_payload["new_password_confirm"] = "InvalidNewPassword123"
+        res = self.client.patch(
+            "http://127.0.0.1:8000/api/v1/password", self.password_payload
+        )
+
+        self.assertEqual(res.status_code, 400)
+
+    def test_cannot_change_password_if_new_password_has_invalid_formatting(
+        self
+    ):
+        self.password_payload["new_password"] = "newpassword123"
+        self.password_payload["new_password_confirm"] = "newpassword123"
+        res = self.client.patch(
+            "http://127.0.0.1:8000/api/v1/password", self.password_payload
+        )
+
+        self.assertEqual(res.status_code, 400)
