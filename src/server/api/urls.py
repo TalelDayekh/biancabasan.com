@@ -14,6 +14,11 @@ urlpatterns = [
         name="password_change",
     ),
     url(
+        r"(?P<version>\w+)/password_reset$",
+        user_authentication.PasswordReset.as_view(),
+        name="password_reset",
+    ),
+    url(
         r"^(?P<version>\w+)/works$", views.WorkList.as_view(), name="work_list"
     ),
     url(
