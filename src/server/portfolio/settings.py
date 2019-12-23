@@ -152,3 +152,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'users.CustomUser'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.environ.get('BIANCA_BASAN_EMAIL_HOST')
+EMAIL_PORT = os.environ.get('BIANCA_BASAN_EMAIL_PORT')
+EMAIL_HOST_USER = os.environ.get('BIANCA_BASAN_EMAIL_USERNAME')
+EMAIL_HOST_PASSWORD = os.environ.get('BIANCA_BASAN_EMAIL_PASSWORD')
+EMAIL_USE_TLS = True
