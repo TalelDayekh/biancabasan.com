@@ -1,7 +1,10 @@
 from django.http import HttpRequest
 
 from api.exceptions import ValidationError
-from api.serializers import AuthenticationSerializer
+from api.serializers import (
+    AuthenticationSerializer,
+    PasswordResetRequestSerializer,
+)
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -59,3 +62,8 @@ class PasswordChange(APIView):
                         str(err), status=status.HTTP_400_BAD_REQUEST
                     )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PasswordReset(APIView):
+    def post(self, request: HttpRequest, version: str) -> Response:
+        pass
