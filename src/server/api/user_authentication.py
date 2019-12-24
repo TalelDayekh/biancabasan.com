@@ -65,5 +65,17 @@ class PasswordChange(APIView):
 
 
 class PasswordReset(APIView):
+    def _generate_password_reset_email(self, email: str) -> None:
+        try:
+            user = CustomUser.objects.get(email=email)
+        except Exception as err:
+            print(err)
+
     def post(self, request: HttpRequest, version: str) -> Response:
-        pass
+        serializer = PasswordResetRequestSerializer(data=request.data)
+
+        if serializer.is_valid():
+            email = serializer.data["email"]
+            self._generate_password_reset_email(email)
+            return Response(status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
