@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Type
 
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
@@ -73,18 +74,14 @@ class PasswordChange(APIView):
 
 class PasswordReset(APIView):
     def _send_password_reset_email(
-        self, email: str, domain: str, use_https: bool = False
+        self, user: Type[CustomUser], domain: str, use_https: bool = False
     ) -> None:
-        try:
-            user = CustomUser.objects.get(email=email)
-            uid = urlsafe_base64_encode(force_bytes(user.pk))
-            token = default_token_generator.make_token(user)
-            protocol = "https://" if use_https else "http://"
-            password_reset_url = Path(protocol).joinpath(
-                domain, "password_reset", uid, token
-            )
-        except Exception:
-            raise ValidationError("Email does not exist.")
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = default_token_generator.make_token(user)
+        protocol = "https://" if use_https else "http://"
+        password_reset_url = Path(protocol).joinpath(
+            domain, "password_reset", uid, token
+        )
 
     def post(self, request: HttpRequest, version: str) -> Response:
         serializer = PasswordResetRequestSerializer(data=request.data)
@@ -94,8 +91,9 @@ class PasswordReset(APIView):
             domain = get_current_site(request).domain
 
             try:
-                self._send_password_reset_email(email, domain)
+                user = CustomUser.objects.get(email=email)
+                self._send_password_reset_email(user, domain)
                 return Response(status=status.HTTP_200_OK)
-            except ValidationError as err:
-                return Response(str(err), status=status.HTTP_400_BAD_REQUEST)
+            except Exception as err:
+                return Response(str(err), status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
