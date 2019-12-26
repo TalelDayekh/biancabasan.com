@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from typing import Type
 
@@ -82,6 +83,15 @@ class PasswordReset(APIView):
         password_reset_url = Path(protocol).joinpath(
             domain, "password_reset", uid, token
         )
+
+        email = EmailMessage(
+            subject="Password Reset",
+            body="Click the link and follow the instructions to reset your password "
+            + str(password_reset_url),
+            from_email=os.environ.get("BIANCA_BASAN_EMAIL_USERNAME"),
+            to=[user.email],
+        )
+        email.send()
 
     def post(self, request: HttpRequest, version: str) -> Response:
         serializer = PasswordResetRequestSerializer(data=request.data)
