@@ -107,3 +107,8 @@ class PasswordReset(APIView):
             except Exception as err:
                 return Response(str(err), status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(
+        self, request: HttpRequest, version: str, uid: str, token: str
+    ) -> Response:
+        pass
