@@ -16,6 +16,11 @@ urlpatterns = [
     url(
         r"(?P<version>\w+)/password_reset$",
         user_authentication.PasswordReset.as_view(),
+        name="password_reset_request",
+    ),
+    url(
+        r"(?P<version>\w+)/password_reset/(?P<uid>\S+)/(?P<token>)\S+",
+        user_authentication.PasswordReset.as_view(),
         name="password_reset",
     ),
     url(
