@@ -121,3 +121,18 @@ class PasswordResetTest(APITestCase):
 
         self.assertEqual(len(mail.outbox), 1)
         self.assertTrue(password_reset_url in mail.outbox[0].body)
+
+    def test_cannot_send_password_reset_email_to_nonexistent_email(self):
+        res = self.client.post(
+            "http://127.0.0.1:8000/api/v1/password_reset",
+            {"email": "nonexistent_mail@testuser.com"},
+        )
+
+        self.assertEqual(res.status_code, 404)
+
+    def test_cannot_send_password_reset_email_if_request_body_has_invalid_data(
+        self
+    ):
+        res = self.client.post("http://127.0.0.1:8000/api/v1/password_reset")
+
+        self.assertEqual(res.status_code, 400)
