@@ -1,4 +1,8 @@
+from django.contrib.auth.tokens import default_token_generator
+from django.core import mail
 from django.test import TestCase
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 
 from api.exceptions import ValidationError
 from api.user_authentication import password_strength_validator
@@ -93,3 +97,27 @@ class PasswordChangeTest(APITestCase):
         )
 
         self.assertEqual(res.status_code, 400)
+
+
+class PasswordResetTest(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        user = CustomUser.objects.create_user(
+            username="testuser",
+            password="OldPassword123",
+            email="mail@testuser.com",
+        )
+        cls.uid = urlsafe_base64_encode(force_bytes(user.pk))
+        cls.token = default_token_generator.make_token(user)
+
+    def test_can_send_password_reset_email(self):
+        res = self.client.post(
+            "http://127.0.0.1:8000/api/v1/password_reset",
+            {"email": "mail@testuser.com"},
+        )
+        password_reset_url = (
+            f"http://testserver/password_reset/{self.uid}/{self.token}"
+        )
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertTrue(password_reset_url in mail.outbox[0].body)
