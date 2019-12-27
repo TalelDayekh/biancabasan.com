@@ -7,7 +7,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.http import HttpRequest
 from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 from api.exceptions import ValidationError
 from api.serializers import (
@@ -80,8 +80,8 @@ class PasswordReset(APIView):
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
         protocol = "https://" if use_https else "http://"
-        password_reset_url = Path(protocol).joinpath(
-            domain, "password_reset", uid, token
+        password_reset_url = protocol + str(
+            Path(domain).joinpath("password_reset", uid, token)
         )
 
         email = EmailMessage(
