@@ -116,7 +116,7 @@ class PasswordResetTest(APITestCase):
             {"email": "mail@testuser.com"},
         )
         password_reset_url = (
-            f"http://testserver/api/v1/password_reset/{self.uid}/{self.token}"
+            f"http://testserver/password_reset/{self.uid}/{self.token}"
         )
 
         self.assertEqual(len(mail.outbox), 1)
@@ -136,3 +136,6 @@ class PasswordResetTest(APITestCase):
         res = self.client.post("http://127.0.0.1:8000/api/v1/password_reset")
 
         self.assertEqual(res.status_code, 400)
+
+    def test_can_reset_password_for_user(self):
+        pass
