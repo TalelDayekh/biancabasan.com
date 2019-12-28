@@ -10,8 +10,8 @@ urlpatterns = [
     ),
     url(
         r"^(?P<version>\w+)/password$",
-        user_authentication.PasswordChange.as_view(),
-        name="password_change",
+        user_authentication.PasswordUpdate.as_view(),
+        name="password_update",
     ),
     url(
         r"^(?P<version>\w+)/password_reset$",

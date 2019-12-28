@@ -61,7 +61,7 @@ class AuthenticationToken(ObtainAuthToken):
     pass
 
 
-class PasswordChange(APIView):
+class PasswordUpdate(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def patch(self, request: HttpRequest, version: str) -> Response:
