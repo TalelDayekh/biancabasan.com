@@ -37,7 +37,7 @@ class PasswordStrengthValidatorTest(TestCase):
             validate_password = password_strength_validator(12345678)
 
 
-class PasswordChangeTest(APITestCase):
+class PasswordUpdateTest(APITestCase):
     def setUp(self):
         self.password_payload = {
             "old_password": "OldPassword123",
@@ -49,7 +49,7 @@ class PasswordChangeTest(APITestCase):
         )
         self.client.force_authenticate(self.user)
 
-    def test_can_change_password_for_user(self):
+    def test_can_update_password_for_user(self):
         new_password = self.password_payload["new_password"]
         res = self.client.patch(
             "http://127.0.0.1:8000/api/v1/password", self.password_payload
@@ -61,7 +61,7 @@ class PasswordChangeTest(APITestCase):
         self.assertEqual(res.status_code, 200)
         self.assertTrue(changed_user_password)
 
-    def test_cannot_change_password_for_unauthorized_user(self):
+    def test_cannot_update_password_for_unauthorized_user(self):
         self.client.force_authenticate(user=None)
         res = self.client.patch(
             "http://127.0.0.1:8000/api/v1/password", self.password_payload
@@ -69,7 +69,7 @@ class PasswordChangeTest(APITestCase):
 
         self.assertEqual(res.status_code, 401)
 
-    def test_cannot_change_password_if_invalid_old_password_is_provided(self):
+    def test_cannot_update_password_if_invalid_old_password_is_provided(self):
         self.password_payload["old_password"] = "InvalidOldPassword123"
         res = self.client.patch(
             "http://127.0.0.1:8000/api/v1/password", self.password_payload
@@ -77,7 +77,7 @@ class PasswordChangeTest(APITestCase):
 
         self.assertEqual(res.status_code, 400)
 
-    def test_cannot_change_password_if_new_password_and_new_password_confirm_do_not_match(
+    def test_cannot_update_password_if_new_password_and_new_password_confirm_do_not_match(
         self
     ):
         self.password_payload["new_password_confirm"] = "InvalidNewPassword123"
@@ -87,7 +87,7 @@ class PasswordChangeTest(APITestCase):
 
         self.assertEqual(res.status_code, 400)
 
-    def test_cannot_change_password_if_new_password_has_invalid_formatting(
+    def test_cannot_update_password_if_new_password_has_invalid_formatting(
         self
     ):
         self.password_payload["new_password"] = "newpassword123"
