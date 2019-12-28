@@ -37,6 +37,26 @@ def password_strength_validator(password: str) -> bool:
         )
 
 
+def send_password_reset_email(
+    user: Type[CustomUser], domain: str, use_https: bool = False
+) -> None:
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    token = default_token_generator.make_token(user)
+    protocol = "https://" if use_https else "http://"
+    password_reset_url = protocol + str(
+        Path(domain).joinpath("password_reset", uid, token)
+    )
+
+    email = EmailMessage(
+        subject="Password Reset",
+        body="Click the link and follow the instructions to reset your password: "
+        + str(password_reset_url),
+        from_email=os.environ.get("BIANCA_BASAN_EMAIL_USERNAME"),
+        to=[user.email],
+    )
+    email.send()
+
+
 class AuthenticationToken(ObtainAuthToken):
     pass
 
@@ -75,31 +95,6 @@ class PasswordChange(APIView):
 
 
 class PasswordReset(APIView):
-    def _send_password_reset_email(
-        self,
-        user: Type[CustomUser],
-        domain: str,
-        api_version: str,
-        use_https: bool = False,
-    ) -> None:
-        uid = urlsafe_base64_encode(force_bytes(user.pk))
-        token = default_token_generator.make_token(user)
-        protocol = "https://" if use_https else "http://"
-        password_reset_url = protocol + str(
-            Path(domain).joinpath(
-                f"api/{api_version}/password_reset", uid, token
-            )
-        )
-
-        email = EmailMessage(
-            subject="Password Reset",
-            body="Click the link and follow the instructions to reset your password "
-            + str(password_reset_url),
-            from_email=os.environ.get("BIANCA_BASAN_EMAIL_USERNAME"),
-            to=[user.email],
-        )
-        email.send()
-
     def post(self, request: HttpRequest, version: str) -> Response:
         serializer = PasswordResetRequestSerializer(data=request.data)
 
@@ -109,7 +104,7 @@ class PasswordReset(APIView):
 
             try:
                 user = CustomUser.objects.get(email=email)
-                self._send_password_reset_email(user, domain, version)
+                send_password_reset_email(user, domain)
                 return Response(status=status.HTTP_200_OK)
             except CustomUser.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
