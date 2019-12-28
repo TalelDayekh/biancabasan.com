@@ -116,7 +116,7 @@ class PasswordResetTest(APITestCase):
             {"email": "mail@testuser.com"},
         )
         password_reset_url = (
-            f"http://testserver/password_reset/{self.uid}/{self.token}"
+            f"http://testserver/api/v1/password_reset/{self.uid}/{self.token}"
         )
 
         self.assertEqual(len(mail.outbox), 1)
