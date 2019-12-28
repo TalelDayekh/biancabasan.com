@@ -102,13 +102,17 @@ class PasswordChangeTest(APITestCase):
 class PasswordResetTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
-        user = CustomUser.objects.create_user(
+        cls.password_payload = {
+            "new_password": "NewPassword123",
+            "new_password_confirm": "NewPassword123",
+        }
+        cls.user = CustomUser.objects.create_user(
             username="testuser",
             password="OldPassword123",
             email="mail@testuser.com",
         )
-        cls.uid = urlsafe_base64_encode(force_bytes(user.pk))
-        cls.token = default_token_generator.make_token(user)
+        cls.uid = urlsafe_base64_encode(force_bytes(cls.user.pk))
+        cls.token = default_token_generator.make_token(cls.user)
 
     def test_can_send_password_reset_email(self):
         res = self.client.post(
@@ -138,4 +142,37 @@ class PasswordResetTest(APITestCase):
         self.assertEqual(res.status_code, 400)
 
     def test_can_reset_password_for_user(self):
-        pass
+        new_password = self.password_payload["new_password"]
+        res = self.client.patch(
+            f"http://127.0.0.1:8000/api/v1/password_reset/{self.uid}/{self.token}",
+            self.password_payload,
+        )
+        changed_user_password = CustomUser.objects.get(
+            username=self.user.username
+        ).check_password(new_password)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(changed_user_password)
+
+    def test_cannot_reset_password_if_new_password_and_new_password_confirm_do_not_match(
+        self
+    ):
+        self.password_payload["new_password_confirm"] = "InvalidNewPassword123"
+        res = self.client.patch(
+            f"http://127.0.0.1:8000/api/v1/password_reset/{self.uid}/{self.token}",
+            self.password_payload,
+        )
+
+        self.assertEqual(res.status_code, 400)
+
+    def test_cannot_reset_password_if_new_password_has_invalid_formatting(
+        self
+    ):
+        self.password_payload["new_password"] = "newpassword123"
+        self.password_payload["new_password_confirm"] = "newpassword123"
+        res = self.client.patch(
+            f"http://127.0.0.1:8000/api/v1/password_reset/{self.uid}/{self.token}",
+            self.password_payload,
+        )
+
+        self.assertEqual(res.status_code, 400)
