@@ -98,6 +98,11 @@ class PasswordUpdateTest(APITestCase):
 
         self.assertEqual(res.status_code, 400)
 
+    def test_cannot_update_password_if_request_body_has_invalid_data(self):
+        res = self.client.patch("http://127.0.0.1:8000/api/v1/password")
+
+        self.assertEqual(res.status_code, 400)
+
 
 class PasswordResetTest(APITestCase):
     @classmethod
