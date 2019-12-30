@@ -9,11 +9,6 @@ urlpatterns = [
         name="authentication_token",
     ),
     url(
-        r"^(?P<version>\w+)/logout$",
-        user_authentication.AuthenticationToken.as_view(),
-        name="logout",
-    ),
-    url(
         r"^(?P<version>\w+)/password$",
         user_authentication.PasswordUpdate.as_view(),
         name="password_update",
