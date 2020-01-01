@@ -33,7 +33,7 @@ class PasswordUpdate(APIView):
             old_password = serializer.data["old_password"]
             new_password = serializer.data["new_password"]
             new_password_confirm = serializer.data["new_password_confirm"]
-            user = CustomUser.objects.get(username=request.users)
+            user = CustomUser.objects.get(username=request.user)
 
             try:
                 if not (
