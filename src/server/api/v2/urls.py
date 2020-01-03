@@ -10,4 +10,9 @@ urlpatterns = [
         auth.PasswordUpdate.as_view(),
         name="password_update",
     ),
+    url(
+        r"^auth/password_reset_email$",
+        auth.PasswordReset.as_view(),
+        name="password_reset_email",
+    ),
 ]

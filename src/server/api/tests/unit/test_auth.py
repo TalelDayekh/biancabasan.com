@@ -1,5 +1,10 @@
 from typing import Dict
 
+from django.contrib.auth.tokens import default_token_generator
+from django.core import mail
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
 from users.models import CustomUser
@@ -17,11 +22,11 @@ class LogoutTest(APITestCase):
     def test_can_logout_user(self):
         password = authorization_test_data()["new_password"]
         user = CustomUser.objects.create_user(
-            username="testuser", password=password
+            username="logout_testuser", password=password
         )
         self.client.post(
             "http://127.0.0.1:8000/api/v1/login",
-            {"username": "testuser", "password": password},
+            {"username": "logout_testuser", "password": password},
         )
         self.client.force_authenticate(user)
         res = self.client.post("http://127.0.0.1:8000/api/v2/auth/logout")
@@ -35,7 +40,7 @@ class PasswordUpdateTest(APITestCase):
         self.passwords = authorization_test_data()
         old_password = self.passwords["old_password"]
         self.user = CustomUser.objects.create_user(
-            username="testuser", password=old_password
+            username="password_update_testuser", password=old_password
         )
         self.client.force_authenticate(self.user)
 
@@ -94,3 +99,34 @@ class PasswordUpdateTest(APITestCase):
         )
 
         self.assertEqual(res.status_code, 400)
+
+
+class PasswordResetTest(APITestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.passwords = authorization_test_data()
+        old_password = cls.passwords["old_password"]
+        cls.user = CustomUser.objects.create_user(
+            username="password_reset_testuser",
+            password=old_password,
+            email="mail@test.com",
+        )
+        cls.uid = urlsafe_base64_encode(force_bytes(cls.user.pk))
+        cls.token = default_token_generator.make_token(cls.user)
+        super(PasswordResetTest, cls).setUpClass()
+
+    def test_can_send_password_reset_email(self):
+        res = self.client.post(
+            "http://127.0.0.1:8000/api/v2/auth/password_reset_email",
+            {"email": "mail@test.com"},
+        )
+        password_reset_url = (
+            f"http://testserver/password_reset/{self.uid}/{self.token}"
+        )
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertTrue(password_reset_url in mail.outbox[0].body)
+
+    @classmethod
+    def tearDownClass(cls):
+        super(PasswordResetTest, cls).tearDownClass()

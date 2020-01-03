@@ -1,12 +1,16 @@
+from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpRequest
 
-from api.v2.serializers import PasswordUpdateSerializer
+from api.v2.serializers import (
+    PasswordResetEmailSerializer,
+    PasswordUpdateSerializer,
+)
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from users.auth import password_strength_validator
+from users.auth import password_strength_validator, send_password_reset_email
 from users.exceptions import ValidationError
 from users.models import CustomUser
 
@@ -51,5 +55,22 @@ class PasswordUpdate(APIView):
                     user.save()
                     return Response(status=status.HTTP_200_OK)
             except ValidationError as err:
-                return Response(err, status=status.HTTP_400_BAD_REQUEST)
+                return Response(str(err), status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PasswordReset(APIView):
+    def post(self, request: HttpRequest, format=None) -> Response:
+        serializer = PasswordResetEmailSerializer(data=request.data)
+
+        if serializer.is_valid():
+            email = serializer.data["email"]
+            domain = get_current_site(request).domain
+
+            try:
+                user = CustomUser.objects.get(email=email)
+                send_password_reset_email(user, domain)
+                return Response(status=status.HTTP_200_OK)
+            except CustomUser.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
