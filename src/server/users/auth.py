@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from typing import Type
 
@@ -7,6 +8,7 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
 from users.exceptions import ValidationError
+from users.models import CustomUser
 
 
 def password_strength_validator(password: str) -> None:
