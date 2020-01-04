@@ -1,8 +1,11 @@
+from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpRequest
+from django.utils.http import urlsafe_base64_decode
 
 from api.v2.serializers import (
     PasswordResetEmailSerializer,
+    PasswordResetSerializer,
     PasswordUpdateSerializer,
 )
 from rest_framework import status
@@ -73,4 +76,33 @@ class PasswordReset(APIView):
                 return Response(status=status.HTTP_200_OK)
             except CustomUser.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request: HttpRequest, uid: str, token: str) -> Response:
+        serializer = PasswordResetSerializer(data=request.data)
+
+        if serializer.is_valid():
+            new_password = serializer.data["new_password"]
+            new_password_confirm = serializer.data["new_password_confirm"]
+
+            try:
+                user_id = urlsafe_base64_decode(uid).decode()
+                user = CustomUser.objects.get(id=user_id)
+
+                if not default_token_generator.check_token(user, token):
+                    raise ValidationError("Token not valid.")
+
+                if not new_password == new_password_confirm:
+                    raise ValidationError(
+                        "Your new password and confirmation password do not match."
+                    )
+
+                password_strength_validator(new_password)
+                user.set_password(new_password)
+                user.save()
+                return Response(status=status.HTTP_200_OK)
+            except CustomUser.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            except ValidationError as err:
+                return Response(str(err), status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
