@@ -15,4 +15,9 @@ urlpatterns = [
         auth.PasswordReset.as_view(),
         name="password_reset_email",
     ),
+    url(
+        r"^auth/password_reset/(?P<uid>\S+)/(?P<token>\S+)$",
+        auth.PasswordReset.as_view(),
+        name="password_reset",
+    ),
 ]

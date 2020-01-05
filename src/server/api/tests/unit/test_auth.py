@@ -158,7 +158,54 @@ class PasswordResetTest(APITestCase):
         self.assertTrue(changed_user_password)
 
     def test_cannot_reset_password_if_uid_is_invalid(self):
-        pass
+        invalid_uid = urlsafe_base64_encode(force_bytes(123))
+        res = self.client.patch(
+            f"http://127.0.0.1:8000/api/v2/auth/password_reset/{invalid_uid}/{self.token}",
+            self.passwords,
+        )
+
+        self.assertEqual(res.status_code, 404)
+
+    def test_cannot_reset_password_if_token_is_invalid(self):
+        invalid_token = "123-abc"
+        res = self.client.patch(
+            f"http://127.0.0.1:8000/api/v2/auth/password_reset/{self.uid}/{invalid_token}",
+            self.passwords,
+        )
+
+        self.assertEqual(res.status_code, 400)
+
+    def test_cannot_reset_password_if_new_password_and_new_password_confirm_do_not_match(
+        self
+    ):
+        passwords = self.passwords
+        passwords["new_password_confirm"] = "InvalidNewPassword123"
+        res = self.client.patch(
+            f"http://127.0.0.1:8000/api/v2/auth/password_reset/{self.uid}/{self.token}",
+            passwords,
+        )
+
+        self.assertEqual(res.status_code, 400)
+
+    def test_cannot_reset_password_if_new_password_has_invalid_formatting(
+        self
+    ):
+        passwords = self.passwords
+        passwords["new_password"] = "newpassword123"
+        passwords["new_password_confirm"] = "newpassword123"
+        res = self.client.patch(
+            f"http://127.0.0.1:8000/api/v2/auth/password_reset/{self.uid}/{self.token}",
+            passwords,
+        )
+
+        self.assertEqual(res.status_code, 400)
+
+    def test_cannot_reset_password_if_request_body_has_invalid_data(self):
+        res = self.client.patch(
+            f"http://127.0.0.1:8000/api/v2/auth/password_reset/{self.uid}/{self.token}"
+        )
+
+        self.assertEqual(res.status_code, 400)
 
     @classmethod
     def tearDownClass(cls):
