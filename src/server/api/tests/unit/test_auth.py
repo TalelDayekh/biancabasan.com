@@ -25,7 +25,7 @@ class LogoutTest(APITestCase):
             username="logout_testuser", password=password
         )
         self.client.post(
-            "http://127.0.0.1:8000/api/v1/login",
+            "http://127.0.0.1:8000/api/v2/auth/login",
             {"username": "logout_testuser", "password": password},
         )
         self.client.force_authenticate(user)
