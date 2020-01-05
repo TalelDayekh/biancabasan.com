@@ -127,6 +127,41 @@ class PasswordResetTest(APITestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertTrue(password_reset_url in mail.outbox[0].body)
 
+    def test_cannot_send_password_reset_email_to_nonexistent_email(self):
+        res = self.client.post(
+            "http://127.0.0.1:8000/api/v2/auth/password_reset_email",
+            {"email": "nonexistent_mail@test.com"},
+        )
+
+        self.assertEqual(res.status_code, 404)
+
+    def test_cannot_send_password_reset_email_if_request_body_has_invalid_data(
+        self
+    ):
+        res = self.client.post(
+            "http://127.0.0.1:8000/api/v2/auth/password_reset_email"
+        )
+
+        self.assertEqual(res.status_code, 400)
+
+    def test_can_reset_password_for_user(self):
+        new_password = self.passwords["new_password"]
+        res = self.client.patch(
+            f"http://127.0.0.1:8000/api/v2/auth/password_reset/{self.uid}/{self.token}",
+            self.passwords,
+        )
+        changed_user_password = CustomUser.objects.get(
+            username=self.user.username
+        ).check_password(new_password)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(changed_user_password)
+
+    def test_cannot_reset_password_if_uid_is_invalid(self):
+        pass
+
     @classmethod
     def tearDownClass(cls):
+        # Adding the tearDownClass seems to prevent
+        # connection already closed InterfaceError.
         super(PasswordResetTest, cls).tearDownClass()
