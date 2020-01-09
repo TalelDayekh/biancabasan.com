@@ -5,17 +5,10 @@ from django.core import mail
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
+from api.tests.unit.utils import authorization_test_data
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
 from users.models import CustomUser
-
-
-def authorization_test_data() -> Dict[str, str]:
-    return {
-        "old_password": "OldPassword123",
-        "new_password": "NewPassword123",
-        "new_password_confirm": "NewPassword123",
-    }
 
 
 class LogoutTest(APITestCase):
