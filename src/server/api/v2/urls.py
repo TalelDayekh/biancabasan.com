@@ -20,5 +20,5 @@ urlpatterns = [
         auth.PasswordReset.as_view(),
         name="password_reset",
     ),
-    url(r"^/works$", work.WorkList.as_view(), name="work_list"),
+    url(r"^works$", work.WorkList.as_view(), name="work_list"),
 ]
