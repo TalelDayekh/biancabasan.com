@@ -21,4 +21,7 @@ urlpatterns = [
         name="password_reset",
     ),
     url(r"^works$", work.WorkList.as_view(), name="work_list"),
+    url(
+        r"^works/years$", work.WorkYearsList.as_view(), name="work_years_list"
+    ),
 ]
