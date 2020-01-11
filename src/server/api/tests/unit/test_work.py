@@ -46,9 +46,14 @@ class WorkGETTest(APITestCase):
         )
 
         self.assertEqual(res_invalid_year_to_int.data, [])
-        self.assertEqual(res_invalid_year_to_int.status_code, 400)
         self.assertEqual(res_invalid_year_to_str.data, None)
         self.assertEqual(res_invalid_year_to_str.status_code, 400)
+
+    def test_can_get_sorted_list_of_years(self):
+        res = self.client.get("http://127.0.0.1:8000/api/v2/works/years")
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data, [2019, 2018])
 
     @classmethod
     def tearDownClass(cls):

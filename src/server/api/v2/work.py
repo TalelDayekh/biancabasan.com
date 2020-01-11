@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from django.http import HttpRequest
 
 from api.v2.serializers import WorkSerializer
@@ -25,3 +27,13 @@ class WorkList(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except ValueError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class WorkYearsList(APIView):
+    def get(self, request: HttpRequest, format=None) -> Response:
+        work_years = Work.objects.all().values_list("year_to", flat=True)
+
+        # Sort all work years descending and remove duplicate years
+        work_years_descending = sorted(work_years, reverse=True)
+        work_years_sorted = list(OrderedDict.fromkeys(work_years_descending))
+        return Response(work_years_sorted, status=status.HTTP_200_OK)
