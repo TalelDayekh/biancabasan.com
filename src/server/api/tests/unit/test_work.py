@@ -55,6 +55,25 @@ class WorkGETTest(APITestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data, [2019, 2018])
 
+    def test_can_get_work_from_id(self):
+        work = Work.objects.get(title="Black Square #3")
+        res = self.client.get(f"http://127.0.0.1:8000/api/v2/works/{work.id}")
+        serializer = WorkSerializer(work)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data, serializer.data)
+
+    def test_cannot_get_work_from_invalid_id(self):
+        res_invalid_id_int = self.client.get(
+            "http://127.0.0.1:8000/api/v2/works/999"
+        )
+        res_invalid_id_str = self.client.get(
+            "http://127.0.0.1:8000/api/v2/works/NaN"
+        )
+
+        self.assertEqual(res_invalid_id_int.status_code, 404)
+        self.assertEqual(res_invalid_id_str.status_code, 404)
+
     @classmethod
     def tearDownClass(cls):
         # Adding the tearDownClass seems to prevent
