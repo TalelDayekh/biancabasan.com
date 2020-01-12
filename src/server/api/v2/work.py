@@ -1,6 +1,7 @@
 from collections import OrderedDict
+from typing import Optional, Type
 
-from django.http import HttpRequest
+from django.http import Http404, HttpRequest
 
 from api.v2.serializers import WorkSerializer
 from rest_framework import status
@@ -27,6 +28,26 @@ class WorkList(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except ValueError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class WorkDetail(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def _get_work_object(
+        self, work_id: int, user: Optional[str] = None
+    ) -> Type[Work]:
+        try:
+            if user:
+                return Work.objects.get(id=work_id, owner__username=user)
+            else:
+                return Work.objects.get(id=work_id)
+        except Work.DoesNotExist:
+            raise Http404
+
+    def get(self, request: HttpRequest, work_id: int, format=None) -> Response:
+        work = self._get_work_object(work_id)
+        serializer = WorkSerializer(work)
+        return Response(serializer.data)
 
 
 class WorkYearsList(APIView):
