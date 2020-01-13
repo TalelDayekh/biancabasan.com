@@ -79,3 +79,44 @@ class WorkGETTest(APITestCase):
         # Adding the tearDownClass seems to prevent
         # connection already closed InterfaceError.
         super(WorkGETTest, cls).tearDownClass()
+
+
+class WorkPOSTTest(APITestCase):
+    def setUp(self):
+        user = CustomUser.objects.create_user(username="post_work_testuser")
+        self.client.force_authenticate(user)
+
+    def test_can_create_work_for_user(self):
+        res = self.client.post(
+            "http://127.0.0.1:8000/api/v2/works", work_test_data()[0]
+        )
+
+        self.assertEqual(res.status_code, 201)
+
+    def test_cannot_create_work_for_unauthorized_user(self):
+        self.client.force_authenticate(user=None)
+        res = self.client.post(
+            "http://127.0.0.1:8000/api/v2/works", work_test_data()[0]
+        )
+
+        self.assertEqual(res.status_code, 401)
+
+    def test_cannot_create_work_from_invalid_payload(self):
+        res = self.client.post(
+            "http://127.0.0.1:8000/api/v2/works", work_test_data()[4]
+        )
+
+        self.assertEqual(res.status_code, 400)
+
+    def test_cannot_create_work_with_out_of_range_year(self):
+        res = self.client.post(
+            "http://127.0.0.1:8000/api/v2/works", work_test_data()[3]
+        )
+
+        self.assertEqual(res.status_code, 400)
+
+    @classmethod
+    def tearDownClass(cls):
+        # Adding the tearDownClass seems to prevent
+        # connection already closed interfaceError.
+        super(WorkPOSTTest, cls).tearDownClass()
