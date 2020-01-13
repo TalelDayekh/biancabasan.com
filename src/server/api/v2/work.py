@@ -29,6 +29,14 @@ class WorkList(APIView):
         except ValueError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+    def post(self, request: HttpRequest, format=None) -> Response:
+        serializer = WorkSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save(owner=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class WorkDetail(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
