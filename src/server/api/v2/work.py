@@ -57,6 +57,17 @@ class WorkDetail(APIView):
         serializer = WorkSerializer(work)
         return Response(serializer.data)
 
+    def patch(
+        self, request: HttpRequest, work_id: int, format=None
+    ) -> Response:
+        work = self._get_work_object(work_id, request.user)
+        serializer = WorkSerializer(work, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save(owner=request.user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class WorkYearsList(APIView):
     def get(self, request: HttpRequest, format=None) -> Response:
