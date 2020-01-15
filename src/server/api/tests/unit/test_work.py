@@ -93,7 +93,7 @@ class WorkPOSTTest(APITestCase):
 
         self.assertEqual(res.status_code, 201)
 
-    def test_cannot_create_work_for_unauthorized_user(self):
+    def test_cannot_create_work_as_unauthorized_user(self):
         self.client.force_authenticate(user=None)
         res = self.client.post(
             "http://127.0.0.1:8000/api/v2/works", work_test_data()[0]
@@ -120,3 +120,72 @@ class WorkPOSTTest(APITestCase):
         # Adding the tearDownClass seems to prevent
         # connection already closed interfaceError.
         super(WorkPOSTTest, cls).tearDownClass()
+
+
+class WorkPATCHTest(APITestCase):
+    def setUp(self):
+        user_one = CustomUser.objects.create_user(
+            username="patch_work_testuser_one"
+        )
+        user_two = CustomUser.objects.create_user(
+            username="patch_work_testuser_two"
+        )
+        user_one_work = Work.objects.create(
+            owner=user_one, **work_test_data()[0]
+        )
+        user_two_work = Work.objects.create(
+            owner=user_two, **work_test_data()[0]
+        )
+        self.user_one_work_id = user_one_work.id
+        self.user_two_work_id = user_two_work.id
+        self.patch_payload = {
+            "year_to": 2020,
+            "height": 100.00,
+            "width": 100.00,
+        }
+        self.client.force_authenticate(user_one)
+
+    def test_can_update_work_for_user(self):
+        res = self.client.patch(
+            f"http://127.0.0.1:8000/api/v2/works/{self.user_one_work_id}",
+            self.patch_payload,
+        )
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(res.data["year_to"] == 2020)
+        self.assertTrue(res.data["height"] == 100.00)
+        self.assertTrue(res.data["width"] == 100.00)
+
+    def test_cannot_update_work_for_other_user(self):
+        res = self.client.patch(
+            f"http://127.0.0.1:8000/api/v2/works/{self.user_two_work_id}",
+            self.patch_payload,
+        )
+
+        self.assertEqual(res.status_code, 404)
+
+    def test_cannot_update_work_as_unauthorized_user(self):
+        self.client.force_authenticate(user=None)
+        res = self.client.patch(
+            f"http://127.0.0.1:8000/api/v2/works/{self.user_one_work_id}",
+            self.patch_payload,
+        )
+
+        self.assertEqual(res.status_code, 401)
+
+    def test_cannot_update_work_from_invalid_id(self):
+        res_invalid_id_int = self.client.patch(
+            "http://127.0.0.1:8000/api/v2/999", self.patch_payload
+        )
+        res_invalid_id_str = self.client.patch(
+            "http://127.0.0.1:8000/api/v2/NaN", self.patch_payload
+        )
+
+        self.assertEqual(res_invalid_id_int.status_code, 404)
+        self.assertEqual(res_invalid_id_str.status_code, 404)
+
+    @classmethod
+    def tearDownClass(cls):
+        # Adding the tearDownClass seems to prevent
+        # connection already closed interfaceError.
+        super(WorkPATCHTest, cls).tearDownClass()
