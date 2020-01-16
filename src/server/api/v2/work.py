@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from pathlib import Path
 from typing import Optional, Type
 
 from django.http import Http404, HttpRequest
@@ -9,6 +10,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from works.image_handlers import ImageFileHandler
 from works.models import Work
 
 
@@ -67,6 +69,21 @@ class WorkDetail(APIView):
             serializer.save(owner=request.user)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(
+        self, request: HttpRequest, work_id: int, format=None
+    ) -> Response:
+        work = self._get_work_object(work_id, request.user)
+
+        for image in work.images.all():
+            image_file = Path(image.image.path)
+            ImageFileHandler(image_file).delete_image_set()
+
+            if image_file.exists():
+                return Response(status=status.HTTP_409_CONFLICT)
+
+        work.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class WorkYearsList(APIView):
