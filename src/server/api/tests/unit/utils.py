@@ -1,4 +1,8 @@
+import tempfile
+from contextlib import contextmanager
 from typing import Dict, List
+
+from PIL import image
 
 
 def work_test_data() -> List[Dict]:
@@ -62,3 +66,19 @@ def authorization_test_data() -> Dict[str, str]:
         "new_password": "NewPassword123",
         "new_password_confirm": "NewPassword123",
     }
+
+
+@contextmanager
+def create_temporary_test_image(
+    image_format: str
+) -> tempfile.NamedTemporaryFile:
+    try:
+        test_image = Image.new("RGB", (500, 500))
+        temporary_image_file = tempfile.NamedTemporaryFile(
+            suffix=f".{image_format}", prefix="black_square"
+        )
+        test_image.save(temporary_image_file)
+        temporary_image_file.seek(0)
+        yield temporary_image_file
+    finally:
+        temporary_image_file.close()
