@@ -22,6 +22,11 @@ urlpatterns = [
     ),
     url(r"^works$", work.WorkList.as_view(), name="work_list"),
     url(
+        r"^works/(?P<work_id>\d+)$",
+        work.WorkDetail.as_view(),
+        name="work_detail",
+    ),
+    url(
         r"^works/years$", work.WorkYearsList.as_view(), name="work_years_list"
     ),
 ]
