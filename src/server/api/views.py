@@ -32,94 +32,23 @@ class GetSerializerClasses:
         return self.api_image_serializer_mapping.get(self.api_version)
 
 
-class WorkList(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+# class WorkDetail(APIView):
+#     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def get(self, request: HttpRequest, version: str, format=None) -> Response:
-        work_serializer = GetSerializerClasses(version).work_serializer
-        query_params = self.request.query_params.get("year_to")
+#     def delete(
+#         self, request: HttpRequest, version: str, work_id: int, format=None
+#     ) -> Response:
+#         work = self.get_work_object(work_id, request.user)
 
-        try:
-            if query_params:
-                works = Work.objects.filter(year_to=query_params)
-                serializer = work_serializer(works, many=True)
-            else:
-                works = Work.objects.all()
-                serializer = work_serializer(works, many=True)
-            return Response(serializer.data)
-        except ValueError:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+#         for image in work.images.all():
+#             image_file = Path(image.image.path)
+#             ImageFileHandler(image_file).delete_image_set()
 
-    def post(
-        self, request: HttpRequest, version: str, format=None
-    ) -> Response:
-        work_serializer = GetSerializerClasses(version).work_serializer
-        serializer = work_serializer(data=request.data)
+#             if image_file.exists():
+#                 return Response(status=status.HTTP_409_CONFLICT)
 
-        if serializer.is_valid():
-            serializer.save(owner=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class WorkDetail(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
-
-    def get_work_object(
-        self, work_id: int, user: Optional[str] = None
-    ) -> Type[Work]:
-        try:
-            if user:
-                return Work.objects.get(id=work_id, owner__username=user)
-            else:
-                return Work.objects.get(id=work_id)
-        except Work.DoesNotExist:
-            raise Http404
-
-    def get(
-        self, request: HttpRequest, version: str, work_id: int, format=None
-    ) -> Response:
-        work_serializer = GetSerializerClasses(version).work_serializer
-        work = self.get_work_object(work_id)
-        serializer = work_serializer(work)
-        return Response(serializer.data)
-
-    def patch(
-        self, request: HttpRequest, version: str, work_id: int, format=None
-    ) -> Response:
-        work_serializer = GetSerializerClasses(version).work_serializer
-        work = self.get_work_object(work_id, request.user)
-        serializer = work_serializer(work, data=request.data, partial=True)
-
-        if serializer.is_valid():
-            serializer.save(owner=request.user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(
-        self, request: HttpRequest, version: str, work_id: int, format=None
-    ) -> Response:
-        work = self.get_work_object(work_id, request.user)
-
-        for image in work.images.all():
-            image_file = Path(image.image.path)
-            ImageFileHandler(image_file).delete_image_set()
-
-            if image_file.exists():
-                return Response(status=status.HTTP_409_CONFLICT)
-
-        work.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class WorkYearsList(APIView):
-    def get(self, request: HttpRequest, version: str, format=None) -> Response:
-        work_years = Work.objects.all().values_list("year_to", flat=True)
-
-        # Sort all work years descending and remove duplicate years
-        work_years_descending = sorted(work_years, reverse=True)
-        work_years_sorted = list(OrderedDict.fromkeys(work_years_descending))
-        return Response(work_years_sorted)
+#         work.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ImageList(APIView):
