@@ -18,11 +18,11 @@ class LogoutTest(APITestCase):
             username="logout_testuser", password=password
         )
         self.client.post(
-            "http://127.0.0.1:8000/api/v2/auth/login",
+            "http://127.0.0.1:8000/api/v1/auth/login",
             {"username": "logout_testuser", "password": password},
         )
         self.client.force_authenticate(user)
-        res = self.client.post("http://127.0.0.1:8000/api/v2/auth/logout")
+        res = self.client.post("http://127.0.0.1:8000/api/v1/auth/logout")
 
         self.assertEqual(res.status_code, 200)
         self.assertFalse(Token.objects.filter(user=user).exists())
@@ -40,7 +40,7 @@ class PasswordUpdateTest(APITestCase):
     def test_can_update_password_for_user(self):
         new_password = self.passwords["new_password"]
         res = self.client.patch(
-            "http://127.0.0.1:8000/api/v2/auth/password_update", self.passwords
+            "http://127.0.0.1:8000/api/v1/auth/password_update", self.passwords
         )
         changed_user_password = CustomUser.objects.get(
             username=self.user.username
@@ -52,7 +52,7 @@ class PasswordUpdateTest(APITestCase):
     def test_cannot_update_password_for_unauthorized_user(self):
         self.client.force_authenticate(user=None)
         res = self.client.patch(
-            "http://127.0.0.1:8000/api/v2/auth/password_update", self.passwords
+            "http://127.0.0.1:8000/api/v1/auth/password_update", self.passwords
         )
 
         self.assertEqual(res.status_code, 401)
@@ -60,7 +60,7 @@ class PasswordUpdateTest(APITestCase):
     def test_cannot_update_password_if_invalid_old_password_is_provided(self):
         self.passwords["old_password"] = "InvalidOldPassword123"
         res = self.client.patch(
-            "http://127.0.0.1:8000/api/v2/auth/password_update", self.passwords
+            "http://127.0.0.1:8000/api/v1/auth/password_update", self.passwords
         )
 
         self.assertEqual(res.status_code, 400)
@@ -70,7 +70,7 @@ class PasswordUpdateTest(APITestCase):
     ):
         self.passwords["new_password_confirm"] = "InvalidNewPassword123"
         res = self.client.patch(
-            "http://127.0.0.1:8000/api/v2/auth/password_update", self.passwords
+            "http://127.0.0.1:8000/api/v1/auth/password_update", self.passwords
         )
 
         self.assertEqual(res.status_code, 400)
@@ -81,14 +81,14 @@ class PasswordUpdateTest(APITestCase):
         self.passwords["new_password"] = "newpassword123"
         self.passwords["new_password_confirm"] = "newpassword123"
         res = self.client.patch(
-            "http://127.0.0.1:8000/api/v2/auth/password_update", self.passwords
+            "http://127.0.0.1:8000/api/v1/auth/password_update", self.passwords
         )
 
         self.assertEqual(res.status_code, 400)
 
     def test_cannot_update_password_if_request_body_has_invalid_data(self):
         res = self.client.patch(
-            "http://127.0.0.1:8000/api/v2/auth/password_update"
+            "http://127.0.0.1:8000/api/v1/auth/password_update"
         )
 
         self.assertEqual(res.status_code, 400)
@@ -110,7 +110,7 @@ class PasswordResetTest(APITestCase):
 
     def test_can_send_password_reset_email(self):
         res = self.client.post(
-            "http://127.0.0.1:8000/api/v2/auth/password_reset_email",
+            "http://127.0.0.1:8000/api/v1/auth/password_reset_email",
             {"email": "mail@test.com"},
         )
         password_reset_url = (
@@ -122,7 +122,7 @@ class PasswordResetTest(APITestCase):
 
     def test_cannot_send_password_reset_email_to_nonexistent_email(self):
         res = self.client.post(
-            "http://127.0.0.1:8000/api/v2/auth/password_reset_email",
+            "http://127.0.0.1:8000/api/v1/auth/password_reset_email",
             {"email": "nonexistent_mail@test.com"},
         )
 
@@ -132,7 +132,7 @@ class PasswordResetTest(APITestCase):
         self
     ):
         res = self.client.post(
-            "http://127.0.0.1:8000/api/v2/auth/password_reset_email"
+            "http://127.0.0.1:8000/api/v1/auth/password_reset_email"
         )
 
         self.assertEqual(res.status_code, 400)
@@ -140,7 +140,7 @@ class PasswordResetTest(APITestCase):
     def test_can_reset_password_for_user(self):
         new_password = self.passwords["new_password"]
         res = self.client.patch(
-            f"http://127.0.0.1:8000/api/v2/auth/password_reset/{self.uid}/{self.token}",
+            f"http://127.0.0.1:8000/api/v1/auth/password_reset/{self.uid}/{self.token}",
             self.passwords,
         )
         changed_user_password = CustomUser.objects.get(
@@ -153,7 +153,7 @@ class PasswordResetTest(APITestCase):
     def test_cannot_reset_password_if_uid_is_invalid(self):
         invalid_uid = urlsafe_base64_encode(force_bytes(123))
         res = self.client.patch(
-            f"http://127.0.0.1:8000/api/v2/auth/password_reset/{invalid_uid}/{self.token}",
+            f"http://127.0.0.1:8000/api/v1/auth/password_reset/{invalid_uid}/{self.token}",
             self.passwords,
         )
 
@@ -162,7 +162,7 @@ class PasswordResetTest(APITestCase):
     def test_cannot_reset_password_if_token_is_invalid(self):
         invalid_token = "123-abc"
         res = self.client.patch(
-            f"http://127.0.0.1:8000/api/v2/auth/password_reset/{self.uid}/{invalid_token}",
+            f"http://127.0.0.1:8000/api/v1/auth/password_reset/{self.uid}/{invalid_token}",
             self.passwords,
         )
 
@@ -174,7 +174,7 @@ class PasswordResetTest(APITestCase):
         passwords = self.passwords
         passwords["new_password_confirm"] = "InvalidNewPassword123"
         res = self.client.patch(
-            f"http://127.0.0.1:8000/api/v2/auth/password_reset/{self.uid}/{self.token}",
+            f"http://127.0.0.1:8000/api/v1/auth/password_reset/{self.uid}/{self.token}",
             passwords,
         )
 
@@ -187,7 +187,7 @@ class PasswordResetTest(APITestCase):
         passwords["new_password"] = "newpassword123"
         passwords["new_password_confirm"] = "newpassword123"
         res = self.client.patch(
-            f"http://127.0.0.1:8000/api/v2/auth/password_reset/{self.uid}/{self.token}",
+            f"http://127.0.0.1:8000/api/v1/auth/password_reset/{self.uid}/{self.token}",
             passwords,
         )
 
@@ -195,7 +195,7 @@ class PasswordResetTest(APITestCase):
 
     def test_cannot_reset_password_if_request_body_has_invalid_data(self):
         res = self.client.patch(
-            f"http://127.0.0.1:8000/api/v2/auth/password_reset/{self.uid}/{self.token}"
+            f"http://127.0.0.1:8000/api/v1/auth/password_reset/{self.uid}/{self.token}"
         )
 
         self.assertEqual(res.status_code, 400)

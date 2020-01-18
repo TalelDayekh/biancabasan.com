@@ -1,3 +1,4 @@
+import shutil
 import tempfile
 from pathlib import Path
 
@@ -5,7 +6,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import override_settings
 
 from api.tests.unit.utils import create_temporary_test_image, work_test_data
-from api.v2.serializers import WorkSerializer
+from api.v1.serializers import WorkSerializer
 from rest_framework.test import APITestCase
 from users.models import CustomUser
 
@@ -30,7 +31,7 @@ class WorkGETTest(APITestCase):
         super(WorkGETTest, cls).setUpClass()
 
     def test_can_get_all_works(self):
-        res = self.client.get("http://127.0.0.1:8000/api/v2/works")
+        res = self.client.get("http://127.0.0.1:8000/api/v1/works")
         works = Work.objects.all()
         serializer = WorkSerializer(works, many=True)
 
@@ -39,7 +40,7 @@ class WorkGETTest(APITestCase):
 
     def test_can_get_all_works_from_year_to(self):
         res = self.client.get(
-            "http://127.0.0.1:8000/api/v2/works", {"year_to": 2019}
+            "http://127.0.0.1:8000/api/v1/works", {"year_to": 2019}
         )
         works = Work.objects.filter(year_to=2019)
         serializer = WorkSerializer(works, many=True)
@@ -49,10 +50,10 @@ class WorkGETTest(APITestCase):
 
     def test_cannot_get_works_from_invalid_year_to(self):
         res_invalid_year_to_int = self.client.get(
-            "http://127.0.0.1:8000/api/v2/works", {"year_to": 2020}
+            "http://127.0.0.1:8000/api/v1/works", {"year_to": 2020}
         )
         res_invalid_year_to_str = self.client.get(
-            "http://127.0.0.1:8000/api/v2/works", {"year_to": "NaN"}
+            "http://127.0.0.1:8000/api/v1/works", {"year_to": "NaN"}
         )
 
         self.assertEqual(res_invalid_year_to_int.data, [])
@@ -60,14 +61,14 @@ class WorkGETTest(APITestCase):
         self.assertEqual(res_invalid_year_to_str.status_code, 400)
 
     def test_can_get_sorted_list_of_years(self):
-        res = self.client.get("http://127.0.0.1:8000/api/v2/works/years")
+        res = self.client.get("http://127.0.0.1:8000/api/v1/works/years")
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data, [2019, 2018])
 
     def test_can_get_work_from_id(self):
         work = Work.objects.get(title="Black Square #3")
-        res = self.client.get(f"http://127.0.0.1:8000/api/v2/works/{work.id}")
+        res = self.client.get(f"http://127.0.0.1:8000/api/v1/works/{work.id}")
         serializer = WorkSerializer(work)
 
         self.assertEqual(res.status_code, 200)
@@ -75,10 +76,10 @@ class WorkGETTest(APITestCase):
 
     def test_cannot_get_work_from_invalid_id(self):
         res_invalid_id_int = self.client.get(
-            "http://127.0.0.1:8000/api/v2/works/999"
+            "http://127.0.0.1:8000/api/v1/works/999"
         )
         res_invalid_id_str = self.client.get(
-            "http://127.0.0.1:8000/api/v2/works/NaN"
+            "http://127.0.0.1:8000/api/v1/works/NaN"
         )
 
         self.assertEqual(res_invalid_id_int.status_code, 404)
@@ -98,7 +99,7 @@ class WorkPOSTTest(APITestCase):
 
     def test_can_create_work_for_user(self):
         res = self.client.post(
-            "http://127.0.0.1:8000/api/v2/works", work_test_data()[0]
+            "http://127.0.0.1:8000/api/v1/works", work_test_data()[0]
         )
 
         self.assertEqual(res.status_code, 201)
@@ -106,21 +107,21 @@ class WorkPOSTTest(APITestCase):
     def test_cannot_create_work_as_unauthorized_user(self):
         self.client.force_authenticate(user=None)
         res = self.client.post(
-            "http://127.0.0.1:8000/api/v2/works", work_test_data()[0]
+            "http://127.0.0.1:8000/api/v1/works", work_test_data()[0]
         )
 
         self.assertEqual(res.status_code, 401)
 
     def test_cannot_create_work_from_invalid_payload(self):
         res = self.client.post(
-            "http://127.0.0.1:8000/api/v2/works", work_test_data()[4]
+            "http://127.0.0.1:8000/api/v1/works", work_test_data()[4]
         )
 
         self.assertEqual(res.status_code, 400)
 
     def test_cannot_create_work_with_out_of_range_year(self):
         res = self.client.post(
-            "http://127.0.0.1:8000/api/v2/works", work_test_data()[3]
+            "http://127.0.0.1:8000/api/v1/works", work_test_data()[3]
         )
 
         self.assertEqual(res.status_code, 400)
@@ -157,7 +158,7 @@ class WorkPATCHTest(APITestCase):
 
     def test_can_update_work_for_user(self):
         res = self.client.patch(
-            f"http://127.0.0.1:8000/api/v2/works/{self.user_one_work_id}",
+            f"http://127.0.0.1:8000/api/v1/works/{self.user_one_work_id}",
             self.patch_payload,
         )
 
@@ -168,7 +169,7 @@ class WorkPATCHTest(APITestCase):
 
     def test_cannot_update_work_for_other_user(self):
         res = self.client.patch(
-            f"http://127.0.0.1:8000/api/v2/works/{self.user_two_work_id}",
+            f"http://127.0.0.1:8000/api/v1/works/{self.user_two_work_id}",
             self.patch_payload,
         )
 
@@ -177,7 +178,7 @@ class WorkPATCHTest(APITestCase):
     def test_cannot_update_work_as_unauthorized_user(self):
         self.client.force_authenticate(user=None)
         res = self.client.patch(
-            f"http://127.0.0.1:8000/api/v2/works/{self.user_one_work_id}",
+            f"http://127.0.0.1:8000/api/v1/works/{self.user_one_work_id}",
             self.patch_payload,
         )
 
@@ -185,10 +186,10 @@ class WorkPATCHTest(APITestCase):
 
     def test_cannot_update_work_from_invalid_id(self):
         res_invalid_id_int = self.client.patch(
-            "http://127.0.0.1:8000/api/v2/999", self.patch_payload
+            "http://127.0.0.1:8000/api/v1/999", self.patch_payload
         )
         res_invalid_id_str = self.client.patch(
-            "http://127.0.0.1:8000/api/v2/NaN", self.patch_payload
+            "http://127.0.0.1:8000/api/v1/NaN", self.patch_payload
         )
 
         self.assertEqual(res_invalid_id_int.status_code, 404)
@@ -207,39 +208,59 @@ class WorkPATCHTest(APITestCase):
     MEDIA_ROOT=work_delete_request_test_folder,
 )
 class WorkDELETETest(APITestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.user_one = CustomUser.objects.create_user(
+    def setUp(self):
+        user_one = CustomUser.objects.create_user(
             username="delete_work_testuser_one"
         )
         user_two = CustomUser.objects.create_user(
             username="delete_work_testuser_two"
         )
-        cls.user_one_work = Work.objects.create(
-            owner=cls.user_one, **work_test_data()[0]
+        self.user_one_work = Work.objects.create(
+            owner=user_one, **work_test_data()[0]
         )
         user_two_work = Work.objects.create(
             owner=user_two, **work_test_data()[0]
         )
-        cls.user_one_work_id = cls.user_one_work.id
-        cls.user_two_work_id = user_two_work.id
-        cls.uploaded_images_paths = []
+        self.user_one_work_id = self.user_one_work.id
+        self.user_two_work_id = user_two_work.id
+        self.uploaded_images_paths = []
+        self.client.force_authenticate(user_one)
 
         for i in range(5):
             with create_temporary_test_image("JPEG") as test_image:
                 image = Image.objects.create(
-                    work=cls.user_one_work,
+                    work=self.user_one_work,
                     image=SimpleUploadedFile(
                         f"Black Square {i + 1}.JPEG", test_image.read()
                     ),
                 )
-                cls.uploaded_images_paths.append(Path(image.image.path))
-
-        super(WorkDELETETest, cls).setUpClass()
+                self.uploaded_images_paths.append(Path(image.image.path))
 
     def test_can_delete_work_for_user(self):
-        self.client.force_authenticate(self.user_one)
+        res = self.client.delete(
+            f"http://127.0.0.1:8000/api/v1/works/{self.user_one_work_id}"
+        )
+
+        for image in self.uploaded_images_paths:
+            self.assertFalse(image.exists())
+        self.assertEqual(res.status_code, 204)
+
+    def test_cannot_delete_work_by_other_user(self):
+        res = self.client.delete(
+            f"http://127.0.0.1:8000/api/v1/works/{self.user_two_work_id}"
+        )
+
+        self.assertEqual(res.status_code, 404)
+
+    def test_cannot_delete_work_as_unauthorized_user(self):
+        self.client.force_authenticate(user=None)
+        res = self.client.delete(
+            f"http://127.0.0.1:8000/api/v1/works/{self.user_one_work_id}"
+        )
+
+        self.assertEqual(res.status_code, 401)
 
     @classmethod
     def tearDownClass(cls):
+        shutil.rmtree(work_delete_request_test_folder)
         super(WorkDELETETest, cls).tearDownClass()
