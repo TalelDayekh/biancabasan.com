@@ -4,7 +4,7 @@ from typing import Optional, Type
 
 from django.http import Http404, HttpRequest
 
-from api.v2.serializers import WorkSerializer
+from api.v1.serializers import WorkSerializer
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
