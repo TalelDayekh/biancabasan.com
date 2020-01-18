@@ -2,7 +2,7 @@ import tempfile
 from contextlib import contextmanager
 from typing import Dict, List
 
-from PIL import image
+from PIL import Image
 
 
 def work_test_data() -> List[Dict]:

@@ -1,9 +1,19 @@
-from api.tests.unit.utils import work_test_data
+import tempfile
+from pathlib import Path
+
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import override_settings
+
+from api.tests.unit.utils import create_temporary_test_image, work_test_data
 from api.v2.serializers import WorkSerializer
 from rest_framework.test import APITestCase
 from users.models import CustomUser
 
-from works.models import Work
+from works.models import Image, Work
+
+work_delete_request_test_folder = tempfile.mkdtemp(
+    prefix="work_delete_request_test_folder"
+)
 
 
 class WorkGETTest(APITestCase):
@@ -189,3 +199,47 @@ class WorkPATCHTest(APITestCase):
         # Adding the tearDownClass seems to prevent
         # connection already closed interfaceError.
         super(WorkPATCHTest, cls).tearDownClass()
+
+
+@override_settings(
+    BASE_DIR=work_delete_request_test_folder,
+    MEDIA_URL="/",
+    MEDIA_ROOT=work_delete_request_test_folder,
+)
+class WorkDELETETest(APITestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.user_one = CustomUser.objects.create_user(
+            username="delete_work_testuser_one"
+        )
+        user_two = CustomUser.objects.create_user(
+            username="delete_work_testuser_two"
+        )
+        cls.user_one_work = Work.objects.create(
+            owner=cls.user_one, **work_test_data()[0]
+        )
+        user_two_work = Work.objects.create(
+            owner=user_two, **work_test_data()[0]
+        )
+        cls.user_one_work_id = cls.user_one_work.id
+        cls.user_two_work_id = user_two_work.id
+        cls.uploaded_images_paths = []
+
+        for i in range(5):
+            with create_temporary_test_image("JPEG") as test_image:
+                image = Image.objects.create(
+                    work=cls.user_one_work,
+                    image=SimpleUploadedFile(
+                        f"Black Square {i + 1}.JPEG", test_image.read()
+                    ),
+                )
+                cls.uploaded_images_paths.append(Path(image.image.path))
+
+        super(WorkDELETETest, cls).setUpClass()
+
+    def test_can_delete_work_for_user(self):
+        self.client.force_authenticate(self.user_one)
+
+    @classmethod
+    def tearDownClass(cls):
+        super(WorkDELETETest, cls).tearDownClass()
