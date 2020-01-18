@@ -25,9 +25,6 @@
 # )
 
 
-
-
-
 # @override_settings(
 #     BASE_DIR=image_get_request_test_folder,
 #     MEDIA_URL="/",
