@@ -1,3 +1,4 @@
+import random
 import shutil
 import tempfile
 
@@ -53,7 +54,7 @@ class ImageGETTest(APITestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data, serializer.data)
 
-    def test_cannot_get_image_from_invalid_work_id(self):
+    def test_cannot_get_all_images_from_invalid_work_id(self):
         res_invalid_id_int = self.client.get(
             "http://127.0.0.1:8000/api/v1/works/999/images"
         )
@@ -63,6 +64,21 @@ class ImageGETTest(APITestCase):
 
         self.assertEqual(res_invalid_id_int.status_code, 404)
         self.assertEqual(res_invalid_id_str.status_code, 404)
+
+    def test_can_get_image_for_work(self):
+        # Tests with a random image from
+        # the test data on each test run.
+        image_id = random.choice(self.images_id)
+        res = self.client.get(
+            f"http://127.0.0.1:8000/api/v1/works/{self.work.id}/images/{image_id}"
+        )
+        image = Image.objects.get(
+            work__owner__username=self.user, work__id=self.work.id, id=image_id
+        )
+        serializer = ImageSerializer(image)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data, serializer.data)
 
     @classmethod
     def tearDownClass(cls):
