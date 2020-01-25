@@ -1,3 +1,5 @@
+from typing import Type
+
 from django.http import Http404, HttpRequest
 
 from api.v1.serializers import ImageSerializer
@@ -21,3 +23,20 @@ class ImageList(APIView):
         else:
             serializer = ImageSerializer(images, many=True)
             return Response(serializer.data)
+
+
+class ImageDetail(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def _get_image_object(self, work_id: int, image_id: int) -> Type[Image]:
+        try:
+            return Image.objects.get(work_id=work_id, id=image_id)
+        except Image.DoesNotExist:
+            raise Http404
+
+    def get(
+        self, request: HttpRequest, work_id: int, image_id: int, format=None
+    ) -> Response:
+        image = self._get_image_object(work_id, image_id)
+        serializer = ImageSerializer(image)
+        return Response(serializer.data)

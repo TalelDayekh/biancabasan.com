@@ -34,4 +34,9 @@ urlpatterns = [
         image.ImageList.as_view(),
         name="image_list",
     ),
+    url(
+        r"^works/(?P<work_id>\d+)/images/(?P<image_id>\d+)$",
+        image.ImageDetail.as_view(),
+        name="image_detail",
+    ),
 ]
