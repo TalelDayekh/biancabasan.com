@@ -8,7 +8,8 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from works.models import Image
+from works.image_handlers import ImageFileHandler, ImageValidationHandler
+from works.models import Image, Work
 
 
 class ImageList(APIView):
@@ -23,6 +24,11 @@ class ImageList(APIView):
         else:
             serializer = ImageSerializer(images, many=True)
             return Response(serializer.data)
+
+    def post(
+        self, request: HttpRequest, work_id: int, format=None
+    ) -> Response:
+        pass
 
 
 class ImageDetail(APIView):
