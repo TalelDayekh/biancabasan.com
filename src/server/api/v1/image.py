@@ -1,8 +1,11 @@
+from pathlib import Path
 from typing import Type
 
+from django.conf import settings
 from django.http import Http404, HttpRequest
 
 from api.v1.serializers import ImageSerializer
+from rest_framework import status
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
@@ -28,7 +31,21 @@ class ImageList(APIView):
     def post(
         self, request: HttpRequest, work_id: int, format=None
     ) -> Response:
-        pass
+        work_owner = Work.objects.get(id=work_id).owner
+        image_validation = ImageValidationHandler(request.FILES["image"])
+        serializer = ImageSerializer(data=request.data)
+
+        if (
+            serializer.is_valid()
+            and image_validation.is_valid()
+            and work_owner == request.user
+        ):
+            serializer.save(work_id=work_id)
+            image_file = Path(settings.BASE_DIR + serializer.data["image"])
+            ImageFileHandler.create_web_image_set(image_file)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class ImageDetail(APIView):

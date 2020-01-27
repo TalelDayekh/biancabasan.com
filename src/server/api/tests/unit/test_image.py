@@ -15,6 +15,9 @@ from works.models import Image, Work
 image_get_request_test_folder = tempfile.mkdtemp(
     prefix="image_get_request_test_folder"
 )
+image_post_request_test_folder = tempfile.mkdtemp(
+    prefix="image_post_request_test_folder"
+)
 
 
 @override_settings(
@@ -95,3 +98,69 @@ class ImageGETTest(APITestCase):
     def tearDownClass(cls):
         shutil.rmtree(image_get_request_test_folder)
         super(ImageGETTest, cls).tearDownClass()
+
+
+@override_settings(
+    BASE_DIR=image_post_request_test_folder,
+    MEDIA_URL="/",
+    MEDIA_ROOT=image_post_request_test_folder,
+)
+class ImagePOSTTest(APITestCase):
+    def setUp(self):
+        user_one = CustomUser.objects.create_user(
+            username="post_image_testuser_one"
+        )
+        self.work = Work.objects.create(owner=user_one, **work_test_data()[0])
+        self.client.force_authenticate(user_one)
+
+    def test_can_post_image_to_work_by_user(self):
+        with create_temporary_test_image("JPEG") as test_image:
+            res = self.client.post(
+                f"http://127.0.0.1:8000/api/v1/works/{self.work.id}/images",
+                {"image": test_image},
+                format="multipart",
+            )
+
+            self.assertEqual(res.status_code, 201)
+
+    def test_cannot_post_invalid_image_to_work_by_user(self):
+        with create_temporary_test_image("PNG") as test_image:
+            res = self.client.post(
+                f"http://127.0.0.1:8000/api/v1/works/{self.work.id}/images",
+                {"image": test_image},
+                format="multipart",
+            )
+
+            self.assertEqual(res.status_code, 400)
+
+    def test_cannot_post_image_to_work_by_other_user(self):
+        user_two = CustomUser.objects.create_user(
+            username="post_image_testuser_two"
+        )
+        work = Work.objects.create(owner=user_two, **work_test_data()[0])
+
+        with create_temporary_test_image("JPEG") as test_image:
+            res = self.client.post(
+                f"http://127.0.0.1:8000/api/v1/works/{work.id}/images",
+                {"image": test_image},
+                format="multipart",
+            )
+
+            self.assertEqual(res.status_code, 400)
+
+    def test_cannot_post_image_to_work_as_unauthorized_user(self):
+        self.client.force_authenticate(user=None)
+
+        with create_temporary_test_image("JPEG") as test_image:
+            res = self.client.post(
+                f"http://127.0.0.1:8000/api/v1/works/{self.work.id}/images",
+                {"image": test_image},
+                format="multipart",
+            )
+
+            self.assertEqual(res.status_code, 401)
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(image_post_request_test_folder)
+        super(ImagePOSTTest, cls).tearDownClass()
