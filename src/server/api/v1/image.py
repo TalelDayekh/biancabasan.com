@@ -63,3 +63,21 @@ class ImageDetail(APIView):
         image = self._get_image_object(work_id, image_id)
         serializer = ImageSerializer(image)
         return Response(serializer.data)
+
+    def delete(
+        self, request: HttpRequest, work_id: int, image_id: int, format=None
+    ) -> Response:
+        image = self._get_image_object(work_id, image_id)
+        image_owner = image.work.owner
+        image_file = Path(image.image.path)
+
+        if image_owner == request.user:
+            ImageFileHandler(image_file).delete_image_set()
+
+            if image_file.exists():
+                return Response(status=status.HTTP_409_CONFLICT)
+            else:
+                image.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
