@@ -18,6 +18,9 @@ image_get_request_test_folder = tempfile.mkdtemp(
 image_post_request_test_folder = tempfile.mkdtemp(
     prefix="image_post_request_test_folder"
 )
+image_delete_request_test_folder = tempfile.mkdtemp(
+    prefix="image_delete_request_test_folder"
+)
 
 
 @override_settings(
@@ -164,3 +167,18 @@ class ImagePOSTTest(APITestCase):
     def tearDownClass(cls):
         shutil.rmtree(image_post_request_test_folder)
         super(ImagePOSTTest, cls).tearDownClass()
+
+
+@override_settings(
+    BASE_DIR=image_delete_request_test_folder,
+    MEDIA_URL="/",
+    MEDIA_ROOT=image_delete_request_test_folder,
+)
+class ImageDELETETest(APITestCase):
+    def setUp(self):
+        pass
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(image_delete_request_test_folder)
+        super(ImageDELETETest, cls).tearDownClass()
