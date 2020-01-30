@@ -176,7 +176,53 @@ class ImagePOSTTest(APITestCase):
 )
 class ImageDELETETest(APITestCase):
     def setUp(self):
-        pass
+        user_one = CustomUser.objects.create_user(
+            username="delete_image_testuser_one"
+        )
+        user_two = CustomUser.objects.create_user(
+            username="delete_image_testuser_two"
+        )
+        self.user_one_work = Work.objects.create(
+            owner=user_one, **work_test_data()[0]
+        )
+        self.user_two_work = Work.objects.create(
+            owner=user_two, **work_test_data()[0]
+        )
+        self.client.force_authenticate(user_one)
+
+        with create_temporary_test_image("JPEG") as test_image:
+            self.user_one_image = Image.objects.create(
+                work=self.user_one_work,
+                image=SimpleUploadedFile(test_image.name, test_image.read()),
+            )
+
+        with create_temporary_test_image("JPEG") as test_image:
+            self.user_two_image = Image.objects.create(
+                work=self.user_two_work,
+                image=SimpleUploadedFile(test_image.name, test_image.read()),
+            )
+
+    def test_can_delete_image_for_work_by_user(self):
+        res = self.client.delete(
+            f"http://127.0.0.1:8000/api/v1/works/{self.user_one_work.id}/images/{self.user_one_image.id}"
+        )
+
+        self.assertEqual(res.status_code, 204)
+
+    def test_cannot_delete_image_for_work_by_other_user(self):
+        res = self.client.delete(
+            f"http://127.0.0.1:8000/api/v1/works/{self.user_two_work.id}/images/{self.user_two_image.id}"
+        )
+
+        self.assertEqual(res.status_code, 404)
+
+    def test_cannot_delete_image_for_work_as_unauthorized_user(self):
+        self.client.force_authenticate(user=None)
+        res = self.client.delete(
+            f"http://127.0.0.1:8000/api/v1/works/{self.user_one_work.id}/images/{self.user_one_image.id}"
+        )
+
+        self.assertEqual(res.status_code, 401)
 
     @classmethod
     def tearDownClass(cls):
