@@ -4,26 +4,39 @@ from users.models import CustomUser
 from works.models import Image, Work
 
 
-class OwnerSerializerVersion1(serializers.ModelSerializer):
+class PasswordResetEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    new_password = serializers.CharField(required=True)
+    new_password_confirm = serializers.CharField(required=True)
+
+
+class PasswordUpdateSerializer(PasswordResetSerializer):
+    old_password = serializers.CharField(required=True)
+
+
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ["username", "id"]
 
 
-class ImageSerializerVersion1(serializers.ModelSerializer):
+class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
         fields = ["work_id", "id", "image"]
 
 
-class WorkSerializerVersion1(serializers.ModelSerializer):
-    owner = OwnerSerializerVersion1(read_only=True)
-    images = ImageSerializerVersion1(many=True, read_only=True)
+class WorkSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    images = ImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Work
         fields = [
-            "owner",
+            "user",
             "id",
             "title",
             "year_from",
