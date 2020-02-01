@@ -4,35 +4,35 @@
   "description": "Portfolio Website of Bianca Basan",
   "author": "Talel Dayekh",
   "license": "MIT",
-  "main": "index.jsx",
   "scripts": {
-    "dev": "webpack-dev-server --mode development --open --hot",
-    "build": "webpack --mode production",
-    "test": "jest",
-    "lint": "eslint ./src/ --ext .jsx,js",
-    "prettier": "prettier '**/*.{jsx,js}' --write"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.5.0",
-    "@babel/preset-env": "^7.5.0",
-    "@babel/preset-react": "7.0.0",
-    "babel-loader": "^8.0.6",
-    "eslint": "^5.16.0",
-    "eslint-config-airbnb": "^17.1.1",
-    "eslint-config-prettier": "^6.0.0",
-    "eslint-plugin-import": "^2.18.0",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-prettier": "^3.1.0",
-    "eslint-plugin-react": "^7.14.2",
-    "html-webpack-plugin": "^3.2.0",
-    "jest": "^24.8.0",
-    "prettier": "^1.18.2",
-    "webpack": "^4.35.2",
-    "webpack-cli": "^3.3.5",
-    "webpack-dev-server": "^3.7.2"
+    "serve": "webpack-dev-server --mode development --open --hot",
+    "build": "webpack --mode production"
   },
   "dependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
+    "@babel/preset-env": "^7.8.4",
+    "@babel/preset-react": "^7.8.3",
+    "@babel/preset-typescript": "^7.8.3",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.4.0",
+    "@testing-library/user-event": "^7.2.1",
+    "@types/jest": "^24.9.1",
+    "@types/node": "^12.12.25",
+    "@types/react": "^16.9.19",
+    "@types/react-dom": "^16.9.5",
+    "babel-loader": "^8.0.6",
+    "html-webpack-plugin": "^3.2.0",
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.5",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.1"
   }
 }
