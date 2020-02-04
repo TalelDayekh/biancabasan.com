@@ -1,12 +1,11 @@
 {
   "name": "biancabasan.com",
   "version": "1.0.0",
-  "description": "Portfolio Website of Bianca Basan",
+  "description": "Portfolio Website for Bianca Basan",
   "author": "Talel Dayekh",
   "license": "MIT",
   "scripts": {
-    "serve": "webpack-dev-server --mode development --open --hot",
-    "build": "webpack --mode production"
+    "serve": "webpack-dev-server --mode development --open --hot"
   },
   "dependencies": {
     "react": "^16.12.0",
@@ -15,8 +14,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
-    "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
     "@babel/preset-react": "^7.8.3",
     "@babel/preset-typescript": "^7.8.3",
@@ -29,9 +26,9 @@
     "@types/react-dom": "^16.9.5",
     "babel-loader": "^8.0.6",
     "eslint": "^6.8.0",
+    "eslint-plugin-react": "^7.18.3",
+    "eslint-plugin-react-hooks": "^2.3.0",
     "html-webpack-plugin": "^3.2.0",
-    "source-map-loader": "^0.2.4",
-    "ts-loader": "^6.2.1",
     "typescript": "^3.7.5",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
