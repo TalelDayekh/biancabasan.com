@@ -1,20 +1,16 @@
 {
-	"compilerOptions": {
-		"jsx": "react",
-		"target": "esnext",
-		"module": "esnext",
-		"strict": true,
-		"outDir": "./dist/",
-		"baseUrl": "./src",
-		"sourceMap": true,
-		"moduleResolution": "node",
-		"esModuleInterop": true,
-		"importHelpers": true,
-		"experimentalDecorators": true,
-		"lib": [
-			"esnext",
-			"dom",
-			"dom.iterable"
-		]
-	}
+  "compilerOptions": {
+    "jsx": "react",
+    "target": "esnext",
+    "module": "esnext",
+    "strict": true,
+    "outDir": "./dist/",
+    "baseUrl": "./src",
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "importHelpers": true,
+    "experimentalDecorators": true,
+    "lib": ["esnext", "dom", "dom.iterable"]
+  }
 }

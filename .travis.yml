@@ -13,7 +13,7 @@ matrix:
       install:
         - pip install -r requirements.txt
       before_script:
-       - psql -c 'create database travis_ci_db;' -U travis
+        - psql -c 'create database travis_ci_db;' -U travis
       script:
         - make isort_travis_build
         - make black_travis_build
@@ -31,6 +31,6 @@ matrix:
       cache:
         directories:
           - "node_modules"
-      script:
-        - npm run lint
-        - npm run test
+      # script:
+      # - npm run lint
+      # - npm run test
