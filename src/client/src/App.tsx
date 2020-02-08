@@ -5,7 +5,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <InputField first_name={'Talel'} second_name={'Dayekh'}/>
+        <InputField firstName={'Talel'} secondName={'Dayekh'} />
       </div>
     );
   }

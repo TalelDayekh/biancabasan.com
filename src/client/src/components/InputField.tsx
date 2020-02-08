@@ -1,13 +1,21 @@
 import React from 'react';
 
-const InputField = (props) => {
+type InputFieldProps = {
+  firstName: string;
+  secondName: string;
+};
+
+const InputField: React.FunctionComponent<InputFieldProps> = ({
+  firstName,
+  secondName,
+}) => {
   return (
-      <div>
-          <h1>{props.first_name}</h1>
-          <h1>{props.second_name}</h1>
-          <h1>Hello Functional Component</h1>
-      </div>
-  )
+    <div>
+      <h1>{firstName}</h1>
+      <h1>{secondName}</h1>
+      <h1>Hello Functional Component</h1>
+    </div>
+  );
 };
 
 export default InputField;
