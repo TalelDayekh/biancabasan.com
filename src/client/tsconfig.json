@@ -8,8 +8,9 @@
     "sourceMap": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "importHelpers": true,
     "experimentalDecorators": true,
+    "declaration": true,
+    "importHelpers": true,
     "lib": ["esnext", "dom", "dom.iterable"]
   }
 }
