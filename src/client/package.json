@@ -2,12 +2,12 @@
   "name": "biancabasan.com",
   "version": "1.0.0",
   "description": "Portfolio Website for Bianca Basan",
-  "main": "index.js",
-  "scripts": {
-    "serve": "webpack-dev-server --mode development --open --hot"
-  },
   "author": "Talel Dayekh",
   "license": "MIT",
+  "scripts": {
+    "serve": "webpack-dev-server --mode development --open --hot",
+    "prettier": "prettier --write '**/*'"
+  },
   "dependencies": {
     "react": "^16.12.0",
     "react-dom": "^16.12.0"
@@ -20,11 +20,18 @@
     "@types/node": "^13.7.0",
     "@types/react": "^16.9.19",
     "@types/react-dom": "^16.9.5",
+    "@typescript-eslint/eslint-plugin": "^2.19.0",
+    "@typescript-eslint/parser": "^2.19.0",
     "babel-loader": "^8.0.6",
     "css-loader": "^3.4.2",
-    "css-modules-typescript-loader": "^4.0.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-react": "^7.18.3",
+    "eslint-plugin-react-hooks": "^2.3.0",
     "html-webpack-plugin": "^3.2.0",
     "node-sass": "^4.13.1",
+    "prettier": "^1.19.1",
     "sass-loader": "^8.0.2",
     "style-loader": "^1.1.3",
     "typescript": "^3.7.5",
