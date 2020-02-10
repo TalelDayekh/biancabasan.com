@@ -6,6 +6,7 @@
   "license": "MIT",
   "scripts": {
     "serve": "webpack-dev-server --mode development --open --hot",
+    "lint": "eslint --fix ./src/**/*.{tsx,scss}",
     "prettier": "prettier --write '**/*'"
   },
   "dependencies": {
