@@ -1,8 +1,8 @@
-import React from 'react';
-import styles from './InputField.module.scss';
+import React, { useState } from 'react';
 
 const InputField = () => {
-  return <h1 className={styles.test}>Hello World</h1>;
+  useState({ valid: false });
+  return <h1>Hello World</h1>;
 };
 
 export default InputField;
