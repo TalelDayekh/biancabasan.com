@@ -1,8 +1,17 @@
 import React, { useState } from 'react';
 
-const InputField = () => {
+const InputField = props => {
   useState({ valid: false });
-  return <h1>Hello World</h1>;
+  const doSomething = () => {
+    console.log('Print something...');
+  };
+  doSomething();
+  switch (props.inputType) {
+    case 'password':
+      return <h1>Password</h1>;
+    case 'title':
+      return <h1>Title</h1>;
+  }
 };
 
 export default InputField;

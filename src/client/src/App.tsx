@@ -5,7 +5,8 @@ class App extends Component {
   render() {
     return (
       <div>
-        <InputField />
+        <InputField inputType={'title'} />
+        <InputField inputType={'password'} />
       </div>
     );
   }
