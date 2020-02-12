@@ -1,17 +1,9 @@
 import React, { useState } from 'react';
+import styles from './InputField.module.scss';
 
 const InputField = props => {
   useState({ valid: false });
-  const doSomething = () => {
-    console.log('Print something...');
-  };
-  doSomething();
-  switch (props.inputType) {
-    case 'password':
-      return <h1>Password</h1>;
-    case 'title':
-      return <h1>Title</h1>;
-  }
+  return <input className={styles.inputfield} />;
 };
 
 export default InputField;
