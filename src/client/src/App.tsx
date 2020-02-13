@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import InputField from './components/InputField';
+import UserInput from './components/UserInput';
 
 class App extends Component {
   render() {
     return (
       <div>
-        <InputField inputType={'title'} />
-        <InputField inputType={'password'} />
+        <UserInput />
       </div>
     );
   }
