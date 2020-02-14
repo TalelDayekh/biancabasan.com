@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import UserInput from './components/UserInput';
+import InputField from './components/InputField';
 
 class App extends Component {
   render() {
     return (
       <div>
-        <UserInput />
+        <InputField inputType={'title'} required />
+        <br />
+        <InputField inputType={'measurement'} shortField />
       </div>
     );
   }
