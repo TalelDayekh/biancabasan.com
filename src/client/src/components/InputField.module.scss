@@ -4,4 +4,20 @@
   &.short-field {
     width: 150px;
   }
+
+  &.error {
+    border: solid 1px red;
+  }
+}
+
+.user-input-textarea {
+  width: 500px;
+
+  &.short-field {
+    width: 150px;
+  }
+
+  &.error {
+    border: solid 1px red;
+  }
 }
