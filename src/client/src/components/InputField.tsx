@@ -38,6 +38,10 @@ const InputField: React.FC<InputFieldProps> = ({
     }
   };
 
+  const validatePassword = () => {
+    console.log('Password validator');
+  };
+
   const selectInputValidator = () => {
     switch (inputType) {
       case 'title':
@@ -45,6 +49,9 @@ const InputField: React.FC<InputFieldProps> = ({
       case 'description':
       case 'measurement':
         validateTextAndNumberInput();
+        break;
+      case 'password':
+        validatePassword();
         break;
     }
   };
