@@ -7,7 +7,13 @@ class App extends Component {
       <div>
         <InputField inputType={'title'} required />
         <br />
-        <InputField inputType={'measurement'} shortField />
+        <InputField inputType={'technique'} required />
+        <br />
+        <InputField inputType={'description'} required />
+        <br />
+        <InputField inputType={'measurement'} shortField required />
+        <br />
+        <InputField inputType={'new-password'}/>
       </div>
     );
   }

@@ -50,7 +50,7 @@ const InputField: React.FC<InputFieldProps> = ({
       case 'measurement':
         validateTextAndNumberInput();
         break;
-      case 'password':
+      case 'new-password':
         validatePassword();
         break;
     }
