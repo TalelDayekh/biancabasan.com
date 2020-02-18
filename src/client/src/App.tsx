@@ -5,7 +5,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <InputField inputType={'title'} required />
+        <InputField inputType={'title'} required hidePassword />
         <br />
         <InputField inputType={'technique'} required />
         <br />
@@ -13,7 +13,7 @@ class App extends Component {
         <br />
         <InputField inputType={'measurement'} shortField required />
         <br />
-        <InputField inputType={'new-password'}/>
+        <InputField inputType={'new-password'} />
       </div>
     );
   }
