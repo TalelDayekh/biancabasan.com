@@ -5,6 +5,7 @@ interface InputFieldProps {
   inputType: string;
   required?: boolean;
   shortField?: boolean;
+  hidePassword?: boolean;
 }
 
 interface InputFieldState {
@@ -16,6 +17,7 @@ const InputField: React.FC<InputFieldProps> = ({
   inputType = 'title',
   required = false,
   shortField = false,
+  hidePassword = false,
 }) => {
   const [state, setState] = useState<InputFieldState>({
     userInput: '',
@@ -80,6 +82,7 @@ const InputField: React.FC<InputFieldProps> = ({
         onBlur={() => selectInputValidator()}
         onFocus={() => setState({ ...state, inputError: '' })}
         onChange={e => setState({ ...state, userInput: e.target.value })}
+        type={hidePassword ? 'password' : 'text'}
       />
     );
   }
