@@ -24,13 +24,22 @@ const InputField: React.FC<InputFieldProps> = ({
     inputError: '',
   });
 
+  const placeholder = () => {
+    return inputType.charAt(0).toUpperCase() + inputType.slice(1);
+  };
+
   const validateTextAndNumberInput = () => {
     let inputLength: number =
       inputType === 'title' ? 80 : inputType === 'technique' ? 255 : Infinity;
 
     if (required && state.userInput.length <= 0) {
       setState({ ...state, inputError: 'Input field cannot be empty' });
-    } else if (inputType === 'measurement' && isNaN(Number(state.userInput))) {
+    } else if (
+      (inputType === 'height' ||
+        inputType === 'width' ||
+        inputType === 'depth') &&
+      isNaN(Number(state.userInput))
+    ) {
       setState({ ...state, inputError: 'Input has to be a number' });
     } else if (state.userInput.length > inputLength) {
       setState({
@@ -48,11 +57,13 @@ const InputField: React.FC<InputFieldProps> = ({
     switch (inputType) {
       case 'title':
       case 'technique':
+      case 'height':
+      case 'width':
+      case 'depth':
       case 'description':
-      case 'measurement':
         validateTextAndNumberInput();
         break;
-      case 'new-password':
+      case 'password':
         validatePassword();
         break;
     }
@@ -66,6 +77,7 @@ const InputField: React.FC<InputFieldProps> = ({
           ${shortField && styles['short-field']}
           ${state.inputError && styles['error']}
         `}
+        placeholder={placeholder()}
         onBlur={() => selectInputValidator()}
         onFocus={() => setState({ ...state, inputError: '' })}
         onChange={e => setState({ ...state, userInput: e.target.value })}
@@ -79,6 +91,7 @@ const InputField: React.FC<InputFieldProps> = ({
           ${shortField && styles['short-field']}
           ${state.inputError && styles['error']}
         `}
+        placeholder={placeholder()}
         onBlur={() => selectInputValidator()}
         onFocus={() => setState({ ...state, inputError: '' })}
         onChange={e => setState({ ...state, userInput: e.target.value })}
