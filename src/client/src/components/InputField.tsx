@@ -71,32 +71,38 @@ const InputField: React.FC<InputFieldProps> = ({
 
   if (inputType === 'description') {
     return (
-      <textarea
-        className={`
-          ${styles['user-input-textarea']} 
-          ${shortField && styles['short-field']}
-          ${state.inputError && styles['error']}
-        `}
-        placeholder={placeholder()}
-        onBlur={() => selectInputValidator()}
-        onFocus={() => setState({ ...state, inputError: '' })}
-        onChange={e => setState({ ...state, userInput: e.target.value })}
-      />
+      <>
+        <textarea
+          className={`
+            ${styles['user-input-textarea']} 
+            ${shortField && styles['short-field']}
+            ${state.inputError && styles['error']}
+          `}
+          placeholder={placeholder()}
+          onBlur={() => selectInputValidator()}
+          onFocus={() => setState({ ...state, inputError: '' })}
+          onChange={e => setState({ ...state, userInput: e.target.value })}
+        />
+        <h6>{state.inputError}</h6>
+      </>
     );
   } else {
     return (
-      <input
-        className={`
-          ${styles['user-input']} 
-          ${shortField && styles['short-field']}
-          ${state.inputError && styles['error']}
-        `}
-        placeholder={placeholder()}
-        onBlur={() => selectInputValidator()}
-        onFocus={() => setState({ ...state, inputError: '' })}
-        onChange={e => setState({ ...state, userInput: e.target.value })}
-        type={hidePassword ? 'password' : 'text'}
-      />
+      <>
+        <input
+          className={`
+            ${styles['user-input']} 
+            ${shortField && styles['short-field']}
+            ${state.inputError && styles['error']}
+          `}
+          placeholder={placeholder()}
+          onBlur={() => selectInputValidator()}
+          onFocus={() => setState({ ...state, inputError: '' })}
+          onChange={e => setState({ ...state, userInput: e.target.value })}
+          type={hidePassword ? 'password' : 'text'}
+        />
+        <h6>{state.inputError}</h6>
+      </>
     );
   }
 };
