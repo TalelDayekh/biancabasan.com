@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import InputField from './InputField';
 
 describe('InputField.tsx', () => {
@@ -15,5 +15,12 @@ describe('InputField.tsx', () => {
     expect(height.getByPlaceholderText('Height')).toBeTruthy();
     expect(width.getByPlaceholderText('Width')).toBeTruthy();
     expect(depth.getByPlaceholderText('Depth')).toBeTruthy();
+  });
+
+  test('displays error message when invalid text input is provided', () => {
+    const title = render(<InputField inputType="title" />);
+    const titleInputField = title.getByPlaceholderText('Title');
+
+    fireEvent.change(titleInputField, { target: { value: '' } });
   });
 });
