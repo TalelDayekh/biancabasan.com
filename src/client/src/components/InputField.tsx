@@ -33,14 +33,14 @@ const InputField: React.FC<InputFieldProps> = ({
       inputType === 'title' ? 80 : inputType === 'technique' ? 255 : Infinity;
 
     if (required && state.userInput.length <= 0) {
-      setState({ ...state, inputError: 'Input field cannot be empty' });
+      setState({ ...state, inputError: `${placeholder()} field cannot be empty` });
     } else if (
       (inputType === 'height' ||
         inputType === 'width' ||
         inputType === 'depth') &&
       isNaN(Number(state.userInput))
     ) {
-      setState({ ...state, inputError: 'Input has to be a number' });
+      setState({ ...state, inputError: `${placeholder()} has to be a number` });
     } else if (state.userInput.length > inputLength) {
       setState({
         ...state,
