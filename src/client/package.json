@@ -11,8 +11,10 @@
     "prettier": "prettier --write '**/*'"
   },
   "dependencies": {
+    "i18next": "^19.3.2",
     "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "react-dom": "^16.12.0",
+    "react-i18next": "^11.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
