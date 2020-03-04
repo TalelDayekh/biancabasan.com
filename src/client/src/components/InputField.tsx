@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from './InputField.module.scss';
 
 interface InputFieldProps {
@@ -8,100 +9,43 @@ interface InputFieldProps {
   hidePassword?: boolean;
 }
 
-interface InputFieldState {
-  userInput: string;
-  inputError: string;
-}
-
 const InputField: React.FC<InputFieldProps> = ({
   inputType = 'title',
   required = false,
   shortField = false,
   hidePassword = false,
 }) => {
-  const [state, setState] = useState<InputFieldState>({
-    userInput: '',
-    inputError: '',
-  });
+  let placeholderText: string =
+    inputType.charAt(0).toUpperCase() + inputType.slice(1);
 
-  const placeholder = () => {
-    return inputType.charAt(0).toUpperCase() + inputType.slice(1);
-  };
-
-  const validateTextAndNumberInput = () => {
-    let inputLength: number =
-      inputType === 'title' ? 80 : inputType === 'technique' ? 255 : Infinity;
-
-    if (required && state.userInput.length <= 0) {
-      setState({ ...state, inputError: `${placeholder()} field cannot be empty` });
-    } else if (
-      (inputType === 'height' ||
-        inputType === 'width' ||
-        inputType === 'depth') &&
-      isNaN(Number(state.userInput))
-    ) {
-      setState({ ...state, inputError: `${placeholder()} has to be a number` });
-    } else if (state.userInput.length > inputLength) {
-      setState({
-        ...state,
-        inputError: `Input cannot be longer than ${inputLength} characters`,
-      });
-    }
-  };
-
-  const validatePassword = () => {
-    console.log('Password validator');
-  };
-
-  const selectInputValidator = () => {
-    switch (inputType) {
-      case 'title':
-      case 'technique':
-      case 'height':
-      case 'width':
-      case 'depth':
-      case 'description':
-        validateTextAndNumberInput();
-        break;
-      case 'password':
-        validatePassword();
-        break;
-    }
+  const placeholder = (
+    e:
+      | React.FocusEvent<HTMLInputElement>
+      | React.FocusEvent<HTMLTextAreaElement>,
+  ): void => {
+    e.type === 'focus'
+      ? (e.target.placeholder = '')
+      : (e.target.placeholder = placeholderText);
   };
 
   if (inputType === 'description') {
     return (
       <>
         <textarea
-          className={`
-            ${styles['user-input-textarea']} 
-            ${shortField && styles['short-field']}
-            ${state.inputError && styles['error']}
-          `}
-          placeholder={placeholder()}
-          onBlur={() => selectInputValidator()}
-          onFocus={() => setState({ ...state, inputError: '' })}
-          onChange={e => setState({ ...state, userInput: e.target.value })}
+          placeholder={placeholderText}
+          onFocus={placeholder}
+          onBlur={placeholder}
         />
-        <h6>{state.inputError}</h6>
       </>
     );
   } else {
     return (
       <>
         <input
-          className={`
-            ${styles['user-input']} 
-            ${shortField && styles['short-field']}
-            ${state.inputError && styles['error']}
-          `}
-          placeholder={placeholder()}
-          onBlur={() => selectInputValidator()}
-          onFocus={() => setState({ ...state, inputError: '' })}
-          onChange={e => setState({ ...state, userInput: e.target.value })}
-          type={hidePassword ? 'password' : 'text'}
+          placeholder={placeholderText}
+          onFocus={placeholder}
+          onBlur={placeholder}
         />
-        <h6>{state.inputError}</h6>
       </>
     );
   }
