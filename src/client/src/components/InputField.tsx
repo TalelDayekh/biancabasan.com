@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styles from './InputField.module.scss';
 
@@ -7,6 +7,11 @@ interface InputFieldProps {
   required?: boolean;
   shortField?: boolean;
   hidePassword?: boolean;
+  updateStateFromChild: any
+}
+
+interface InputFieldState {
+  inputError: string;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -14,9 +19,14 @@ const InputField: React.FC<InputFieldProps> = ({
   required = false,
   shortField = false,
   hidePassword = false,
+  updateStateFromChild
 }) => {
   let placeholderText: string =
     inputType.charAt(0).toUpperCase() + inputType.slice(1);
+
+  const [state, setState] = useState<InputFieldState>({
+    inputError: '',
+  });
 
   const placeholder = (
     e:
@@ -26,6 +36,11 @@ const InputField: React.FC<InputFieldProps> = ({
     e.type === 'focus'
       ? (e.target.placeholder = '')
       : (e.target.placeholder = placeholderText);
+  };
+
+  const validateTextAndNumberInput = (): void => {
+    let inputLength: number =
+      inputType === 'title' ? 80 : inputType === 'technique' ? 255 : Infinity;
   };
 
   if (inputType === 'description') {
@@ -45,6 +60,7 @@ const InputField: React.FC<InputFieldProps> = ({
           placeholder={placeholderText}
           onFocus={placeholder}
           onBlur={placeholder}
+          onChange={e => updateStateFromChild(e.target.value)}
         />
       </>
     );
