@@ -7,7 +7,7 @@ interface InputFieldProps {
   required?: boolean;
   shortField?: boolean;
   hidePassword?: boolean;
-  updateStateFromChild: any
+  updateFormState: Function;
 }
 
 interface InputFieldState {
@@ -19,7 +19,7 @@ const InputField: React.FC<InputFieldProps> = ({
   required = false,
   shortField = false,
   hidePassword = false,
-  updateStateFromChild
+  updateFormState,
 }) => {
   let placeholderText: string =
     inputType.charAt(0).toUpperCase() + inputType.slice(1);
@@ -60,7 +60,7 @@ const InputField: React.FC<InputFieldProps> = ({
           placeholder={placeholderText}
           onFocus={placeholder}
           onBlur={placeholder}
-          onChange={e => updateStateFromChild(e.target.value)}
+          onChange={e => updateFormState(inputType, e.target.value)}
         />
       </>
     );
