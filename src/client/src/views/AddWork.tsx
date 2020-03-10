@@ -24,7 +24,13 @@ const AddWork: React.FC = () => {
     setState({ ...state, [key]: value });
   };
 
-  return <InputField inputType={'title'} updateFormState={updateFormState} />;
+  return (
+    <InputField
+      inputType={'title'}
+      updateFormState={updateFormState}
+      required
+    />
+  );
 };
 
 export default AddWork;
