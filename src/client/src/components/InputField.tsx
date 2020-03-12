@@ -85,10 +85,23 @@ const InputField: React.FC<InputFieldProps> = ({
     return (
       <>
         <textarea
+          className={`
+            ${styles['user-input-textarea']}
+            ${shortField && styles['short-field']}
+            ${state.inputError && styles['error']}
+          `}
           placeholder={placeholderText}
-          onFocus={placeholder}
-          onBlur={placeholder}
+          onFocus={e => {
+            placeholder(e);
+            setState({ ...state, inputError: '' });
+          }}
+          onBlur={e => {
+            placeholder(e);
+            selectInputValidator(e);
+          }}
+          onChange={e => updateFormState(inputType, e.target.value)}
         />
+        <h1>{state.inputError}</h1>
       </>
     );
   } else {
