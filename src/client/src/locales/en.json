@@ -1,7 +1,7 @@
 {
   "errors": {
     "user-errors": {
-      "input-field": ["field cannot be empty", "has to be a number"]
+      "input-field": ["{input} field cannot be empty"]
     },
     "site-errors": {}
   }
