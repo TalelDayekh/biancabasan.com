@@ -27,7 +27,7 @@ const InputField: React.FC<InputFieldProps> = ({
   });
   let placeholderText: string =
     inputType.charAt(0).toUpperCase() + inputType.slice(1);
-    
+
   const placeholder = (
     e:
       | React.FocusEvent<HTMLInputElement>
@@ -47,7 +47,12 @@ const InputField: React.FC<InputFieldProps> = ({
       inputType === 'title' ? 80 : inputType === 'technique' ? 255 : Infinity;
 
     if (required && e.target.value.length <= 0) {
-      setState({ ...state, inputError: t('errors.user-errors.input-field.0', {inputType}) });
+      setState({
+        ...state,
+        inputError: t('errors.user-errors.input-field.0', {
+          inputType: placeholderText,
+        }),
+      });
     } else if (
       (inputType === 'height' ||
         inputType === 'width' ||
@@ -55,10 +60,21 @@ const InputField: React.FC<InputFieldProps> = ({
       isNaN(Number(e.target.value))
     ) {
       updateFormState(inputType, '');
-      setState({ ...state, inputError: 'INPUT ERROR NUMBER' });
+      setState({
+        ...state,
+        inputError: t('errors.user-errors.input-field.1', {
+          inputType: placeholderText,
+        }),
+      });
     } else if (e.target.value.length > inputLength) {
       updateFormState(inputType, '');
-      setState({ ...state, inputError: 'TO LONG INPUT' });
+      setState({
+        ...state,
+        inputError: t('errors.user-errors.input-field.2', {
+          inputType: placeholderText,
+          inputLength: inputLength,
+        }),
+      });
     }
   };
 
