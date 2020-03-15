@@ -25,11 +25,14 @@ const AddWork: React.FC = () => {
   };
 
   return (
-    <InputField
-      inputType={'title'}
-      updateFormState={updateFormState}
-      required
-    />
+    <>
+      <InputField
+        inputType={'title'}
+        updateFormState={updateFormState}
+        required
+      />
+      <InputField inputType={'height'} updateFormState={updateFormState} />
+    </>
   );
 };
 

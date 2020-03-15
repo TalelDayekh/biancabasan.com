@@ -1,7 +1,11 @@
 {
   "errors": {
     "user-errors": {
-      "input-field": ["{input} field cannot be empty"]
+      "input-field": [
+        "{{ inputType }} cannot be empty",
+        "{{ inputType}} needs to be a number",
+        "{{ inputType}} cannot exceed {{ inputLength }} characters"
+      ]
     },
     "site-errors": {}
   }
