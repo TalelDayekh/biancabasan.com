@@ -78,6 +78,8 @@ const InputField: React.FC<InputFieldProps> = ({
     }
   };
 
+  const validatePassword = () => {};
+
   const selectInputValidator = (
     e:
       | React.FocusEvent<HTMLInputElement>
@@ -93,6 +95,7 @@ const InputField: React.FC<InputFieldProps> = ({
         validateTextAndNumberInput(e);
         break;
       case 'password':
+        validatePassword();
         break;
     }
   };
