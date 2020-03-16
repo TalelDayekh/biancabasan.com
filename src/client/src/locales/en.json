@@ -3,7 +3,7 @@
     "user-errors": {
       "input-field": [
         "{{ inputType }} cannot be empty",
-        "{{ inputType}} needs to be a number",
+        "{{ inputType}} must be a number",
         "{{ inputType}} cannot exceed {{ inputLength }} characters"
       ]
     },
