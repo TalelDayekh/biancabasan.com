@@ -5,7 +5,12 @@
         "{{ inputType }} cannot be empty",
         "{{ inputType}} must be a number",
         "{{ inputType}} cannot exceed {{ inputLength }} characters"
-      ]
+      ],
+      "password": {
+        "to-short": "Password needs to be at least 8 characters long",
+        "no-uppercase": "Password needs to include at least one upper case character",
+        "no-numbers": "Password needs to include at least one number"
+      }
     },
     "site-errors": {}
   }
