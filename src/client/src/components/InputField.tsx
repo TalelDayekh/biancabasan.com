@@ -78,7 +78,44 @@ const InputField: React.FC<InputFieldProps> = ({
     }
   };
 
-  const validatePassword = () => {};
+  const validatePassword = (
+    e:
+      | React.FocusEvent<HTMLInputElement>
+      | React.FocusEvent<HTMLTextAreaElement>,
+  ) => {
+    const password: string = e.target.value;
+
+    const _hasUpperCaseOrNumber = (toCheck: string): boolean => {
+      let hasUpperCase: boolean = false;
+      let hasNumber: boolean = false;
+
+      for (let character of password) {
+        if (
+          toCheck === 'upper case' &&
+          character == character.toUpperCase() &&
+          character != character.toLowerCase()
+        ) {
+          return (hasUpperCase = true);
+        }
+        if (toCheck === 'number' && !isNaN(Number(character))) {
+          return (hasNumber = true);
+        }
+      }
+
+      return hasNumber;
+    };
+
+    try {
+      if (password.length < 8) throw t('errors.user-errors.password.to-short');
+      if (_hasUpperCaseOrNumber('upper case') === false)
+        throw t('errors.user-errors.password.no-uppercase');
+      if (_hasUpperCaseOrNumber('number') === false)
+        throw t('errors.user-errors.password.no-numbers');
+    } catch (err) {
+      updateFormState(inputType, '');
+      setState({ ...state, inputError: err });
+    }
+  };
 
   const selectInputValidator = (
     e:
@@ -95,7 +132,7 @@ const InputField: React.FC<InputFieldProps> = ({
         validateTextAndNumberInput(e);
         break;
       case 'password':
-        validatePassword();
+        validatePassword(e);
         break;
     }
   };
