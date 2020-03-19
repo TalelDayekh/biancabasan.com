@@ -8,6 +8,7 @@ interface AddWorkState {
   width: number;
   depth: number;
   description: string;
+  password: string;
 }
 
 const AddWork: React.FC = () => {
@@ -18,6 +19,7 @@ const AddWork: React.FC = () => {
     width: undefined,
     depth: undefined,
     description: '',
+    password: '',
   });
 
   const updateFormState = (key: string, value: string | number): void => {
@@ -32,6 +34,7 @@ const AddWork: React.FC = () => {
         required
       />
       <InputField inputType={'height'} updateFormState={updateFormState} />
+      <InputField inputType={'password'} updateFormState={updateFormState} />
     </>
   );
 };
