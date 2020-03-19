@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "resolveJsonModule": true,
     "jsx": "react",
     "target": "esnext",
     "module": "esnext",
@@ -11,6 +12,9 @@
     "experimentalDecorators": true,
     "declaration": true,
     "importHelpers": true,
-    "lib": ["esnext", "dom", "dom.iterable"]
-  }
+    "lib": ["esnext", "dom", "dom.iterable"],
+    // "types": ["jest"],
+    "typeRoots": ["./types", "./node_modules/@types"]
+  },
+  "include": ["./src/**/*.tsx", "./src/**/*.ts"]
 }
