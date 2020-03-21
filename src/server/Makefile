@@ -1,4 +1,4 @@
-CODE_DIRS = api/ users/ works/
+CODE_DIRS = api/ users/ works/ tests/
 ISORT_PARAMS = --skip migrations/*
 BLACK_PARAMS = --line-length 79
 
