@@ -13,7 +13,7 @@ from PIL import Image
 
 
 def image_upload_handler(instance: Type[ImageModel], filename: str) -> str:
-    uid = uuid.uuid4().hex
+    uid = str(uuid.uuid4().hex)
     image_name = Path(filename).stem
     image_type = Path(filename).suffix
     image_file = image_name + "_" + uid + image_type
