@@ -35,3 +35,7 @@ class FormatWorkTitleTest(TestCase):
         formatted_work_title = format_work_title(work_title)
 
         self.assertEqual(formatted_work_title, "123")
+
+
+class ImageValidationHandlerTest(TestCase):
+    pass
