@@ -1,9 +1,16 @@
 import uuid
 from unittest.mock import Mock, PropertyMock, patch
 
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.test import TestCase
 
-from works.image_handlers import format_work_title, image_upload_handler
+from tests.utils import create_temporary_test_image
+
+from works.image_handlers import (
+    ImageValidationHandler,
+    format_work_title,
+    image_upload_handler,
+)
 
 
 class ImageUploadHandlerTest(TestCase):
@@ -38,4 +45,19 @@ class FormatWorkTitleTest(TestCase):
 
 
 class ImageValidationHandlerTest(TestCase):
-    pass
+    def image_format_validator(self, image_format: str) -> bool:
+        with create_temporary_test_image(image_format) as test_image:
+            valid_image_format = ImageValidationHandler(
+                test_image
+            )._validate_image_format()
+            return valid_image_format
+
+    def image_size_validator(self) -> bool:
+        pass
+
+    def test_can_validate_correct_image_format_as_true_or_false(self):
+        valid_image_format = self.image_format_validator("JPEG")
+        invalid_image_format = self.image_format_validator("PNG")
+
+        self.assertEqual(valid_image_format, True)
+        self.assertEqual(invalid_image_format, False)
