@@ -5,9 +5,9 @@ import tempfile
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import override_settings
 
-from tests.utils import create_temporary_test_image, work_test_data
 from api.v1.serializers import ImageSerializer
 from rest_framework.test import APITestCase
+from tests.utils import create_temporary_test_image, work_test_data
 from users.models import CustomUser
 
 from works.models import Image, Work
