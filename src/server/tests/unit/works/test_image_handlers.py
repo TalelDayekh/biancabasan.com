@@ -1,4 +1,5 @@
 import uuid
+from pathlib import Path
 from unittest.mock import Mock, PropertyMock, patch
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -45,19 +46,62 @@ class FormatWorkTitleTest(TestCase):
 
 
 class ImageValidationHandlerTest(TestCase):
-    def image_format_validator(self, image_format: str) -> bool:
+    def image_validator(
+        self, image_format: str, validator: str, image_file_size: int = 2097152
+    ) -> bool:
         with create_temporary_test_image(image_format) as test_image:
-            valid_image_format = ImageValidationHandler(
-                test_image
-            )._validate_image_format()
-            return valid_image_format
+            in_memory_image_file = InMemoryUploadedFile(
+                file=test_image,
+                field_name="image",
+                name=Path(test_image.name).name,
+                content_type=f"image/{Path(test_image.name).suffix.rsplit('.')[1]}",
+                size=image_file_size,
+                charset=None,
+            )
 
-    def image_size_validator(self) -> bool:
-        pass
+            return {
+                "image_format_validation": ImageValidationHandler(
+                    in_memory_image_file
+                )._validate_image_format(),
+                "image_file_size_validator": ImageValidationHandler(
+                    in_memory_image_file
+                )._validate_image_size(),
+                "image_validation": ImageValidationHandler(
+                    in_memory_image_file
+                ).is_valid(),
+            }[validator]
 
     def test_can_validate_correct_image_format_as_true_or_false(self):
-        valid_image_format = self.image_format_validator("JPEG")
-        invalid_image_format = self.image_format_validator("PNG")
+        valid_image_format = self.image_validator(
+            "JPEG", "image_format_validation"
+        )
+        invalid_image_format = self.image_validator(
+            "PNG", "image_format_validation"
+        )
 
         self.assertEqual(valid_image_format, True)
         self.assertEqual(invalid_image_format, False)
+
+    def test_can_validate_correct_image_file_size_as_true_or_false(self):
+        valid_image_file_size = self.image_validator(
+            "JPEG", "image_file_size_validator"
+        )
+        invalid_image_file_size = self.image_validator(
+            "JPEG", "image_file_size_validator", 2097153
+        )
+
+        self.assertEqual(valid_image_file_size, True)
+        self.assertEqual(invalid_image_file_size, False)
+
+    def test_can_validate_image_as_true_or_false(self):
+        invalid_image_one = self.image_validator(
+            "PNG", "image_validation", 2097152
+        )
+        invalid_image_two = self.image_validator(
+            "JPEG", "image_validation", 2097153
+        )
+        valid_image = self.image_validator("JPEG", "image_validation", 2097152)
+
+        self.assertEqual(invalid_image_one, False)
+        self.assertEqual(invalid_image_two, False)
+        self.assertEqual(valid_image, True)
