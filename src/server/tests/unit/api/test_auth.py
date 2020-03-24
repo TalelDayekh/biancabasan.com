@@ -5,7 +5,7 @@ from django.core import mail
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
-from api.tests.unit.utils import authorization_test_data
+from tests.utils import authorization_test_data
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
 from users.models import CustomUser
