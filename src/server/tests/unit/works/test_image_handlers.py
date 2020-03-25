@@ -75,7 +75,7 @@ class ImageValidationHandlerTest(TestCase):
 
     def test_cannot_validate_non_image_file(self):
         text_file = tempfile.NamedTemporaryFile(
-            suffix="txt", prefix="document"
+            suffix=".txt", prefix="document"
         )
         invalid_file_type = ImageValidationHandler(text_file).is_valid()
 
