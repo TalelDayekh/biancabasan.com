@@ -1,3 +1,4 @@
+import tempfile
 import uuid
 from pathlib import Path
 from unittest.mock import Mock, PropertyMock, patch
@@ -8,6 +9,7 @@ from django.test import TestCase
 from tests.utils import create_temporary_test_image
 
 from works.image_handlers import (
+    ImageFileHandler,
     ImageValidationHandler,
     format_work_title,
     image_upload_handler,
@@ -71,6 +73,14 @@ class ImageValidationHandlerTest(TestCase):
                 ).is_valid(),
             }[validator]
 
+    def test_cannot_validate_non_image_file(self):
+        text_file = tempfile.NamedTemporaryFile(
+            suffix="txt", prefix="document"
+        )
+        invalid_file_type = ImageValidationHandler(text_file).is_valid()
+
+        self.assertEqual(invalid_file_type, False)
+
     def test_can_validate_correct_image_format_as_true_or_false(self):
         valid_image_format = self.image_validator(
             "JPEG", "image_format_validation"
@@ -105,3 +115,12 @@ class ImageValidationHandlerTest(TestCase):
         self.assertEqual(invalid_image_one, False)
         self.assertEqual(invalid_image_two, False)
         self.assertEqual(valid_image, True)
+
+
+class ImageFileHandlerTest(TestCase):
+    def setUp(self):
+        pass
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
