@@ -15,6 +15,10 @@ from works.image_handlers import (
     image_upload_handler,
 )
 
+image_file_handler_test_folder = tempfile.mkdtemp(
+    prefix="image_file_handler_test_folder"
+)
+
 
 class ImageUploadHandlerTest(TestCase):
     @patch("uuid.uuid4")
