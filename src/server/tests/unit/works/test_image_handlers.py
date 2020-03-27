@@ -1,3 +1,4 @@
+import shutil
 import tempfile
 import uuid
 from pathlib import Path
@@ -6,6 +7,7 @@ from unittest.mock import Mock, PropertyMock, patch
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.test import TestCase
 
+from PIL import Image
 from tests.utils import create_temporary_test_image
 
 from works.image_handlers import (
@@ -77,7 +79,7 @@ class ImageValidationHandlerTest(TestCase):
                 ).is_valid(),
             }[validator]
 
-    def test_cannot_validate_non_image_file(self):
+    def test_cannot_validate_none_image_file(self):
         text_file = tempfile.NamedTemporaryFile(
             suffix=".txt", prefix="document"
         )
@@ -123,8 +125,54 @@ class ImageValidationHandlerTest(TestCase):
 
 class ImageFileHandlerTest(TestCase):
     def setUp(self):
-        pass
+        self.none_image_file = Path("/path/to/nonexistent/image")
+        self.image_file = Path(image_file_handler_test_folder).joinpath(
+            "black_square.jpg"
+        )
+        test_image = Image.new("RGB", (500, 500))
+        test_image.save(self.image_file)
+        self.web_image_set = ImageFileHandler.create_web_image_set(
+            self.image_file
+        )
+
+    def test_can_create_web_image_set_with_correct_sizes(self):
+        web_images = [
+            Image.open(web_image.image_file)
+            for web_image in self.web_image_set
+        ]
+
+        self.assertEqual(web_images[0].size, (1250, 1250))
+        self.assertEqual(web_images[1].size, (2500, 2500))
+
+    def test_cannot_create_web_image_set_from_none_image_file(self):
+        web_image_set = ImageFileHandler.create_web_image_set(
+            self.none_image_file
+        )
+
+        self.assertEqual(web_image_set, None)
+
+    def test_can_delete_web_image_set(self):
+        image_file_1250 = Path(image_file_handler_test_folder).joinpath(
+            "black_square_1250.jpg"
+        )
+        image_file_2500 = Path(image_file_handler_test_folder).joinpath(
+            "black_square_2500.jpg"
+        )
+
+        self.assertEqual(self.image_file.exists(), True)
+        self.assertEqual(image_file_1250.exists(), True)
+        self.assertEqual(image_file_2500.exists(), True)
+
+        ImageFileHandler(self.image_file).delete_image_set()
+
+        self.assertEqual(self.image_file.exists(), False)
+        self.assertEqual(image_file_1250.exists(), False)
+        self.assertEqual(image_file_2500.exists(), False)
+
+    def test_cannot_delete_none_image_file(self):
+        with self.assertRaises(FileNotFoundError):
+            ImageFileHandler(self.none_image_file).delete_image_set()
 
     @classmethod
     def tearDownClass(cls):
-        pass
+        shutil.rmtree(image_file_handler_test_folder)
