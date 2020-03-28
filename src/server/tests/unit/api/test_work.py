@@ -195,6 +195,15 @@ class WorkPATCHTest(APITestCase):
         self.assertEqual(res_invalid_id_int.status_code, 404)
         self.assertEqual(res_invalid_id_str.status_code, 404)
 
+    def test_cannot_update_work_with_invalid_data(self):
+        invalid_patch_payload = {"year_to": "Twenty Twenty"}
+        res = self.client.patch(
+            f"http://127.0.0.1:8000/api/v1/works/{self.user_one_work_id}",
+            invalid_patch_payload,
+        )
+
+        self.assertEqual(res.status_code, 400)
+
     @classmethod
     def tearDownClass(cls):
         # Adding the tearDownClass seems to prevent
