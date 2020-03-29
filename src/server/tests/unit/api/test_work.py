@@ -269,6 +269,10 @@ class WorkDELETETest(APITestCase):
 
         self.assertEqual(res.status_code, 401)
 
+    def test_(self):
+        # ! Cannot delete work if image has not been deleted
+        pass
+
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree(work_delete_request_test_folder)
